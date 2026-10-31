@@ -33,6 +33,41 @@ swapping in the organiser's generator via `generator/adapter.py` as soon as it i
 ## D-005 · 2026-11-01 · Sweep size reduced to 5 seeds
 **Why:** measured ~123 MB and ~10 s per seed (216 runs). 5 seeds = 1080 runs, ~610 MB, ~50 s.
 
+## D-006 · 2026-11-01 · Content-hash message ids
+**Why:** deterministic traces (C1.8) and free duplicate detection on the board. Timestamp is
+excluded from the hash so re-runs give identical ids. **Trade-off:** two genuinely distinct
+but byte-identical posts collapse into one, which is the desired idempotency.
+
+## D-007 · 2026-11-01 · Report status values
+A7 lists `diagnosed | insufficient_evidence | ...`. We add `no_fault_detected` (normal operation
+is a first-class outcome, not "diagnosed: normal") and `failed` (the run itself could not
+complete). NetCoop fields go in a single `x_netcoop` key so the A7 keys are untouched.
+
+## D-008 · 2026-11-01 · Protocol 1.0 "lite" profile and assumed quality
+To exercise and demonstrate version negotiation, 1.0 is defined as a minimal profile for
+simple/external agents (PROTOCOL.md §6.1). Upgraded messages get
+`v1_upgrade.assumed_data_quality` (0.5, maximum-entropy midpoint) and an explicit
+`quality_unknown_v1` issue. **Open:** revisit the value once correlator weights are fitted.
+
+## D-009 · 2026-11-01 · Observations are time series, not single samples
+One OBSERVATION = one metric on one entity over the window (~600 messages per incident rather
+than ~20k). Evidence still cites observations by id, and per-sample provenance is preserved
+through `Point.src`.
+
+## D-010 · 2026-11-01 · Interop failure is not a hypothesis type
+Interoperability problems are about the data, not the network. They are handled by the
+Translator (typed errors, quality scores, limitations). The network root cause underneath is
+still diagnosed. Evaluation of the `interop_failure` family therefore scores the underlying
+root cause plus successful recovery.
+
+## D-011 · 2026-11-01 · DNS and DHCP are separate hypothesis types
+They have different remedies and different evidence, so they are proposed separately. Both map
+to the `dns_dhcp_failure` scenario family for evaluation.
+
+## D-012 · 2026-11-01 · Wired vs wireless loss are distinct metrics
+`packet_loss` (links) and `wireless_packet_loss` (APs). The native dialect reuses one field
+name for both; the Translator disambiguates by record kind.
+
 ## Open questions
 - **Q-001** ~~Sweep sizes~~ resolved by D-005.
 - **Q-002** Canonical schema: derive from `docs/DATA_PROFILE.md` (Phase 1). Re-check if the

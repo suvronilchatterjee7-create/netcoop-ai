@@ -1,0 +1,21 @@
+description: Parameters of the netcoop message protocol (docs/PROTOCOL.md).
+
+msg_id_hash_hex_chars:
+  value: 16
+  unit: "hex characters (4 bits each)"
+  rationale: >
+    msg_ids are content hashes, which makes them deterministic and makes duplicate posts
+    detectable. 64 bits gives a birthday-collision probability of about 3e-10 for 100k
+    messages in one incident, far above any expected run size.
+  source: "Birthday bound p ~ n^2 / 2^(b+1)"
+
+v1_upgrade:
+  assumed_data_quality:
+    value: 0.5
+    unit: "ratio (0-1)"
+    rationale: >
+      Protocol 1.0 ('lite') messages carry no data-quality information. Upgraded messages
+      get the midpoint of the scale (neither trusted nor distrusted) and an
+      'quality_unknown_v1' issue, so the correlator down-weights them relative to
+      fully-described evidence. Revisit once the correlator's quality weighting is fitted.
+    source: "Maximum-entropy choice under no information; flagged in docs/DECISIONS.md D-008"

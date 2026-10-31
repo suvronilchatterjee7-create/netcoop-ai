@@ -6,7 +6,7 @@ else
   BIN := $(VENV)/bin
 endif
 
-.PHONY: setup generate profile calibrate run test eval lint typecheck clean
+.PHONY: setup generate profile schemas calibrate run test eval lint typecheck clean
 
 setup:
 	$(PY) -m venv $(VENV)
@@ -18,6 +18,9 @@ generate:
 
 profile:
 	$(BIN)/netcoop profile
+
+schemas:
+	$(BIN)/netcoop schemas
 
 calibrate:
 	$(BIN)/netcoop calibrate

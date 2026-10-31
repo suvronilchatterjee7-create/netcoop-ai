@@ -1,0 +1,254 @@
+{
+  "$defs": {
+    "ErrorCode": {
+      "enum": [
+        "MALFORMED_INPUT",
+        "MISSING_FIELD",
+        "TYPE_MISMATCH",
+        "UNKNOWN_FIELD",
+        "UNKNOWN_UNIT",
+        "AMBIGUOUS_UNIT",
+        "IMPLAUSIBLE_VALUE",
+        "STALE_DATA",
+        "CLOCK_SKEW",
+        "UNKNOWN_ENTITY",
+        "MISSING_TOPOLOGY",
+        "INCOMPATIBLE_SCHEMA",
+        "INCOMPATIBLE_VERSION",
+        "UNSUPPORTED_MESSAGE_TYPE",
+        "UNSUPPORTED_REQUEST",
+        "AGENT_TIMEOUT",
+        "AGENT_FAILURE",
+        "BUDGET_EXCEEDED"
+      ],
+      "title": "ErrorCode",
+      "type": "string"
+    },
+    "ErrorPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/ErrorCode",
+          "description": "Typed error code."
+        },
+        "context": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "default": {},
+          "description": "Structured details (field, value, expected, ...).",
+          "title": "Context",
+          "type": "object"
+        },
+        "message": {
+          "description": "Human-readable description.",
+          "title": "Message",
+          "type": "string"
+        },
+        "related_msg_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Message the error concerns, if any.",
+          "title": "Related Msg Id"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity",
+          "description": "Impact of the error on the run."
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourceRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Input location the error concerns, if any."
+        }
+      },
+      "required": [
+        "code",
+        "severity",
+        "message"
+      ],
+      "title": "ErrorPayload",
+      "type": "object"
+    },
+    "Severity": {
+      "enum": [
+        "fatal",
+        "recoverable",
+        "warning"
+      ],
+      "title": "Severity",
+      "type": "string"
+    },
+    "SourceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "dialect": {
+          "description": "Detected input dialect / mapping profile used to read it.",
+          "title": "Dialect",
+          "type": "string"
+        },
+        "locator": {
+          "description": "Position inside the source, e.g. 'line:42' or 'row:7'.",
+          "title": "Locator",
+          "type": "string"
+        },
+        "raw_field": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Original field name before mapping, if different.",
+          "title": "Raw Field"
+        },
+        "source": {
+          "description": "Input file or stream name the data came from.",
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "dialect",
+        "locator"
+      ],
+      "title": "SourceRef",
+      "type": "object"
+    }
+  },
+  "$id": "netcoop/2.0/messages/error.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Typed error.",
+  "properties": {
+    "adaptations": {
+      "default": [],
+      "description": "Version conversions applied, e.g. '1.0->2.0', and any lossy fields.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Adaptations",
+      "type": "array"
+    },
+    "causation_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "msg_id of the message that caused this one (null = root).",
+      "title": "Causation Id"
+    },
+    "correlation_id": {
+      "description": "Incident id shared by every message of one diagnosis run.",
+      "minLength": 1,
+      "title": "Correlation Id",
+      "type": "string"
+    },
+    "depth": {
+      "default": 0,
+      "description": "Causation depth: 0 for roots, parent depth + 1 otherwise.",
+      "minimum": 0,
+      "title": "Depth",
+      "type": "integer"
+    },
+    "msg_id": {
+      "description": "Unique message id; content hash when built by make_message.",
+      "minLength": 1,
+      "title": "Msg Id",
+      "type": "string"
+    },
+    "payload": {
+      "$ref": "#/$defs/ErrorPayload",
+      "description": "Error details."
+    },
+    "protocol": {
+      "const": "netcoop",
+      "default": "netcoop",
+      "description": "Protocol name; always 'netcoop'.",
+      "title": "Protocol",
+      "type": "string"
+    },
+    "protocol_version": {
+      "const": "2.0",
+      "default": "2.0",
+      "description": "Wire-format version of this message.",
+      "title": "Protocol Version",
+      "type": "string"
+    },
+    "recipient": {
+      "default": "board",
+      "description": "agent_id of the recipient, or 'board' for a shared post.",
+      "title": "Recipient",
+      "type": "string"
+    },
+    "schema_version": {
+      "description": "Controlled-vocabulary version the payload's terms refer to.",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sender": {
+      "description": "agent_id of the sender.",
+      "minLength": 1,
+      "title": "Sender",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "Creation time, ISO-8601 UTC (excluded from msg_id).",
+      "format": "date-time",
+      "title": "Timestamp",
+      "type": "string"
+    },
+    "type": {
+      "const": "ERROR",
+      "default": "ERROR",
+      "description": "Message type.",
+      "title": "Type",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "msg_id",
+    "correlation_id",
+    "sender",
+    "timestamp",
+    "payload"
+  ],
+  "title": "ErrorMessage",
+  "type": "object"
+}

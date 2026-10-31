@@ -1,0 +1,300 @@
+{
+  "$defs": {
+    "Decision": {
+      "enum": [
+        "diagnosed",
+        "insufficient_evidence",
+        "no_fault_detected"
+      ],
+      "title": "Decision",
+      "type": "string"
+    },
+    "EntityRef": {
+      "additionalProperties": false,
+      "properties": {
+        "entity_id": {
+          "description": "Identifier of the entity exactly as it appears in the input data.",
+          "minLength": 1,
+          "title": "Entity Id",
+          "type": "string"
+        },
+        "entity_type": {
+          "description": "Entity type from the controlled vocabulary (entity_types.yaml).",
+          "title": "Entity Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entity_id",
+        "entity_type"
+      ],
+      "title": "EntityRef",
+      "type": "object"
+    },
+    "EntityRole": {
+      "enum": [
+        "root",
+        "symptom",
+        "context"
+      ],
+      "title": "EntityRole",
+      "type": "string"
+    },
+    "HypothesisEntity": {
+      "additionalProperties": false,
+      "properties": {
+        "entity": {
+          "$ref": "#/$defs/EntityRef",
+          "description": "Entity involved in the hypothesis."
+        },
+        "role": {
+          "$ref": "#/$defs/EntityRole",
+          "description": "Role of the entity in the hypothesis."
+        }
+      },
+      "required": [
+        "entity",
+        "role"
+      ],
+      "title": "HypothesisEntity",
+      "type": "object"
+    },
+    "RankedHypothesis": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "description": "Calibrated confidence.",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number",
+          "x-unit": "ratio"
+        },
+        "entities": {
+          "description": "Entities of the (merged) hypothesis.",
+          "items": {
+            "$ref": "#/$defs/HypothesisEntity"
+          },
+          "title": "Entities",
+          "type": "array"
+        },
+        "hypothesis_msg_ids": {
+          "description": "HYPOTHESIS messages merged into this candidate.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Hypothesis Msg Ids",
+          "type": "array"
+        },
+        "hypothesis_type": {
+          "description": "Hypothesis type.",
+          "title": "Hypothesis Type",
+          "type": "string"
+        },
+        "score": {
+          "description": "Raw evidence score (docs/SCORING.md).",
+          "title": "Score",
+          "type": "number"
+        }
+      },
+      "required": [
+        "hypothesis_type",
+        "entities",
+        "hypothesis_msg_ids",
+        "score",
+        "confidence"
+      ],
+      "title": "RankedHypothesis",
+      "type": "object"
+    },
+    "VerdictPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "description": "Calibrated confidence in the decision.",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number",
+          "x-unit": "ratio"
+        },
+        "confidence_category": {
+          "description": "Category from config (e.g. high/medium/low).",
+          "title": "Confidence Category",
+          "type": "string"
+        },
+        "decision": {
+          "$ref": "#/$defs/Decision",
+          "description": "Outcome of correlation / courtroom."
+        },
+        "entities": {
+          "default": [],
+          "description": "Entities of the winning hypothesis.",
+          "items": {
+            "$ref": "#/$defs/HypothesisEntity"
+          },
+          "title": "Entities",
+          "type": "array"
+        },
+        "hypothesis_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Winning hypothesis type, null unless diagnosed.",
+          "title": "Hypothesis Type"
+        },
+        "method": {
+          "description": "'correlation' or 'courtroom'.",
+          "title": "Method",
+          "type": "string"
+        },
+        "missing_evidence": {
+          "default": [],
+          "description": "Data that would resolve an abstention.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Missing Evidence",
+          "type": "array"
+        },
+        "ranking": {
+          "default": [],
+          "description": "All candidates, best first.",
+          "items": {
+            "$ref": "#/$defs/RankedHypothesis"
+          },
+          "title": "Ranking",
+          "type": "array"
+        },
+        "rationale": {
+          "default": [],
+          "description": "Decision-rule codes that fired, in order.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Rationale",
+          "type": "array"
+        }
+      },
+      "required": [
+        "decision",
+        "confidence",
+        "confidence_category",
+        "method"
+      ],
+      "title": "VerdictPayload",
+      "type": "object"
+    }
+  },
+  "$id": "netcoop/2.0/messages/verdict.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Correlation / courtroom decision.",
+  "properties": {
+    "adaptations": {
+      "default": [],
+      "description": "Version conversions applied, e.g. '1.0->2.0', and any lossy fields.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Adaptations",
+      "type": "array"
+    },
+    "causation_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "msg_id of the message that caused this one (null = root).",
+      "title": "Causation Id"
+    },
+    "correlation_id": {
+      "description": "Incident id shared by every message of one diagnosis run.",
+      "minLength": 1,
+      "title": "Correlation Id",
+      "type": "string"
+    },
+    "depth": {
+      "default": 0,
+      "description": "Causation depth: 0 for roots, parent depth + 1 otherwise.",
+      "minimum": 0,
+      "title": "Depth",
+      "type": "integer"
+    },
+    "msg_id": {
+      "description": "Unique message id; content hash when built by make_message.",
+      "minLength": 1,
+      "title": "Msg Id",
+      "type": "string"
+    },
+    "payload": {
+      "$ref": "#/$defs/VerdictPayload",
+      "description": "Decision."
+    },
+    "protocol": {
+      "const": "netcoop",
+      "default": "netcoop",
+      "description": "Protocol name; always 'netcoop'.",
+      "title": "Protocol",
+      "type": "string"
+    },
+    "protocol_version": {
+      "const": "2.0",
+      "default": "2.0",
+      "description": "Wire-format version of this message.",
+      "title": "Protocol Version",
+      "type": "string"
+    },
+    "recipient": {
+      "default": "board",
+      "description": "agent_id of the recipient, or 'board' for a shared post.",
+      "title": "Recipient",
+      "type": "string"
+    },
+    "schema_version": {
+      "description": "Controlled-vocabulary version the payload's terms refer to.",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sender": {
+      "description": "agent_id of the sender.",
+      "minLength": 1,
+      "title": "Sender",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "Creation time, ISO-8601 UTC (excluded from msg_id).",
+      "format": "date-time",
+      "title": "Timestamp",
+      "type": "string"
+    },
+    "type": {
+      "const": "VERDICT",
+      "default": "VERDICT",
+      "description": "Message type.",
+      "title": "Type",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "msg_id",
+    "correlation_id",
+    "sender",
+    "timestamp",
+    "payload"
+  ],
+  "title": "VerdictMessage",
+  "type": "object"
+}

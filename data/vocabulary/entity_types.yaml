@@ -1,0 +1,12 @@
+# Entity types. `category` groups types for metric applicability (metrics.yaml `applies_to`).
+version: "1.0"
+entity_types:
+  router: {category: device, description: "Layer-3 forwarding device."}
+  switch: {category: device, description: "Layer-2/3 switch (distribution or access)."}
+  access_point: {category: device, description: "Wireless access point."}
+  server: {category: device, description: "Host providing a network service (e.g. DNS, DHCP)."}
+  client: {category: device, description: "End host or wireless station."}
+  device: {category: device, description: "Device of unknown kind (used when the source does not say)."}
+  link: {category: link, description: "Connection between two devices; may be directed upstream->downstream."}
+  service: {category: service, description: "Logical network service (e.g. dns, dhcp), observed from vantage points."}
+  segment: {category: segment, description: "Group of entities (zone, VLAN, building) used for blast-radius statements."}

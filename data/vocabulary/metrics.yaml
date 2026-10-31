@@ -1,0 +1,160 @@
+# Canonical metric vocabulary (netcoop vocabulary v1.0).
+# Derived from docs/DATA_PROFILE.md (both dialects) and the metric list in problem statement A6.
+# Each metric: canonical unit (see units.yaml), value kind, entity categories it applies to,
+# direction in which it gets worse, and physically plausible range used for semantic validation.
+# Ranges are definitional bounds (what is physically possible), NOT fault thresholds.
+version: "1.0"
+metrics:
+  latency:
+    description: "One-way delay across a link (per-hop) or along a path, as reported by the source."
+    unit: ms
+    kind: numeric
+    applies_to: [link]
+    worse_when: higher
+    range: [0, null]
+    range_source: "Delay cannot be negative."
+  jitter:
+    description: "Variation in delay (packet delay variation) over the sampling interval."
+    unit: ms
+    kind: numeric
+    applies_to: [link]
+    worse_when: higher
+    range: [0, null]
+    range_source: "Delay variation cannot be negative."
+  packet_loss:
+    description: "Share of packets lost on a wired link during the sampling interval."
+    unit: percent
+    kind: numeric
+    applies_to: [link]
+    worse_when: higher
+    range: [0, 100]
+    range_source: "Percentage of packets."
+  utilization:
+    description: "Share of link capacity in use during the sampling interval."
+    unit: percent
+    kind: numeric
+    applies_to: [link]
+    worse_when: higher
+    range: [0, 100]
+    range_source: "Percentage of capacity."
+  throughput:
+    description: "Achieved data rate on a link during the sampling interval."
+    unit: Mbit/s
+    kind: numeric
+    applies_to: [link]
+    worse_when: none
+    range: [0, null]
+    range_source: "Rate cannot be negative; upper bound is link_capacity, checked referentially."
+  link_capacity:
+    description: "Nominal bandwidth of a link (static attribute)."
+    unit: Mbit/s
+    kind: numeric
+    applies_to: [link]
+    worse_when: lower
+    range: [0, null]
+    range_source: "Rate cannot be negative."
+  cpu_utilization:
+    description: "Device CPU load."
+    unit: percent
+    kind: numeric
+    applies_to: [device]
+    worse_when: higher
+    range: [0, 100]
+    range_source: "Percentage of CPU capacity."
+  memory_utilization:
+    description: "Device memory in use."
+    unit: percent
+    kind: numeric
+    applies_to: [device]
+    worse_when: higher
+    range: [0, 100]
+    range_source: "Percentage of memory."
+  egress_queue_drops:
+    description: "Packets dropped from egress queues during the sampling interval (delta, not cumulative)."
+    unit: count
+    kind: numeric
+    applies_to: [device]
+    worse_when: higher
+    range: [0, null]
+    range_source: "Counts cannot be negative."
+  interface_in_errors:
+    description: "Inbound interface errors (CRC, framing, runts) during the sampling interval (delta)."
+    unit: count
+    kind: numeric
+    applies_to: [device]
+    worse_when: higher
+    range: [0, null]
+    range_source: "Counts cannot be negative."
+  interface_out_errors:
+    description: "Outbound interface errors during the sampling interval (delta)."
+    unit: count
+    kind: numeric
+    applies_to: [device]
+    worse_when: higher
+    range: [0, null]
+    range_source: "Counts cannot be negative."
+  device_status:
+    description: "Operational state of the device or its monitored interface."
+    unit: state
+    kind: enum
+    values: [up, degraded, down]
+    applies_to: [device]
+    worse_when: categorical
+    range: null
+    range_source: "Enumerated."
+  rssi:
+    description: "Received signal strength at the wireless access point / client."
+    unit: dBm
+    kind: numeric
+    applies_to: [device]
+    worse_when: lower
+    range: [-120, 0]
+    range_source: "802.11 receivers operate well below 0 dBm; -120 dBm is below any receiver sensitivity."
+  snr:
+    description: "Signal-to-noise ratio of the wireless channel."
+    unit: dB
+    kind: numeric
+    applies_to: [device]
+    worse_when: lower
+    range: [-20, 100]
+    range_source: "Practical radio SNR range; negative values mean noise above signal."
+  retransmission_rate:
+    description: "Share of wireless frames retransmitted."
+    unit: percent
+    kind: numeric
+    applies_to: [device]
+    worse_when: higher
+    range: [0, 100]
+    range_source: "Percentage of frames."
+  wireless_packet_loss:
+    description: "Share of wireless frames lost (distinct from wired packet_loss, see DATA_PROFILE notes)."
+    unit: percent
+    kind: numeric
+    applies_to: [device]
+    worse_when: higher
+    range: [0, 100]
+    range_source: "Percentage of frames."
+  associated_clients:
+    description: "Number of stations associated with an access point."
+    unit: count
+    kind: numeric
+    applies_to: [device]
+    worse_when: none
+    range: [0, null]
+    range_source: "Counts cannot be negative."
+  service_success_rate:
+    description: "Share of successful probes of a network service (DNS lookup, DHCP exchange) from a vantage point."
+    unit: percent
+    kind: numeric
+    applies_to: [service]
+    worse_when: lower
+    range: [0, 100]
+    range_source: "Percentage of probes."
+  service_response_time:
+    description: "Response time of a network service probe from a vantage point."
+    unit: ms
+    kind: numeric
+    applies_to: [service]
+    worse_when: higher
+    range: [0, null]
+    range_source: "Time cannot be negative."

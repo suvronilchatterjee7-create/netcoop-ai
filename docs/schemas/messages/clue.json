@@ -1,0 +1,368 @@
+{
+  "$defs": {
+    "CluePayload": {
+      "additionalProperties": false,
+      "description": "One piece of evidence: a metric on an entity deviates (or explicitly does not).",
+      "properties": {
+        "comparison": {
+          "$ref": "#/$defs/Comparison",
+          "description": "What `value` was compared with."
+        },
+        "data_quality": {
+          "description": "Quality of the underlying observations.",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Data Quality",
+          "type": "number",
+          "x-unit": "ratio"
+        },
+        "deviation": {
+          "description": "Normalised deviation magnitude (see `deviation_unit`); 0 = none.",
+          "minimum": 0,
+          "title": "Deviation",
+          "type": "number"
+        },
+        "deviation_unit": {
+          "description": "Normalisation used, e.g. 'robust_z', 'ratio', 'percentage_points'.",
+          "title": "Deviation Unit",
+          "type": "string"
+        },
+        "direction": {
+          "$ref": "#/$defs/Direction",
+          "description": "Direction of the deviation relative to the reference."
+        },
+        "entity": {
+          "$ref": "#/$defs/EntityRef",
+          "description": "Entity the evidence is about."
+        },
+        "metric": {
+          "description": "Canonical metric name.",
+          "title": "Metric",
+          "type": "string"
+        },
+        "observed_from": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Vantage point, for probe-style metrics.",
+          "title": "Observed From"
+        },
+        "persistence": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Share of window samples that deviate; null if unknown.",
+          "title": "Persistence",
+          "x-unit": "ratio"
+        },
+        "significant": {
+          "description": "Detector judged the deviation significant (False = explicit negative evidence).",
+          "title": "Significant",
+          "type": "boolean"
+        },
+        "source_observation_ids": {
+          "description": "msg_ids of the OBSERVATIONs used.",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Source Observation Ids",
+          "type": "array"
+        },
+        "statistic": {
+          "$ref": "#/$defs/Statistic",
+          "description": "How `value` summarises the window."
+        },
+        "unit": {
+          "description": "Unit of `value` (see `statistic`).",
+          "title": "Unit",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Summary value. Level stats: metric unit; slope: unit/interval; fraction: ratio.",
+          "title": "Value"
+        },
+        "window": {
+          "$ref": "#/$defs/TimeWindow",
+          "description": "Time window the evidence covers."
+        }
+      },
+      "required": [
+        "entity",
+        "metric",
+        "statistic",
+        "value",
+        "unit",
+        "comparison",
+        "direction",
+        "deviation",
+        "deviation_unit",
+        "significant",
+        "window",
+        "source_observation_ids",
+        "data_quality"
+      ],
+      "title": "CluePayload",
+      "type": "object"
+    },
+    "Comparison": {
+      "additionalProperties": false,
+      "properties": {
+        "basis": {
+          "$ref": "#/$defs/ComparisonBasis",
+          "description": "Whether the value was compared with a fixed threshold or a baseline."
+        },
+        "config_key": {
+          "description": "Config key (or calibration key) the reference came from.",
+          "minLength": 1,
+          "title": "Config Key",
+          "type": "string"
+        },
+        "method": {
+          "description": "Detector that produced the comparison (documented in docs/SCORING.md).",
+          "title": "Method",
+          "type": "string"
+        },
+        "reference_value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The threshold or baseline centre used, in the clue's unit.",
+          "title": "Reference Value"
+        },
+        "spread": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Baseline spread (e.g. scaled MAD) used for normalisation.",
+          "title": "Spread"
+        }
+      },
+      "required": [
+        "basis",
+        "config_key",
+        "method"
+      ],
+      "title": "Comparison",
+      "type": "object"
+    },
+    "ComparisonBasis": {
+      "enum": [
+        "threshold",
+        "baseline"
+      ],
+      "title": "ComparisonBasis",
+      "type": "string"
+    },
+    "Direction": {
+      "enum": [
+        "above",
+        "below",
+        "changed"
+      ],
+      "title": "Direction",
+      "type": "string"
+    },
+    "EntityRef": {
+      "additionalProperties": false,
+      "properties": {
+        "entity_id": {
+          "description": "Identifier of the entity exactly as it appears in the input data.",
+          "minLength": 1,
+          "title": "Entity Id",
+          "type": "string"
+        },
+        "entity_type": {
+          "description": "Entity type from the controlled vocabulary (entity_types.yaml).",
+          "title": "Entity Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entity_id",
+        "entity_type"
+      ],
+      "title": "EntityRef",
+      "type": "object"
+    },
+    "Statistic": {
+      "enum": [
+        "mean",
+        "median",
+        "max",
+        "min",
+        "last",
+        "slope",
+        "fraction",
+        "unspecified"
+      ],
+      "title": "Statistic",
+      "type": "string"
+    },
+    "TimeWindow": {
+      "additionalProperties": false,
+      "properties": {
+        "end": {
+          "description": "End of the window (inclusive), ISO-8601 with timezone.",
+          "format": "date-time",
+          "title": "End",
+          "type": "string"
+        },
+        "start": {
+          "description": "Start of the window (inclusive), ISO-8601 with timezone.",
+          "format": "date-time",
+          "title": "Start",
+          "type": "string"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "title": "TimeWindow",
+      "type": "object"
+    }
+  },
+  "$id": "netcoop/2.0/messages/clue.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "A piece of evidence.",
+  "properties": {
+    "adaptations": {
+      "default": [],
+      "description": "Version conversions applied, e.g. '1.0->2.0', and any lossy fields.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Adaptations",
+      "type": "array"
+    },
+    "causation_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "msg_id of the message that caused this one (null = root).",
+      "title": "Causation Id"
+    },
+    "correlation_id": {
+      "description": "Incident id shared by every message of one diagnosis run.",
+      "minLength": 1,
+      "title": "Correlation Id",
+      "type": "string"
+    },
+    "depth": {
+      "default": 0,
+      "description": "Causation depth: 0 for roots, parent depth + 1 otherwise.",
+      "minimum": 0,
+      "title": "Depth",
+      "type": "integer"
+    },
+    "msg_id": {
+      "description": "Unique message id; content hash when built by make_message.",
+      "minLength": 1,
+      "title": "Msg Id",
+      "type": "string"
+    },
+    "payload": {
+      "$ref": "#/$defs/CluePayload",
+      "description": "Evidence."
+    },
+    "protocol": {
+      "const": "netcoop",
+      "default": "netcoop",
+      "description": "Protocol name; always 'netcoop'.",
+      "title": "Protocol",
+      "type": "string"
+    },
+    "protocol_version": {
+      "const": "2.0",
+      "default": "2.0",
+      "description": "Wire-format version of this message.",
+      "title": "Protocol Version",
+      "type": "string"
+    },
+    "recipient": {
+      "default": "board",
+      "description": "agent_id of the recipient, or 'board' for a shared post.",
+      "title": "Recipient",
+      "type": "string"
+    },
+    "schema_version": {
+      "description": "Controlled-vocabulary version the payload's terms refer to.",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sender": {
+      "description": "agent_id of the sender.",
+      "minLength": 1,
+      "title": "Sender",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "Creation time, ISO-8601 UTC (excluded from msg_id).",
+      "format": "date-time",
+      "title": "Timestamp",
+      "type": "string"
+    },
+    "type": {
+      "const": "CLUE",
+      "default": "CLUE",
+      "description": "Message type.",
+      "title": "Type",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "msg_id",
+    "correlation_id",
+    "sender",
+    "timestamp",
+    "payload"
+  ],
+  "title": "ClueMessage",
+  "type": "object"
+}

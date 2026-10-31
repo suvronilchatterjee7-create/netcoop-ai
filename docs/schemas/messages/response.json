@@ -1,0 +1,154 @@
+{
+  "$defs": {
+    "ResponsePayload": {
+      "additionalProperties": false,
+      "properties": {
+        "detail": {
+          "default": "",
+          "description": "Explanation, especially for non-ok status.",
+          "title": "Detail",
+          "type": "string"
+        },
+        "request_msg_id": {
+          "description": "msg_id of the REQUEST answered.",
+          "title": "Request Msg Id",
+          "type": "string"
+        },
+        "result_msg_ids": {
+          "default": [],
+          "description": "msg_ids of CLUEs/HYPOTHESES posted in answer.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Result Msg Ids",
+          "type": "array"
+        },
+        "status": {
+          "$ref": "#/$defs/ResponseStatus",
+          "description": "Outcome of the request."
+        }
+      },
+      "required": [
+        "request_msg_id",
+        "status"
+      ],
+      "title": "ResponsePayload",
+      "type": "object"
+    },
+    "ResponseStatus": {
+      "enum": [
+        "ok",
+        "no_data",
+        "unsupported",
+        "failed"
+      ],
+      "title": "ResponseStatus",
+      "type": "string"
+    }
+  },
+  "$id": "netcoop/2.0/messages/response.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Answer to a REQUEST.",
+  "properties": {
+    "adaptations": {
+      "default": [],
+      "description": "Version conversions applied, e.g. '1.0->2.0', and any lossy fields.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Adaptations",
+      "type": "array"
+    },
+    "causation_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "msg_id of the message that caused this one (null = root).",
+      "title": "Causation Id"
+    },
+    "correlation_id": {
+      "description": "Incident id shared by every message of one diagnosis run.",
+      "minLength": 1,
+      "title": "Correlation Id",
+      "type": "string"
+    },
+    "depth": {
+      "default": 0,
+      "description": "Causation depth: 0 for roots, parent depth + 1 otherwise.",
+      "minimum": 0,
+      "title": "Depth",
+      "type": "integer"
+    },
+    "msg_id": {
+      "description": "Unique message id; content hash when built by make_message.",
+      "minLength": 1,
+      "title": "Msg Id",
+      "type": "string"
+    },
+    "payload": {
+      "$ref": "#/$defs/ResponsePayload",
+      "description": "Answer."
+    },
+    "protocol": {
+      "const": "netcoop",
+      "default": "netcoop",
+      "description": "Protocol name; always 'netcoop'.",
+      "title": "Protocol",
+      "type": "string"
+    },
+    "protocol_version": {
+      "const": "2.0",
+      "default": "2.0",
+      "description": "Wire-format version of this message.",
+      "title": "Protocol Version",
+      "type": "string"
+    },
+    "recipient": {
+      "default": "board",
+      "description": "agent_id of the recipient, or 'board' for a shared post.",
+      "title": "Recipient",
+      "type": "string"
+    },
+    "schema_version": {
+      "description": "Controlled-vocabulary version the payload's terms refer to.",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sender": {
+      "description": "agent_id of the sender.",
+      "minLength": 1,
+      "title": "Sender",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "Creation time, ISO-8601 UTC (excluded from msg_id).",
+      "format": "date-time",
+      "title": "Timestamp",
+      "type": "string"
+    },
+    "type": {
+      "const": "RESPONSE",
+      "default": "RESPONSE",
+      "description": "Message type.",
+      "title": "Type",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "msg_id",
+    "correlation_id",
+    "sender",
+    "timestamp",
+    "payload"
+  ],
+  "title": "ResponseMessage",
+  "type": "object"
+}

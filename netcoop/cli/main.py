@@ -35,6 +35,14 @@ def _cmd_profile(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_schemas(_args: argparse.Namespace) -> int:
+    from netcoop.protocol.schema_export import write_all
+
+    written = write_all()
+    print(f"wrote {len(written)} files (JSON Schemas + docs/PROTOCOL_REFERENCE.md)")
+    return 0
+
+
 def _not_yet(phase: str) -> int:
     print(f"error: this command is implemented in {phase}", file=sys.stderr)
     return 3
@@ -55,6 +63,9 @@ def build_parser() -> argparse.ArgumentParser:
     pr.add_argument("--input", type=Path, default=DEFAULT_OUT)
     pr.add_argument("--out", type=Path, default=REPO_ROOT / "docs" / "DATA_PROFILE.md")
     pr.set_defaults(func=_cmd_profile)
+
+    sc = sub.add_parser("schemas", help="export JSON Schemas and the protocol field reference")
+    sc.set_defaults(func=_cmd_schemas)
 
     for name, phase in [
         ("run", "Phase 3"),

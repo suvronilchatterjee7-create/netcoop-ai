@@ -1,0 +1,374 @@
+{
+  "$defs": {
+    "DataQuality": {
+      "additionalProperties": false,
+      "properties": {
+        "completeness": {
+          "description": "Share of expected samples/fields present.",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Completeness",
+          "type": "number",
+          "x-unit": "ratio"
+        },
+        "freshness": {
+          "description": "1 = current, decays with staleness.",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Freshness",
+          "type": "number",
+          "x-unit": "ratio"
+        },
+        "issues": {
+          "default": [],
+          "description": "Machine-readable issue codes (ErrorCode values).",
+          "items": {
+            "type": "string"
+          },
+          "title": "Issues",
+          "type": "array"
+        },
+        "mapping_certainty": {
+          "description": "1 = exact field/unit mapping; lower when inferred.",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Mapping Certainty",
+          "type": "number",
+          "x-unit": "ratio"
+        },
+        "plausibility": {
+          "description": "Share of values inside physical ranges.",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Plausibility",
+          "type": "number",
+          "x-unit": "ratio"
+        },
+        "score": {
+          "description": "Overall quality (combination documented in docs/SCORING.md).",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Score",
+          "type": "number",
+          "x-unit": "ratio"
+        }
+      },
+      "required": [
+        "score",
+        "completeness",
+        "freshness",
+        "plausibility",
+        "mapping_certainty"
+      ],
+      "title": "DataQuality",
+      "type": "object"
+    },
+    "EntityRef": {
+      "additionalProperties": false,
+      "properties": {
+        "entity_id": {
+          "description": "Identifier of the entity exactly as it appears in the input data.",
+          "minLength": 1,
+          "title": "Entity Id",
+          "type": "string"
+        },
+        "entity_type": {
+          "description": "Entity type from the controlled vocabulary (entity_types.yaml).",
+          "title": "Entity Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entity_id",
+        "entity_type"
+      ],
+      "title": "EntityRef",
+      "type": "object"
+    },
+    "SourceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "dialect": {
+          "description": "Detected input dialect / mapping profile used to read it.",
+          "title": "Dialect",
+          "type": "string"
+        },
+        "locator": {
+          "description": "Position inside the source, e.g. 'line:42' or 'row:7'.",
+          "title": "Locator",
+          "type": "string"
+        },
+        "raw_field": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Original field name before mapping, if different.",
+          "title": "Raw Field"
+        },
+        "source": {
+          "description": "Input file or stream name the data came from.",
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "dialect",
+        "locator"
+      ],
+      "title": "SourceRef",
+      "type": "object"
+    },
+    "TopologyEdge": {
+      "additionalProperties": false,
+      "properties": {
+        "a": {
+          "description": "entity_id of one endpoint (the upstream end when `directed`).",
+          "title": "A",
+          "type": "string"
+        },
+        "b": {
+          "description": "entity_id of the other endpoint (the downstream end when `directed`).",
+          "title": "B",
+          "type": "string"
+        },
+        "capacity": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Nominal capacity.",
+          "title": "Capacity",
+          "x-unit": "Mbit/s"
+        },
+        "directed": {
+          "description": "True if a is known to be upstream of b.",
+          "title": "Directed",
+          "type": "boolean"
+        },
+        "link_id": {
+          "description": "entity_id of the link entity this edge represents.",
+          "minLength": 1,
+          "title": "Link Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "link_id",
+        "a",
+        "b",
+        "directed"
+      ],
+      "title": "TopologyEdge",
+      "type": "object"
+    },
+    "TopologyNode": {
+      "additionalProperties": false,
+      "properties": {
+        "attributes": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "default": {},
+          "description": "Free-form source attributes (zone, tier, ...).",
+          "title": "Attributes",
+          "type": "object"
+        },
+        "entity": {
+          "$ref": "#/$defs/EntityRef",
+          "description": "The node."
+        }
+      },
+      "required": [
+        "entity"
+      ],
+      "title": "TopologyNode",
+      "type": "object"
+    },
+    "TopologyPayload": {
+      "additionalProperties": false,
+      "description": "The network graph as reported by the input data.",
+      "properties": {
+        "edges": {
+          "description": "All known links.",
+          "items": {
+            "$ref": "#/$defs/TopologyEdge"
+          },
+          "title": "Edges",
+          "type": "array"
+        },
+        "nodes": {
+          "description": "All known devices/services.",
+          "items": {
+            "$ref": "#/$defs/TopologyNode"
+          },
+          "title": "Nodes",
+          "type": "array"
+        },
+        "quality": {
+          "$ref": "#/$defs/DataQuality",
+          "description": "Data-quality assessment of the topology."
+        },
+        "sources": {
+          "default": [],
+          "description": "Where the topology came from.",
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          },
+          "title": "Sources",
+          "type": "array"
+        },
+        "upstream_root": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "entity_id of the topology root (core), if known.",
+          "title": "Upstream Root"
+        }
+      },
+      "required": [
+        "nodes",
+        "edges",
+        "quality"
+      ],
+      "title": "TopologyPayload",
+      "type": "object"
+    }
+  },
+  "$id": "netcoop/2.0/messages/topology.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Network graph from the input data.",
+  "properties": {
+    "adaptations": {
+      "default": [],
+      "description": "Version conversions applied, e.g. '1.0->2.0', and any lossy fields.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Adaptations",
+      "type": "array"
+    },
+    "causation_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "msg_id of the message that caused this one (null = root).",
+      "title": "Causation Id"
+    },
+    "correlation_id": {
+      "description": "Incident id shared by every message of one diagnosis run.",
+      "minLength": 1,
+      "title": "Correlation Id",
+      "type": "string"
+    },
+    "depth": {
+      "default": 0,
+      "description": "Causation depth: 0 for roots, parent depth + 1 otherwise.",
+      "minimum": 0,
+      "title": "Depth",
+      "type": "integer"
+    },
+    "msg_id": {
+      "description": "Unique message id; content hash when built by make_message.",
+      "minLength": 1,
+      "title": "Msg Id",
+      "type": "string"
+    },
+    "payload": {
+      "$ref": "#/$defs/TopologyPayload",
+      "description": "Network graph."
+    },
+    "protocol": {
+      "const": "netcoop",
+      "default": "netcoop",
+      "description": "Protocol name; always 'netcoop'.",
+      "title": "Protocol",
+      "type": "string"
+    },
+    "protocol_version": {
+      "const": "2.0",
+      "default": "2.0",
+      "description": "Wire-format version of this message.",
+      "title": "Protocol Version",
+      "type": "string"
+    },
+    "recipient": {
+      "default": "board",
+      "description": "agent_id of the recipient, or 'board' for a shared post.",
+      "title": "Recipient",
+      "type": "string"
+    },
+    "schema_version": {
+      "description": "Controlled-vocabulary version the payload's terms refer to.",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sender": {
+      "description": "agent_id of the sender.",
+      "minLength": 1,
+      "title": "Sender",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "Creation time, ISO-8601 UTC (excluded from msg_id).",
+      "format": "date-time",
+      "title": "Timestamp",
+      "type": "string"
+    },
+    "type": {
+      "const": "TOPOLOGY",
+      "default": "TOPOLOGY",
+      "description": "Message type.",
+      "title": "Type",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "msg_id",
+    "correlation_id",
+    "sender",
+    "timestamp",
+    "payload"
+  ],
+  "title": "TopologyMessage",
+  "type": "object"
+}

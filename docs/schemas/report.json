@@ -1,0 +1,460 @@
+{
+  "$defs": {
+    "CourtroomSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "contenders": {
+          "default": [],
+          "description": "Hypotheses that were argued.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Contenders",
+          "type": "array"
+        },
+        "invoked": {
+          "description": "Whether the tie-break ran.",
+          "title": "Invoked",
+          "type": "boolean"
+        },
+        "outcome": {
+          "default": "",
+          "description": "'resolved' or 'deferred'.",
+          "title": "Outcome",
+          "type": "string"
+        },
+        "rounds": {
+          "default": 0,
+          "description": "Debate rounds held.",
+          "minimum": 0,
+          "title": "Rounds",
+          "type": "integer"
+        },
+        "summary": {
+          "default": "",
+          "description": "Short explanation of the ruling.",
+          "title": "Summary",
+          "type": "string"
+        },
+        "transcript_msg_ids": {
+          "default": [],
+          "description": "Trace messages of the debate.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Transcript Msg Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "invoked"
+      ],
+      "title": "CourtroomSummary",
+      "type": "object"
+    },
+    "DataQualitySummary": {
+      "additionalProperties": false,
+      "properties": {
+        "issues": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "default": {},
+          "description": "Count of each issue code seen.",
+          "title": "Issues",
+          "type": "object"
+        },
+        "overall": {
+          "description": "Aggregate input quality.",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Overall",
+          "type": "number",
+          "x-unit": "ratio"
+        },
+        "per_entity": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "default": {},
+          "description": "Quality per entity_id.",
+          "title": "Per Entity",
+          "type": "object"
+        }
+      },
+      "required": [
+        "overall"
+      ],
+      "title": "DataQualitySummary",
+      "type": "object"
+    },
+    "EvidenceItem": {
+      "additionalProperties": false,
+      "properties": {
+        "interpretation": {
+          "description": "What the value means relative to its baseline/threshold.",
+          "title": "Interpretation",
+          "type": "string"
+        },
+        "metric": {
+          "description": "Canonical metric name.",
+          "title": "Metric",
+          "type": "string"
+        },
+        "value": {
+          "description": "Observed summary value, in the unit given in x_netcoop provenance.",
+          "title": "Value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "metric",
+        "value",
+        "interpretation"
+      ],
+      "title": "EvidenceItem",
+      "type": "object"
+    },
+    "EvidenceProvenance": {
+      "additionalProperties": false,
+      "properties": {
+        "agent": {
+          "description": "agent_id that produced the clue.",
+          "title": "Agent",
+          "type": "string"
+        },
+        "clue_id": {
+          "description": "msg_id of the CLUE behind this evidence item.",
+          "title": "Clue Id",
+          "type": "string"
+        },
+        "config_key": {
+          "description": "Config / calibration key of the reference.",
+          "title": "Config Key",
+          "type": "string"
+        },
+        "entity_id": {
+          "description": "Entity the evidence is about.",
+          "title": "Entity Id",
+          "type": "string"
+        },
+        "evidence_index": {
+          "description": "Index into supporting_evidence.",
+          "minimum": 0,
+          "title": "Evidence Index",
+          "type": "integer"
+        },
+        "observation_ids": {
+          "description": "OBSERVATION msg_ids the clue was computed from.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Observation Ids",
+          "type": "array"
+        },
+        "reference_value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Threshold or baseline compared against.",
+          "title": "Reference Value"
+        },
+        "unit": {
+          "description": "Unit of `value`.",
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "evidence_index",
+        "clue_id",
+        "agent",
+        "entity_id",
+        "unit",
+        "reference_value",
+        "config_key",
+        "observation_ids"
+      ],
+      "title": "EvidenceProvenance",
+      "type": "object"
+    },
+    "ReportExtensions": {
+      "additionalProperties": false,
+      "properties": {
+        "alternatives_scored": {
+          "default": [],
+          "description": "Scores of alternative causes.",
+          "items": {
+            "$ref": "#/$defs/ScoredAlternative"
+          },
+          "title": "Alternatives Scored",
+          "type": "array"
+        },
+        "confidence_category": {
+          "description": "Confidence category (boundaries in config).",
+          "title": "Confidence Category",
+          "type": "string"
+        },
+        "courtroom": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CourtroomSummary"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Tie-break summary, if relevant."
+        },
+        "data_quality": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DataQualitySummary"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Input quality summary."
+        },
+        "evidence_provenance": {
+          "default": [],
+          "description": "Trace of each evidence item.",
+          "items": {
+            "$ref": "#/$defs/EvidenceProvenance"
+          },
+          "title": "Evidence Provenance",
+          "type": "array"
+        },
+        "manifest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RunManifest"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Reproducibility manifest."
+        },
+        "missing_evidence": {
+          "default": [],
+          "description": "What extra data would resolve an abstention.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Missing Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "confidence_category"
+      ],
+      "title": "ReportExtensions",
+      "type": "object"
+    },
+    "ReportStatus": {
+      "enum": [
+        "diagnosed",
+        "insufficient_evidence",
+        "no_fault_detected",
+        "failed"
+      ],
+      "title": "ReportStatus",
+      "type": "string"
+    },
+    "RunManifest": {
+      "additionalProperties": false,
+      "properties": {
+        "code_version": {
+          "description": "netcoop package version (and git revision if available).",
+          "title": "Code Version",
+          "type": "string"
+        },
+        "config_hash": {
+          "description": "SHA-256 over config/*.yaml.",
+          "title": "Config Hash",
+          "type": "string"
+        },
+        "incident_id": {
+          "description": "Incident (correlation_id) of the run.",
+          "title": "Incident Id",
+          "type": "string"
+        },
+        "input_hash": {
+          "description": "SHA-256 over the input files.",
+          "title": "Input Hash",
+          "type": "string"
+        },
+        "protocol_version": {
+          "description": "Protocol version used on the board.",
+          "title": "Protocol Version",
+          "type": "string"
+        },
+        "seed": {
+          "description": "Seed for any randomness.",
+          "title": "Seed",
+          "type": "integer"
+        },
+        "vocabulary_version": {
+          "description": "Controlled vocabulary version.",
+          "title": "Vocabulary Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "incident_id",
+        "input_hash",
+        "config_hash",
+        "code_version",
+        "protocol_version",
+        "vocabulary_version",
+        "seed"
+      ],
+      "title": "RunManifest",
+      "type": "object"
+    },
+    "ScoredAlternative": {
+      "additionalProperties": false,
+      "properties": {
+        "cause": {
+          "description": "Hypothesis type and location, same wording as alternative_causes.",
+          "title": "Cause",
+          "type": "string"
+        },
+        "confidence": {
+          "description": "Calibrated confidence.",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number",
+          "x-unit": "ratio"
+        },
+        "score": {
+          "description": "Raw evidence score.",
+          "title": "Score",
+          "type": "number"
+        }
+      },
+      "required": [
+        "cause",
+        "score",
+        "confidence"
+      ],
+      "title": "ScoredAlternative",
+      "type": "object"
+    }
+  },
+  "$id": "netcoop/2.0/report.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "affected_devices": {
+      "description": "entity_ids of affected devices/links/services.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Affected Devices",
+      "type": "array"
+    },
+    "alternative_causes": {
+      "description": "Competing explanations with non-trivial support.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Alternative Causes",
+      "type": "array"
+    },
+    "confidence": {
+      "description": "Calibrated confidence in the status/root cause.",
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Confidence",
+      "type": "number",
+      "x-unit": "ratio"
+    },
+    "evidence_sources": {
+      "description": "agent_ids whose evidence was used.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidence Sources",
+      "type": "array"
+    },
+    "incident_id": {
+      "description": "Incident identifier.",
+      "title": "Incident Id",
+      "type": "string"
+    },
+    "limitations": {
+      "description": "Data problems, missing agents, uncertainty.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    },
+    "recommended_actions": {
+      "description": "Corrective actions for human review.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Recommended Actions",
+      "type": "array"
+    },
+    "status": {
+      "$ref": "#/$defs/ReportStatus",
+      "description": "Overall outcome."
+    },
+    "supporting_evidence": {
+      "description": "Evidence behind the conclusion.",
+      "items": {
+        "$ref": "#/$defs/EvidenceItem"
+      },
+      "title": "Supporting Evidence",
+      "type": "array"
+    },
+    "suspected_root_cause": {
+      "description": "Root cause in words, or why none can be named.",
+      "title": "Suspected Root Cause",
+      "type": "string"
+    },
+    "x_netcoop": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ReportExtensions"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "NetCoop extensions (namespaced)."
+    }
+  },
+  "required": [
+    "incident_id",
+    "status",
+    "suspected_root_cause",
+    "confidence",
+    "affected_devices",
+    "supporting_evidence",
+    "alternative_causes",
+    "recommended_actions",
+    "evidence_sources",
+    "limitations"
+  ],
+  "title": "Report",
+  "type": "object"
+}

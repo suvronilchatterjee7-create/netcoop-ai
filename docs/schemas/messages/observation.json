@@ -1,0 +1,340 @@
+{
+  "$defs": {
+    "DataQuality": {
+      "additionalProperties": false,
+      "properties": {
+        "completeness": {
+          "description": "Share of expected samples/fields present.",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Completeness",
+          "type": "number",
+          "x-unit": "ratio"
+        },
+        "freshness": {
+          "description": "1 = current, decays with staleness.",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Freshness",
+          "type": "number",
+          "x-unit": "ratio"
+        },
+        "issues": {
+          "default": [],
+          "description": "Machine-readable issue codes (ErrorCode values).",
+          "items": {
+            "type": "string"
+          },
+          "title": "Issues",
+          "type": "array"
+        },
+        "mapping_certainty": {
+          "description": "1 = exact field/unit mapping; lower when inferred.",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Mapping Certainty",
+          "type": "number",
+          "x-unit": "ratio"
+        },
+        "plausibility": {
+          "description": "Share of values inside physical ranges.",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Plausibility",
+          "type": "number",
+          "x-unit": "ratio"
+        },
+        "score": {
+          "description": "Overall quality (combination documented in docs/SCORING.md).",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Score",
+          "type": "number",
+          "x-unit": "ratio"
+        }
+      },
+      "required": [
+        "score",
+        "completeness",
+        "freshness",
+        "plausibility",
+        "mapping_certainty"
+      ],
+      "title": "DataQuality",
+      "type": "object"
+    },
+    "EntityRef": {
+      "additionalProperties": false,
+      "properties": {
+        "entity_id": {
+          "description": "Identifier of the entity exactly as it appears in the input data.",
+          "minLength": 1,
+          "title": "Entity Id",
+          "type": "string"
+        },
+        "entity_type": {
+          "description": "Entity type from the controlled vocabulary (entity_types.yaml).",
+          "title": "Entity Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entity_id",
+        "entity_type"
+      ],
+      "title": "EntityRef",
+      "type": "object"
+    },
+    "ObservationPayload": {
+      "additionalProperties": false,
+      "description": "A canonical time series of one metric on one entity (output of the Translator).",
+      "properties": {
+        "entity": {
+          "$ref": "#/$defs/EntityRef",
+          "description": "Entity the metric describes."
+        },
+        "metric": {
+          "description": "Canonical metric name (metrics.yaml).",
+          "title": "Metric",
+          "type": "string"
+        },
+        "observed_from": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Vantage point entity_id for probe-style metrics (e.g. service checks).",
+          "title": "Observed From"
+        },
+        "points": {
+          "description": "Samples in time order.",
+          "items": {
+            "$ref": "#/$defs/Point"
+          },
+          "minItems": 1,
+          "title": "Points",
+          "type": "array"
+        },
+        "quality": {
+          "$ref": "#/$defs/DataQuality",
+          "description": "Data-quality assessment of this series."
+        },
+        "sources": {
+          "default": [],
+          "description": "Where the samples came from (provenance).",
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          },
+          "title": "Sources",
+          "type": "array"
+        },
+        "unit": {
+          "description": "Canonical unit of the metric; must equal the vocabulary unit.",
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entity",
+        "metric",
+        "unit",
+        "points",
+        "quality"
+      ],
+      "title": "ObservationPayload",
+      "type": "object"
+    },
+    "Point": {
+      "additionalProperties": false,
+      "properties": {
+        "src": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Index into the observation's `sources` list for this sample.",
+          "title": "Src"
+        },
+        "t": {
+          "description": "Sample timestamp, ISO-8601 UTC.",
+          "format": "date-time",
+          "title": "T",
+          "type": "string"
+        },
+        "v": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Sample value in the observation's canonical unit (str for enum metrics).",
+          "title": "V"
+        }
+      },
+      "required": [
+        "t",
+        "v"
+      ],
+      "title": "Point",
+      "type": "object"
+    },
+    "SourceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "dialect": {
+          "description": "Detected input dialect / mapping profile used to read it.",
+          "title": "Dialect",
+          "type": "string"
+        },
+        "locator": {
+          "description": "Position inside the source, e.g. 'line:42' or 'row:7'.",
+          "title": "Locator",
+          "type": "string"
+        },
+        "raw_field": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Original field name before mapping, if different.",
+          "title": "Raw Field"
+        },
+        "source": {
+          "description": "Input file or stream name the data came from.",
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "dialect",
+        "locator"
+      ],
+      "title": "SourceRef",
+      "type": "object"
+    }
+  },
+  "$id": "netcoop/2.0/messages/observation.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Canonical telemetry series (Translator output).",
+  "properties": {
+    "adaptations": {
+      "default": [],
+      "description": "Version conversions applied, e.g. '1.0->2.0', and any lossy fields.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Adaptations",
+      "type": "array"
+    },
+    "causation_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "msg_id of the message that caused this one (null = root).",
+      "title": "Causation Id"
+    },
+    "correlation_id": {
+      "description": "Incident id shared by every message of one diagnosis run.",
+      "minLength": 1,
+      "title": "Correlation Id",
+      "type": "string"
+    },
+    "depth": {
+      "default": 0,
+      "description": "Causation depth: 0 for roots, parent depth + 1 otherwise.",
+      "minimum": 0,
+      "title": "Depth",
+      "type": "integer"
+    },
+    "msg_id": {
+      "description": "Unique message id; content hash when built by make_message.",
+      "minLength": 1,
+      "title": "Msg Id",
+      "type": "string"
+    },
+    "payload": {
+      "$ref": "#/$defs/ObservationPayload",
+      "description": "Canonical telemetry series."
+    },
+    "protocol": {
+      "const": "netcoop",
+      "default": "netcoop",
+      "description": "Protocol name; always 'netcoop'.",
+      "title": "Protocol",
+      "type": "string"
+    },
+    "protocol_version": {
+      "const": "2.0",
+      "default": "2.0",
+      "description": "Wire-format version of this message.",
+      "title": "Protocol Version",
+      "type": "string"
+    },
+    "recipient": {
+      "default": "board",
+      "description": "agent_id of the recipient, or 'board' for a shared post.",
+      "title": "Recipient",
+      "type": "string"
+    },
+    "schema_version": {
+      "description": "Controlled-vocabulary version the payload's terms refer to.",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sender": {
+      "description": "agent_id of the sender.",
+      "minLength": 1,
+      "title": "Sender",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "Creation time, ISO-8601 UTC (excluded from msg_id).",
+      "format": "date-time",
+      "title": "Timestamp",
+      "type": "string"
+    },
+    "type": {
+      "const": "OBSERVATION",
+      "default": "OBSERVATION",
+      "description": "Message type.",
+      "title": "Type",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "msg_id",
+    "correlation_id",
+    "sender",
+    "timestamp",
+    "payload"
+  ],
+  "title": "ObservationMessage",
+  "type": "object"
+}

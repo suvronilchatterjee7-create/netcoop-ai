@@ -1,0 +1,39 @@
+# Unit vocabulary. Each dimension has one canonical unit (factor 1). Other units convert to it by
+# multiplying by `factor`. Aliases are exact spellings seen in sources (matching is case-sensitive
+# first, then case-insensitive; see Translator). Factors are SI definitions, not tunable values.
+version: "1.0"
+dimensions:
+  time:
+    canonical: ms
+    units:
+      ms: {factor: 1, aliases: [msec, millisecond, milliseconds]}
+      us: {factor: 0.001, aliases: ["µs", usec, microsecond, microseconds]}
+      s: {factor: 1000, aliases: [sec, second, seconds]}
+  proportion:
+    canonical: percent
+    units:
+      percent: {factor: 1, aliases: ["%", pct]}
+      ratio: {factor: 100, aliases: [fraction]}
+  data_rate:
+    canonical: Mbit/s
+    units:
+      Mbit/s: {factor: 1, aliases: [Mbps, mbps, Mb/s]}
+      kbit/s: {factor: 0.001, aliases: [kbps, Kbps, kb/s]}
+      Gbit/s: {factor: 1000, aliases: [Gbps, gbps, Gb/s]}
+      bit/s: {factor: 0.000001, aliases: [bps]}
+  power_level:
+    canonical: dBm
+    units:
+      dBm: {factor: 1, aliases: [dbm]}
+  power_ratio:
+    canonical: dB
+    units:
+      dB: {factor: 1, aliases: [db]}
+  count:
+    canonical: count
+    units:
+      count: {factor: 1, aliases: [packets, errors, drops, stations, clients]}
+  state:
+    canonical: state
+    units:
+      state: {factor: 1, aliases: [enum, status]}

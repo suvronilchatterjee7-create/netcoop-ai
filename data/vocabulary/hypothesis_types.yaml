@@ -1,0 +1,42 @@
+# Hypothesis types. `kind: fault` can be proposed as a root cause; `kind: outcome` are first-class
+# results that are not faults. `family` maps a type to the evaluation scenario family
+# (config/generation.yaml); null means the family is not produced by the current generator.
+# Signatures, causal relations and actions are NOT here: they live in the Phase 4 catalogue.
+version: "1.0"
+hypothesis_types:
+  link_congestion:
+    kind: fault
+    family: link_congestion
+    description: "Link carries more traffic than it can forward without queueing and loss."
+  weak_wifi_signal:
+    kind: fault
+    family: weak_wifi
+    description: "Poor radio conditions (low RSSI/SNR) at an access point degrade wireless service."
+  interface_fault:
+    kind: fault
+    family: interface_fault
+    description: "Physical or link-layer fault on an interface: rising errors, loss, instability."
+  dns_service_failure:
+    kind: fault
+    family: dns_dhcp_failure
+    description: "DNS service fails or is slow while transport is healthy."
+  dhcp_service_failure:
+    kind: fault
+    family: dns_dhcp_failure
+    description: "DHCP service fails or is slow while transport is healthy."
+  device_overload:
+    kind: fault
+    family: null
+    description: "Device CPU or memory exhaustion degrades forwarding or control plane."
+  hardware_failure:
+    kind: fault
+    family: null
+    description: "Device is down or failing as a whole (not a single interface)."
+  normal:
+    kind: outcome
+    family: normal
+    description: "No significant deviation from baseline was found."
+  insufficient_evidence:
+    kind: outcome
+    family: null
+    description: "Evidence is too weak, too degraded or too ambiguous to name a root cause."
