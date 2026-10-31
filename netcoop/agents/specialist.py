@@ -20,12 +20,12 @@ comes from the card, the catalogue, the detection config and the data.
 from __future__ import annotations
 
 from collections import defaultdict
-from dataclasses import dataclass
 from statistics import fmean
 
 from netcoop.agents.base import SCORE_DIGITS, Agent, AgentContext
 from netcoop.agents.registry import register_agent
 from netcoop.agents.scopes import Topo
+from netcoop.agents.signature import Assessment, assess
 from netcoop.catalogue import (
     Element,
     HypothesisSpec,
@@ -42,7 +42,6 @@ from netcoop.protocol.common import (
     EntityRef,
     EntityRole,
     MessageType,
-    Statistic,
     TimeWindow,
 )
 from netcoop.protocol.messages import Envelope
@@ -68,13 +67,6 @@ _DIRECTION = {
     "rising": Direction.ABOVE,
 }
 LOCAL_CONFIDENCE_METHOD = "signature_weight_ratio_x_quality"
-
-
-@dataclass(frozen=True)
-class Assessment:
-    status: str  # satisfied | violated | unknown
-    good: tuple[Envelope, ...]
-    bad: tuple[Envelope, ...]
 
 
 def proposable(spec_metrics: set[str], h: HypothesisSpec) -> bool:
@@ -195,28 +187,7 @@ class SpecialistAgent(Agent):
 
     # ------------------------------------------------------------------ signature assessment
     def assess(self, e: Element, root: str) -> Assessment:
-        region = self.topo.resolve(e.scope, root, self.probes)
-        want_slope = e.direction == "rising"
-        matching = [
-            c
-            for c in self.clues.get(e.metric, [])
-            if (c.payload.statistic is Statistic.SLOPE) == want_slope
-            and region.matches(c.payload.entity.entity_id, c.payload.observed_from)
-        ]
-        if not matching:
-            return Assessment("unknown", (), ())
-
-        def deviates(c: Envelope) -> bool:
-            p: CluePayload = c.payload
-            return p.significant and p.direction is _DIRECTION[e.direction]
-
-        good = [c for c in matching if deviates(c) == (e.expect == "deviates")]
-        bad = [c for c in matching if c not in good]
-        if e.quorum is not None:
-            ok = len(good) / len(matching) >= e.quorum
-        else:
-            ok = bool(good) if e.expect == "deviates" else not bad
-        return Assessment("satisfied" if ok else "violated", tuple(good), tuple(bad))
+        return assess(e, root, self.clues, self.topo, self.probes)
 
     def _evaluate(self, h: HypothesisSpec, root: str) -> tuple[dict[Element, Assessment], float]:
         results = {e: self.assess(e, root) for e in h.signature if e.metric in self.metrics}

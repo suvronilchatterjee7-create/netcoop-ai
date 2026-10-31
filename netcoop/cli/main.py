@@ -146,6 +146,22 @@ def _cmd_calibrate(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_fit(args: argparse.Namespace) -> int:
+    from netcoop.correlation.fit import MODEL_PATH, REPORT_PATH, run_fit
+
+    out = run_fit(args.input, REPORT_PATH, stride=args.stride)
+    s = out["summary"]
+    m = out["model"]
+    print(
+        f"fitted on {s['train_runs']} runs ({s['train_candidates']} candidates): accept "
+        f"{m.accept:.2f}, "
+        f"margin {m.margin:.2f}, no-fault {m.normal_accept:.2f} -> {MODEL_PATH}"
+    )
+    c = out["holdout"]["calibration"]
+    print(f"holdout calibration: Brier {c['brier']:.4f}, ECE {c['ece']:.4f} -> {REPORT_PATH}")
+    return 0
+
+
 def _not_yet(phase: str) -> int:
     print(f"error: this command is implemented in {phase}", file=sys.stderr)
     return 3
@@ -201,6 +217,13 @@ def build_parser() -> argparse.ArgumentParser:
     ca.add_argument("--input", type=Path, default=DEFAULT_OUT)
     ca.add_argument("--limit", type=int, help="use at most this many runs (quick check)")
     ca.set_defaults(func=_cmd_calibrate)
+
+    ft = sub.add_parser(
+        "fit", help="fit the correlation model on training seeds; calibration report on holdout"
+    )
+    ft.add_argument("--input", type=Path, default=DEFAULT_OUT)
+    ft.add_argument("--stride", type=int, help="use every n-th run (quick experiments only)")
+    ft.set_defaults(func=_cmd_fit)
 
     for name, phase in [
         ("eval", "Phase 8"),

@@ -74,3 +74,92 @@ available one) is reported as **negative evidence**.
 - **Fails when:** an agent can assess only supporting elements, so its ratio rests on weak
   evidence. That is why the correlator (Phase 5) recomputes support from all clues and does
   not trust local confidences.
+
+## 4. Fault correlation (`netcoop/correlation/`)
+
+**Choice:** option (c) of the brief: naive-Bayes-style likelihood ratios learned from
+generated data, followed by Platt calibration. Why this over a hand-weighted log-odds sum or
+Dempster-Shafer:
+
+- **Data-derived:** every weight is estimated from labelled training candidates, so no
+  evidence weight is a guess.
+- **Explainable:** a candidate's score is a sum of per-element log-likelihood ratios, which
+  the report can itemise ("utilisation satisfied: +2.1").
+- **Deterministic:** no iterative fusion whose result depends on order.
+
+### Candidates and features (`features.py`)
+
+- **Candidates:** a candidate is a distinct (fault type, root) pair proposed by any agent.
+  Several proposers of the same pair merge into one candidate.
+- **Signature recomputation:** each catalogue element is re-assessed from **all agents'
+  clues**. A proposer's local confidence is not used.
+- **Independence:** elements are assessed required first. A source observation counted for
+  one element is not used for another, so a level clue and a trend clue derived from the
+  same series cannot both vote, and two agents citing one observation count once.
+- **Analytic stance:** a SUPPORT or CONTRADICT justified only by clues its sender did *not*
+  author (e.g. Connectivity's blast radius). It becomes the feature
+  `analytic ∈ {support, contradict, none}`. Stances justified by the sender's own clues are
+  ignored, because those clues are already in the signature.
+- **Evidence quality:** the mean data quality of the clues used, in tertile bins.
+
+### Score
+
+```
+score(c) = prior_logit[type] + Σ_e LLR[type][e][status_e] + LLR_analytic[analytic] + LLR_quality[bin]
+LLR[s]   = log P(s | candidate true) − log P(s | candidate false)
+P(s | y) = (n_s,y + k · P_pool(s | y, role, expect)) / (N_y + k)        (shrinkage, k = 20)
+P_pool   = Laplace-smoothed rate over all elements with the same (role, expect)
+confidence = sigmoid(a · score + b)                                      (Platt, fitted on training)
+```
+
+- **Corroboration:** independent elements satisfied by different agents add LLRs, so
+  corroboration raises the score.
+- **Contradiction:** a violated element, or an `expect: normal` element that deviates,
+  contributes its (typically negative) violated-LLR, so contradiction lowers it.
+- **Unknown evidence:** "unknown" has its own LLR. A missing agent or metric therefore moves
+  the score only as much as missingness was informative in training.
+- **Assumes:** conditional independence of element statuses given truth (the naive-Bayes
+  assumption). This is partly enforced by the observation-level de-duplication above. Where
+  it still fails (correlated symptoms), naive Bayes is over-confident, and Platt scaling
+  corrects the over-confidence globally, not per fault.
+- **Fails when:** a fault type has few training examples. Its rates then fall back to the
+  pooled ones, so it is scored like a "generic" fault of its signature shape. This is the
+  case for device_overload and hardware_failure, which the generator never injects.
+
+### Causal precedence
+
+Candidates are sorted by confidence. A candidate is merged into a more (or equally) confident
+candidate whose catalogue entry `explains` its type and whose blast radius contains its root
+(e.g. weak Wi-Fi at an AP below a congested link). A merged candidate stops competing and is
+listed as explained.
+
+### Decision policy (`model.decide`)
+
+1. **Diagnosed:** the best live candidate's confidence ≥ `accept`, and its margin over the
+   runner-up ≥ `margin`.
+2. **Near tie:** confidence ≥ `accept` but the margin is too small. This is flagged
+   `near_tie` and is `insufficient_evidence` until the Phase 6 courtroom adjudicates.
+3. **Otherwise, no fault is claimed:**
+   - **Unassessable faults:** if any fault type has possible roots in the data but none of
+     its required metrics was observed, the system cannot rule it out, so the result is
+     `insufficient_evidence` with that gap listed. Fault types with no possible root in the
+     data (e.g. no access points) are noted as not applicable.
+   - **No fault detected:** if P(normal | data-quality bin, number of significant clues),
+     estimated on training runs left undiagnosed, is ≥ `normal_accept`, the result is
+     `no_fault_detected`.
+   - **Insufficient evidence:** otherwise, `insufficient_evidence`, listing the unknown
+     signature elements of the top candidates as missing evidence.
+
+`accept`, `margin` and `normal_accept` are chosen by grid search on the training seeds as the
+most permissive values whose claims are at least `decision.target_precision` (90%) correct.
+`accept` never goes below `decision.min_accept` (0.5).
+
+**Confidence categories:**
+
+- **high:** confidence ≥ the fitted accept (or no-fault) threshold, i.e. the operating point
+  that met 90% precision in training
+- **medium:** confidence ≥ 0.5
+- **low:** below that
+
+Calibration quality (Brier, ECE, reliability table) and the decision outcomes on held-out
+seeds are in [CALIBRATION.md](CALIBRATION.md).

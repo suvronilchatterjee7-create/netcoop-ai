@@ -30,7 +30,6 @@ from netcoop.board.board import Board, message_metric
 from netcoop.config import config_hash, get_value, load_config
 from netcoop.orchestrator.stages import (
     Correlator,
-    ProvisionalCorrelator,
     ProvisionalReporter,
     Reporter,
     RunInfo,
@@ -123,7 +122,11 @@ class Orchestrator:
         ids = [a.agent_id for a in self.agents]
         if len(set(ids)) != len(ids):
             raise ValueError(f"duplicate agent ids: {ids}")
-        self.correlator = correlator or ProvisionalCorrelator()
+        if correlator is None:
+            from netcoop.correlation.correlator import Correlator  # lazy: avoids an import cycle
+
+            correlator = Correlator()
+        self.correlator = correlator
         self.reporter = reporter or ProvisionalReporter()
         self.translator = translator or Translator()
         self.max_rounds = max_rounds or int(get_value(cfg, "rounds.max_rounds"))

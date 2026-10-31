@@ -154,6 +154,37 @@ Non-significant clues are posted. Without them, `expect: normal` signature eleme
 "transport healthy" for DNS failure, "no interface errors" for congestion) could never be
 assessed, and contradictions would be impossible.
 
+## D-029 · 2026-11-01 · Correlation by learned likelihood ratios (option c)
+A naive-Bayes evidence model over recomputed signature statuses, with Laplace smoothing and
+empirical-Bayes shrinkage toward pooled (role, expect) rates, followed by Platt scaling, all
+fitted by `netcoop fit` on training seeds. Rejected: (a) hand-weighted log-odds (weights would
+be guesses); (b) Dempster-Shafer (harder to calibrate and to explain per element).
+
+## D-030 · 2026-11-01 · The correlator recomputes, it does not vote
+Proposers' local confidences and specialists' own-clue stances are ignored: their evidence is
+re-assessed from the clues themselves, each source observation counted once. Only *analytic*
+stances (justified by others' clues, i.e. topology localisation) enter as an extra feature.
+This makes corroboration count once per independent measurement, not once per agent that
+repeats it.
+
+## D-031 · 2026-11-01 · Rank and separate on calibrated log-odds
+Found in the first full fit: calibrated probabilities saturate at about 1.0, so ranking by
+probability fell back to alphabetical tie-breaking, and a probability margin could not tell
+two strong candidates apart. Ranking and the near-tie margin now use calibrated log-odds.
+
+## D-032 · 2026-11-01 · 'No fault' needs assessed evidence
+`no_fault_detected` requires that, for every fault type with a possible root in the data,
+some agent posted clues on at least one metric of every required group. Found by test: with
+no specialists running, the system claimed 'no fault' because the metrics were merely
+present in the input. Data nobody analysed cannot rule a fault out.
+
+## D-033 · 2026-11-01 · Fitted margin is 0; near ties do not occur at this operating point
+At a 90% target precision the grid search picks margin 0: breaking ties by log-odds never
+cost precision on training. On held-out seeds no run had two candidates above the accept
+threshold. **Consequence for Phase 6:** the courtroom has no natural work on this data, so it
+must be exercised on deliberately ambiguous generated cases (e.g. evidence removed by the
+mutator, or competing faults), and its value measured there.
+
 ## Open questions
 - **Q-001** ~~Sweep sizes~~ resolved by D-005.
 - **Q-002** Canonical schema: derive from `docs/DATA_PROFILE.md` (Phase 1). Re-check if the

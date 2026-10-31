@@ -2,6 +2,22 @@
 
 ## [Unreleased]
 
+### Phase 5 — Fault correlation
+- `netcoop.agents.signature`: signature assessment shared by specialists and the correlator,
+  with observation-level independence.
+- `netcoop.correlation.features`: candidate extraction (merged proposals, recomputed
+  signatures, analytic stances, evidence quality) and context (observed vs assessed metrics,
+  unassessable faults).
+- `netcoop.correlation.model`: naive-Bayes LLR tables with shrinkage, Platt calibration,
+  log-odds ranking, causal-precedence merging, decision policy (diagnosed, near tie,
+  insufficient evidence, no fault).
+- `netcoop fit`: parallel pipeline over training seeds, fit, threshold grid search at the
+  target precision; writes config/correlation.yaml and docs/CALIBRATION.md (held-out Brier,
+  ECE, reliability, decisions by family, missing rate and noise).
+- `netcoop.correlation.correlator.Correlator` is now the orchestrator's default; confidence
+  categories are tied to the fitted operating points.
+- Docs: SCORING.md section 4, CALIBRATION.md, decisions D-029 to D-033.
+
 ### Phase 4 — Specialist agents
 - `netcoop.detection`: calibrated percentile bands with robust z, cited thresholds with a
   standard-error gate, an in-window median-shift test with AR(1)-corrected SE, Mann-Kendall
