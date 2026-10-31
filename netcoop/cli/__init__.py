@@ -1,0 +1,1 @@
+"""netcoop.cli package."""

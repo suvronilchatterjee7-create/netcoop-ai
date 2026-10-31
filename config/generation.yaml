@@ -1,0 +1,64 @@
+description: >
+  Sweep parameters for building the labelled synthetic dataset from the
+  organiser's telemetry generator. Ground-truth labels always come from the
+  generator's own scenario parameters (Part C1.6), never from hand-picked output.
+
+scenario_families:
+  catalog:
+    - normal
+    - link_congestion
+    - weak_wifi
+    - interface_fault
+    - dns_dhcp_failure
+    - interop_failure
+  rationale: >
+    The six test-scenario families the system must support. Names are our
+    canonical labels; the mapping from the organiser generator's own scenario
+    identifiers to these labels lives in data/mappings/generator_scenarios.yaml
+    once the generator is integrated.
+  source: "Problem statement A6 (test scenarios to support)"
+
+sweep:
+  seeds:
+    value: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    unit: "rng seed"
+    rationale: >
+      Ten independent seeds per (scenario, intensity, noise, missing) cell give
+      enough repeats to report accuracy with a meaningful spread while keeping
+      the full suite generatable in minutes. Revisit once generator runtime is known.
+    source: "Engineering choice for C1.6 (many seeds, no cherry-picking); open question in docs/DECISIONS.md"
+  intensities:
+    value: [0.25, 0.5, 0.75, 1.0]
+    unit: "fraction of generator's maximum fault severity"
+    rationale: >
+      Evenly spaced severity levels so evaluation can show accuracy vs fault
+      strength, including weak faults where abstention may be correct. Will be
+      remapped to the generator's native severity parameter once known.
+    source: "Engineering choice for Phase 8 robustness curves; pending generator API"
+  noise_levels:
+    value: [0.0, 0.1, 0.25]
+    unit: "fraction (relative noise amplitude)"
+    rationale: "Clean, moderate and heavy noise, to measure degradation under noisy telemetry (A1)."
+    source: "Engineering choice for Phase 8 robustness curves; pending generator API"
+  missing_rates:
+    value: [0.0, 0.1, 0.3]
+    unit: "fraction of records/fields dropped"
+    rationale: >
+      No, moderate and heavy missingness, to verify graceful degradation and
+      that 'insufficient_evidence' fires as data degrades (Phase 5 exit criteria).
+    source: "Engineering choice for Phase 5/8; pending generator API"
+  base_seed:
+    value: 20261031
+    unit: "rng seed"
+    rationale: "Root seed for any randomness owned by NetCoop itself (e.g. train/test split), for reproducibility (C1.8)."
+    source: "Arbitrary fixed constant; any fixed value satisfies C1.8"
+
+split:
+  holdout_fraction:
+    value: 0.3
+    unit: "fraction of seeds"
+    rationale: >
+      Seeds, not individual records, are split into train/holdout so weights and
+      calibration fitted on train are evaluated on unseen generator draws.
+      30% holdout balances calibration-set size against evaluation-set size.
+    source: "Common practice for small-sample calibration (Phase 5 task 1-2)"

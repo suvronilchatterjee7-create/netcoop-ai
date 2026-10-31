@@ -1,0 +1,7 @@
+description: Settings for the schema-agnostic data profiler (docs/DATA_PROFILE.md).
+
+max_examples:
+  value: 5
+  unit: "distinct values per field"
+  rationale: "Enough distinct samples to recognise enums, ID formats and unit styles without bloating the profile."
+  source: "Engineering choice; affects documentation only, never diagnosis"

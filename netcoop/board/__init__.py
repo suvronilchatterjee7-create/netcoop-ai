@@ -1,0 +1,1 @@
+"""netcoop.board package."""
