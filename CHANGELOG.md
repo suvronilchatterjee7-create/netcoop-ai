@@ -2,6 +2,21 @@
 
 ## [Unreleased]
 
+### Phase 10 — Documentation and demo
+- `netcoop demo` (`--step`, `--scene N`): six scripted scenes from `config/demo.yaml`.
+  - collaboration trace and replay
+  - legacy-dialect recovery
+  - abstention
+  - courtroom resolved and deferred
+  - headline metrics
+  - each scene checks its expected status
+- `data/samples/`: nine labelled runs from fresh test and ambiguity seeds, with a README and
+  regeneration commands. `tests/test_samples.py` checks byte-identical regeneration and the
+  demo expectations.
+- README rewritten: quick start, architecture, agents, protocol, scoring, error handling,
+  configuration, extending, results, limitations, future work.
+- docs/DEMO_SCRIPT.md (4-minute video). `make demo`. Decision D-050.
+
 ### Phase 9 — Optional enhancements
 - Pause/resume: `netcoop run --pause-after N` and `netcoop resume`; resumed traces are
   byte-identical to uninterrupted runs.

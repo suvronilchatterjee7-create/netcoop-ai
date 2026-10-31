@@ -1,0 +1,79 @@
+description: Scripted walkthrough for the demo video (`netcoop demo`, docs/DEMO_SCRIPT.md).
+
+scenes:
+  value:
+    - title: "Link congestion: agents collaborate on the case board"
+      sample: link_congestion__s500__i1.0__n0.0__m0.0
+      narration: >
+        Native JSONL telemetry from a campus network. The Translator canonicalises it, the
+        specialists post clues, hypotheses and stances, the correlator scores them and the
+        reporter writes one report. Every message is on the trace, which replays and verifies.
+      show: [trace, report, replay]
+      expect: diagnosed
+    - title: "Interoperability: a legacy CSV dialect"
+      sample: interop_failure__s500__i0.5__n0.1__m0.0
+      narration: >
+        The same network exported by a legacy NMS: CSV files, different field names, units
+        and timestamps. The declarative mapping recovers the canonical metrics; problems
+        become typed errors instead of crashes.
+      show: [translator, report]
+      expect: diagnosed
+    - title: "Honest abstention: a faint fault"
+      sample: link_congestion__s500__i0.25__n0.0__m0.0
+      narration: >
+        A real but faint congestion (intensity 0.25). No candidate reaches the calibrated
+        operating point, so NetCoop says insufficient_evidence and asks for what would settle it.
+      show: [report, abstention]
+      expect: insufficient_evidence
+    - title: "Courtroom tie-break: two overlapping explanations"
+      sample: interface_fault__s500__i0.5__n0.1__m0.0
+      narration: >
+        A link fault next to an access point also fits a hardware failure of that AP. The
+        prosecutor and defense argue only from discriminating evidence; the judge confirms the
+        interface fault.
+      show: [courtroom, report]
+      expect: diagnosed
+    - title: "Courtroom defers on a fault type never seen in training"
+      sample: hardware_failure__s100__i1.0__n0.0__m0.0
+      narration: >
+        A hardware failure, a type with no training data. The evidence favours it, but the
+        calibrated model cannot vouch for it, so the judge defers rather than guess.
+      show: [courtroom, abstention]
+      expect: insufficient_evidence
+    - title: "Evaluation on 1,080 fresh test runs"
+      sample: ""
+      narration: >
+        Headline metrics from docs/EVALUATION.md (regenerate with `netcoop eval`).
+      show: [metrics]
+      expect: ""
+  unit: "scenes"
+  rationale: >
+    One scene per point the rubric asks the demo to show: collaboration with a visible trace
+    (orchestration), dialect recovery (interoperability), abstention and the courtroom
+    (conflict resolution, robustness) and the evaluation (accuracy). Samples are committed in
+    data/samples/ from fresh test and ambiguity seeds, never from training seeds; `expect`
+    is the status checked so a changed outcome is flagged during rehearsal.
+  source: "Hackathon rubric; data/samples/README.md"
+
+trace:
+  max_lines:
+    value: 40
+    unit: "board messages"
+    rationale: >
+      Enough to list the whole decision chain of a typical run (hypotheses, requests,
+      responses, stances, courtroom, verdict, report; 13-20 messages on the samples) on one
+      screen. CAPABILITY, CLUE and OBSERVATION messages are counted, not listed, because there
+      are hundreds.
+    source: "Message counts of the sample runs (netcoop run -v)"
+
+report:
+  max_evidence:
+    value: 3
+    unit: "evidence items"
+    rationale: "The top items fit on screen; the full list is in report.md."
+    source: "Readability on a 1080p screen recording"
+  max_actions:
+    value: 2
+    unit: "recommended actions"
+    rationale: "As for evidence; the full list is in report.md."
+    source: "Readability on a 1080p screen recording"

@@ -1,0 +1,22 @@
+{
+  "run_id": "weak_wifi__s500__i1.0__n0.0__m0.0",
+  "ground_truth": {
+    "scenario": "weak_wifi",
+    "root_cause": "weak_wifi",
+    "dialect": "netcoop_synth_v2",
+    "onset_ts": "2026-10-01T09:12:00Z",
+    "target_entity": "department-acc-01-ap-03",
+    "affected_entities": [
+      "department-acc-01-ap-03"
+    ],
+    "seed": 500,
+    "intensity": 1.0,
+    "noise": 0.0,
+    "missing_rate": 0.0
+  },
+  "files": {
+    "ground_truth.json": "3611cb3027d58ba433d6faa266f49828365c69073df6a27086ef196df64ba05a",
+    "telemetry.jsonl": "e2d7780f4bac8763e023e621df73e5ee5f79cd4e4b1d0c006fa34f79cd3b1620",
+    "topology.json": "a429c0b3e54cd8b7840a53493a515d1de25b0fe1796036486e7a466c65da3a37"
+  }
+}

@@ -201,6 +201,18 @@ def _cmd_replay(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_demo(args: argparse.Namespace) -> int:
+    from netcoop.demo import run_demo
+
+    def pause() -> None:
+        input("\n[press Enter for the next scene]")
+
+    bad = run_demo(only=args.scene, pause=pause if args.step else None)
+    if bad:
+        print(f"\n{bad} scene(s) did not give the expected status", file=sys.stderr)
+    return 1 if bad else 0
+
+
 def _cmd_calibrate(args: argparse.Namespace) -> int:
     from netcoop.calibration import BASELINES, calibrate, seed_split
 
@@ -301,6 +313,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--pause-after", type=int, help="stop after this collaboration round (checkpoint)"
     )
     rn.set_defaults(func=_cmd_run)
+
+    dm = sub.add_parser("demo", help="scripted walkthrough on data/samples (docs/DEMO_SCRIPT.md)")
+    dm.add_argument("--scene", type=int, action="append", help="play only this scene (repeatable)")
+    dm.add_argument("--step", action="store_true", help="wait for Enter between scenes")
+    dm.set_defaults(func=_cmd_demo)
 
     mc = sub.add_parser("mcp", help="serve NetCoop as an MCP server over stdio")
     mc.set_defaults(func=_cmd_mcp)

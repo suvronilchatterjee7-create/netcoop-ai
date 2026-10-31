@@ -1,0 +1,508 @@
+{
+  "schema_version": "2.0",
+  "nodes": [
+    {
+      "id": "core-rtr-01",
+      "type": "router",
+      "tier": "core",
+      "zone": "core",
+      "parent": null
+    },
+    {
+      "id": "dns-srv-01",
+      "type": "server",
+      "tier": "service",
+      "zone": "core",
+      "parent": "core-rtr-01"
+    },
+    {
+      "id": "dhcp-srv-01",
+      "type": "server",
+      "tier": "service",
+      "zone": "core",
+      "parent": "core-rtr-01"
+    },
+    {
+      "id": "hostel-dist-01",
+      "type": "switch",
+      "tier": "distribution",
+      "zone": "hostel",
+      "parent": "core-rtr-01"
+    },
+    {
+      "id": "hostel-acc-01",
+      "type": "switch",
+      "tier": "access",
+      "zone": "hostel",
+      "parent": "hostel-dist-01"
+    },
+    {
+      "id": "hostel-acc-01-ap-01",
+      "type": "access_point",
+      "tier": "edge",
+      "zone": "hostel",
+      "parent": "hostel-acc-01"
+    },
+    {
+      "id": "hostel-acc-01-ap-02",
+      "type": "access_point",
+      "tier": "edge",
+      "zone": "hostel",
+      "parent": "hostel-acc-01"
+    },
+    {
+      "id": "hostel-acc-01-ap-03",
+      "type": "access_point",
+      "tier": "edge",
+      "zone": "hostel",
+      "parent": "hostel-acc-01"
+    },
+    {
+      "id": "hostel-acc-02",
+      "type": "switch",
+      "tier": "access",
+      "zone": "hostel",
+      "parent": "hostel-dist-01"
+    },
+    {
+      "id": "hostel-acc-02-ap-01",
+      "type": "access_point",
+      "tier": "edge",
+      "zone": "hostel",
+      "parent": "hostel-acc-02"
+    },
+    {
+      "id": "hostel-acc-02-ap-02",
+      "type": "access_point",
+      "tier": "edge",
+      "zone": "hostel",
+      "parent": "hostel-acc-02"
+    },
+    {
+      "id": "hostel-acc-03",
+      "type": "switch",
+      "tier": "access",
+      "zone": "hostel",
+      "parent": "hostel-dist-01"
+    },
+    {
+      "id": "hostel-acc-03-ap-01",
+      "type": "access_point",
+      "tier": "edge",
+      "zone": "hostel",
+      "parent": "hostel-acc-03"
+    },
+    {
+      "id": "hostel-acc-03-ap-02",
+      "type": "access_point",
+      "tier": "edge",
+      "zone": "hostel",
+      "parent": "hostel-acc-03"
+    },
+    {
+      "id": "hostel-acc-03-ap-03",
+      "type": "access_point",
+      "tier": "edge",
+      "zone": "hostel",
+      "parent": "hostel-acc-03"
+    },
+    {
+      "id": "department-dist-01",
+      "type": "switch",
+      "tier": "distribution",
+      "zone": "department",
+      "parent": "core-rtr-01"
+    },
+    {
+      "id": "department-acc-01",
+      "type": "switch",
+      "tier": "access",
+      "zone": "department",
+      "parent": "department-dist-01"
+    },
+    {
+      "id": "department-acc-01-ap-01",
+      "type": "access_point",
+      "tier": "edge",
+      "zone": "department",
+      "parent": "department-acc-01"
+    },
+    {
+      "id": "department-acc-02",
+      "type": "switch",
+      "tier": "access",
+      "zone": "department",
+      "parent": "department-dist-01"
+    },
+    {
+      "id": "department-acc-02-ap-01",
+      "type": "access_point",
+      "tier": "edge",
+      "zone": "department",
+      "parent": "department-acc-02"
+    },
+    {
+      "id": "department-acc-02-ap-02",
+      "type": "access_point",
+      "tier": "edge",
+      "zone": "department",
+      "parent": "department-acc-02"
+    },
+    {
+      "id": "department-acc-02-ap-03",
+      "type": "access_point",
+      "tier": "edge",
+      "zone": "department",
+      "parent": "department-acc-02"
+    },
+    {
+      "id": "department-acc-03",
+      "type": "switch",
+      "tier": "access",
+      "zone": "department",
+      "parent": "department-dist-01"
+    },
+    {
+      "id": "department-acc-03-ap-01",
+      "type": "access_point",
+      "tier": "edge",
+      "zone": "department",
+      "parent": "department-acc-03"
+    },
+    {
+      "id": "department-acc-03-ap-02",
+      "type": "access_point",
+      "tier": "edge",
+      "zone": "department",
+      "parent": "department-acc-03"
+    },
+    {
+      "id": "department-acc-03-ap-03",
+      "type": "access_point",
+      "tier": "edge",
+      "zone": "department",
+      "parent": "department-acc-03"
+    },
+    {
+      "id": "lecture_hall-dist-01",
+      "type": "switch",
+      "tier": "distribution",
+      "zone": "lecture_hall",
+      "parent": "core-rtr-01"
+    },
+    {
+      "id": "lecture_hall-acc-01",
+      "type": "switch",
+      "tier": "access",
+      "zone": "lecture_hall",
+      "parent": "lecture_hall-dist-01"
+    },
+    {
+      "id": "lecture_hall-acc-01-ap-01",
+      "type": "access_point",
+      "tier": "edge",
+      "zone": "lecture_hall",
+      "parent": "lecture_hall-acc-01"
+    },
+    {
+      "id": "lecture_hall-acc-01-ap-02",
+      "type": "access_point",
+      "tier": "edge",
+      "zone": "lecture_hall",
+      "parent": "lecture_hall-acc-01"
+    },
+    {
+      "id": "lecture_hall-acc-01-ap-03",
+      "type": "access_point",
+      "tier": "edge",
+      "zone": "lecture_hall",
+      "parent": "lecture_hall-acc-01"
+    },
+    {
+      "id": "lecture_hall-acc-02",
+      "type": "switch",
+      "tier": "access",
+      "zone": "lecture_hall",
+      "parent": "lecture_hall-dist-01"
+    },
+    {
+      "id": "lecture_hall-acc-02-ap-01",
+      "type": "access_point",
+      "tier": "edge",
+      "zone": "lecture_hall",
+      "parent": "lecture_hall-acc-02"
+    },
+    {
+      "id": "lecture_hall-acc-02-ap-02",
+      "type": "access_point",
+      "tier": "edge",
+      "zone": "lecture_hall",
+      "parent": "lecture_hall-acc-02"
+    },
+    {
+      "id": "lecture_hall-acc-02-ap-03",
+      "type": "access_point",
+      "tier": "edge",
+      "zone": "lecture_hall",
+      "parent": "lecture_hall-acc-02"
+    },
+    {
+      "id": "lecture_hall-acc-03",
+      "type": "switch",
+      "tier": "access",
+      "zone": "lecture_hall",
+      "parent": "lecture_hall-dist-01"
+    },
+    {
+      "id": "lecture_hall-acc-03-ap-01",
+      "type": "access_point",
+      "tier": "edge",
+      "zone": "lecture_hall",
+      "parent": "lecture_hall-acc-03"
+    },
+    {
+      "id": "lecture_hall-acc-03-ap-02",
+      "type": "access_point",
+      "tier": "edge",
+      "zone": "lecture_hall",
+      "parent": "lecture_hall-acc-03"
+    },
+    {
+      "id": "lecture_hall-acc-03-ap-03",
+      "type": "access_point",
+      "tier": "edge",
+      "zone": "lecture_hall",
+      "parent": "lecture_hall-acc-03"
+    }
+  ],
+  "links": [
+    {
+      "id": "core-rtr-01--dns-srv-01",
+      "a": "core-rtr-01",
+      "b": "dns-srv-01",
+      "capacity_mbps": 10000.0
+    },
+    {
+      "id": "core-rtr-01--dhcp-srv-01",
+      "a": "core-rtr-01",
+      "b": "dhcp-srv-01",
+      "capacity_mbps": 10000.0
+    },
+    {
+      "id": "core-rtr-01--hostel-dist-01",
+      "a": "core-rtr-01",
+      "b": "hostel-dist-01",
+      "capacity_mbps": 10000.0
+    },
+    {
+      "id": "hostel-dist-01--hostel-acc-01",
+      "a": "hostel-dist-01",
+      "b": "hostel-acc-01",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "hostel-acc-01--hostel-acc-01-ap-01",
+      "a": "hostel-acc-01",
+      "b": "hostel-acc-01-ap-01",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "hostel-acc-01--hostel-acc-01-ap-02",
+      "a": "hostel-acc-01",
+      "b": "hostel-acc-01-ap-02",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "hostel-acc-01--hostel-acc-01-ap-03",
+      "a": "hostel-acc-01",
+      "b": "hostel-acc-01-ap-03",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "hostel-dist-01--hostel-acc-02",
+      "a": "hostel-dist-01",
+      "b": "hostel-acc-02",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "hostel-acc-02--hostel-acc-02-ap-01",
+      "a": "hostel-acc-02",
+      "b": "hostel-acc-02-ap-01",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "hostel-acc-02--hostel-acc-02-ap-02",
+      "a": "hostel-acc-02",
+      "b": "hostel-acc-02-ap-02",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "hostel-dist-01--hostel-acc-03",
+      "a": "hostel-dist-01",
+      "b": "hostel-acc-03",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "hostel-acc-03--hostel-acc-03-ap-01",
+      "a": "hostel-acc-03",
+      "b": "hostel-acc-03-ap-01",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "hostel-acc-03--hostel-acc-03-ap-02",
+      "a": "hostel-acc-03",
+      "b": "hostel-acc-03-ap-02",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "hostel-acc-03--hostel-acc-03-ap-03",
+      "a": "hostel-acc-03",
+      "b": "hostel-acc-03-ap-03",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "core-rtr-01--department-dist-01",
+      "a": "core-rtr-01",
+      "b": "department-dist-01",
+      "capacity_mbps": 10000.0
+    },
+    {
+      "id": "department-dist-01--department-acc-01",
+      "a": "department-dist-01",
+      "b": "department-acc-01",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "department-acc-01--department-acc-01-ap-01",
+      "a": "department-acc-01",
+      "b": "department-acc-01-ap-01",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "department-dist-01--department-acc-02",
+      "a": "department-dist-01",
+      "b": "department-acc-02",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "department-acc-02--department-acc-02-ap-01",
+      "a": "department-acc-02",
+      "b": "department-acc-02-ap-01",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "department-acc-02--department-acc-02-ap-02",
+      "a": "department-acc-02",
+      "b": "department-acc-02-ap-02",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "department-acc-02--department-acc-02-ap-03",
+      "a": "department-acc-02",
+      "b": "department-acc-02-ap-03",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "department-dist-01--department-acc-03",
+      "a": "department-dist-01",
+      "b": "department-acc-03",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "department-acc-03--department-acc-03-ap-01",
+      "a": "department-acc-03",
+      "b": "department-acc-03-ap-01",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "department-acc-03--department-acc-03-ap-02",
+      "a": "department-acc-03",
+      "b": "department-acc-03-ap-02",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "department-acc-03--department-acc-03-ap-03",
+      "a": "department-acc-03",
+      "b": "department-acc-03-ap-03",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "core-rtr-01--lecture_hall-dist-01",
+      "a": "core-rtr-01",
+      "b": "lecture_hall-dist-01",
+      "capacity_mbps": 10000.0
+    },
+    {
+      "id": "lecture_hall-dist-01--lecture_hall-acc-01",
+      "a": "lecture_hall-dist-01",
+      "b": "lecture_hall-acc-01",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "lecture_hall-acc-01--lecture_hall-acc-01-ap-01",
+      "a": "lecture_hall-acc-01",
+      "b": "lecture_hall-acc-01-ap-01",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "lecture_hall-acc-01--lecture_hall-acc-01-ap-02",
+      "a": "lecture_hall-acc-01",
+      "b": "lecture_hall-acc-01-ap-02",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "lecture_hall-acc-01--lecture_hall-acc-01-ap-03",
+      "a": "lecture_hall-acc-01",
+      "b": "lecture_hall-acc-01-ap-03",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "lecture_hall-dist-01--lecture_hall-acc-02",
+      "a": "lecture_hall-dist-01",
+      "b": "lecture_hall-acc-02",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "lecture_hall-acc-02--lecture_hall-acc-02-ap-01",
+      "a": "lecture_hall-acc-02",
+      "b": "lecture_hall-acc-02-ap-01",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "lecture_hall-acc-02--lecture_hall-acc-02-ap-02",
+      "a": "lecture_hall-acc-02",
+      "b": "lecture_hall-acc-02-ap-02",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "lecture_hall-acc-02--lecture_hall-acc-02-ap-03",
+      "a": "lecture_hall-acc-02",
+      "b": "lecture_hall-acc-02-ap-03",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "lecture_hall-dist-01--lecture_hall-acc-03",
+      "a": "lecture_hall-dist-01",
+      "b": "lecture_hall-acc-03",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "lecture_hall-acc-03--lecture_hall-acc-03-ap-01",
+      "a": "lecture_hall-acc-03",
+      "b": "lecture_hall-acc-03-ap-01",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "lecture_hall-acc-03--lecture_hall-acc-03-ap-02",
+      "a": "lecture_hall-acc-03",
+      "b": "lecture_hall-acc-03-ap-02",
+      "capacity_mbps": 1000.0
+    },
+    {
+      "id": "lecture_hall-acc-03--lecture_hall-acc-03-ap-03",
+      "a": "lecture_hall-acc-03",
+      "b": "lecture_hall-acc-03-ap-03",
+      "capacity_mbps": 1000.0
+    }
+  ]
+}

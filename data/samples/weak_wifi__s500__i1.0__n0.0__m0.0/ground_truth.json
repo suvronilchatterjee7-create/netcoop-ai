@@ -1,0 +1,10 @@
+{
+  "scenario": "weak_wifi",
+  "root_cause": "weak_wifi",
+  "dialect": "netcoop_synth_v2",
+  "onset_ts": "2026-10-01T09:12:00Z",
+  "target_entity": "department-acc-01-ap-03",
+  "affected_entities": [
+    "department-acc-01-ap-03"
+  ]
+}

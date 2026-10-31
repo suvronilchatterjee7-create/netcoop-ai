@@ -1,0 +1,26 @@
+{
+  "run_id": "interop_failure__s500__i0.5__n0.1__m0.0",
+  "ground_truth": {
+    "scenario": "interop_failure",
+    "root_cause": "dns_dhcp_failure",
+    "dialect": "legacy_v1",
+    "onset_ts": "2026-10-01T09:12:00Z",
+    "target_entity": "dns-srv-01",
+    "affected_entities": [
+      "dns-srv-01"
+    ],
+    "service": "dns",
+    "seed": 500,
+    "intensity": 0.5,
+    "noise": 0.1,
+    "missing_rate": 0.0
+  },
+  "files": {
+    "device_stats.csv": "2762e58cb5ce2fe9cfc347bc7c791f62a2f3fa5c87630a98b8053dd67c831d62",
+    "ground_truth.json": "84df703000bb309cd78a56ec9f8fa7b0b4eff4a00c3ddd840467bb3dafc55234",
+    "link_stats.csv": "3a359bf16e9851b83dc6ec3fa40a8cb6ec0ff9c7de5f3518086e6beec2e5ea7d",
+    "service_checks.csv": "3eb16978d0e3580beff530bdb6a9767cf0f0bfdd4b191f4a718482a5b0c67640",
+    "topology_edges.csv": "8b37f4e105f9819bd3bfe88d625deb1350b42b5ac094b32715739bd27077335f",
+    "wifi_stats.csv": "9f22fc4039855a2d474f5a190293ffe936b77ec5828a63d140611e7951802d60"
+  }
+}

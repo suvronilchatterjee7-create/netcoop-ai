@@ -1,0 +1,10 @@
+{
+  "scenario": "device_overload",
+  "root_cause": "device_overload",
+  "dialect": "netcoop_synth_v2",
+  "onset_ts": "2026-10-01T09:12:00Z",
+  "target_entity": "hostel-acc-03",
+  "affected_entities": [
+    "hostel-acc-03"
+  ]
+}

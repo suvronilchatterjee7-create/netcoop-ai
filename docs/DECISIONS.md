@@ -289,6 +289,15 @@ External agents join through `diagnose` with a capability card and protocol 1.0 
 messages. The bridge upgrades and re-issues them, adding protocol 2.0 to the card because it
 speaks 2.0 on the agent's behalf.
 
+## D-050 · 2026-11-01 · Committed samples and a self-checking demo
+Nine runs are committed in `data/samples/` (about 6 MB), so a fresh clone can diagnose and
+demo without generating 610 MB. They are drawn from the fresh test seed 500 and the ambiguity
+suite, never from training or development seeds, so the demo shows held-out behaviour.
+`tests/test_samples.py` regenerates each one and requires identical bytes. `netcoop demo`
+reads its scenes from `config/demo.yaml`; each scene states its expected status, and the
+command exits non-zero when an outcome changes, so a refit cannot silently break the video
+script.
+
 ## Open questions
 - **Q-001** ~~Sweep sizes~~ resolved by D-005.
 - **Q-002** Canonical schema: derive from `docs/DATA_PROFILE.md` (Phase 1). Re-check if the

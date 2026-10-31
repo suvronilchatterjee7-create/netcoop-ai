@@ -1,0 +1,11 @@
+{
+  "scenario": "interop_failure",
+  "root_cause": "dns_dhcp_failure",
+  "dialect": "legacy_v1",
+  "onset_ts": "2026-10-01T09:12:00Z",
+  "target_entity": "dns-srv-01",
+  "affected_entities": [
+    "dns-srv-01"
+  ],
+  "service": "dns"
+}

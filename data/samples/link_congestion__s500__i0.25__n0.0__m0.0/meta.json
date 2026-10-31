@@ -1,0 +1,24 @@
+{
+  "run_id": "link_congestion__s500__i0.25__n0.0__m0.0",
+  "ground_truth": {
+    "scenario": "link_congestion",
+    "root_cause": "link_congestion",
+    "dialect": "netcoop_synth_v2",
+    "onset_ts": "2026-10-01T09:12:00Z",
+    "target_entity": "lecture_hall-dist-01--lecture_hall-acc-02",
+    "affected_entities": [
+      "lecture_hall-dist-01--lecture_hall-acc-02",
+      "lecture_hall-dist-01",
+      "lecture_hall-acc-02"
+    ],
+    "seed": 500,
+    "intensity": 0.25,
+    "noise": 0.0,
+    "missing_rate": 0.0
+  },
+  "files": {
+    "ground_truth.json": "396d1f69dbb5f113b3bb2d9d1632227bafe56c8d0e494548d755ac26b37656b3",
+    "telemetry.jsonl": "5b0925bf2616a946f4d6935dee6a11f87bec050f2d72774b3022fadcf15eaf93",
+    "topology.json": "c12942751fa1758400505bf4bbf01341a4d7b7d5faacfeb70a84ec0e48b53358"
+  }
+}
