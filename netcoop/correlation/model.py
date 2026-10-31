@@ -91,8 +91,18 @@ def fit_tables(
             "n_false": nf,
         }
     n_bins = len(qcut) + 1
+    pooled_llr = {
+        f"{role}|{expect}": llr(
+            rate(pooled[True][(role, expect)], STATUSES),
+            rate(pooled[False][(role, expect)], STATUSES),
+        )
+        for role in ("required", "supporting")
+        for expect in ("deviates", "normal")
+    }
     return {
         "types": types,
+        "pooled": pooled_llr,
+        "global_prior_logit": math.log(g / (1 - g)),
         "analytic": llr(rate(analytic[True], ANALYTIC), rate(analytic[False], ANALYTIC)),
         "quality": llr(
             rate(quality[True], tuple(range(n_bins))), rate(quality[False], tuple(range(n_bins)))
@@ -144,9 +154,27 @@ class Model:
     significant_edges: list[int] = field(default_factory=lambda: [0])
     normal_table: dict[str, float] = field(default_factory=dict)
 
+    def type_table(self, hypothesis_type: str, cat: Catalogue | None = None) -> dict[str, Any]:
+        """Fitted table of a fault type; for a type added after fitting (an extension), the
+        pooled (role, expect) LLRs and the global prior, with n_true = 0 so the courtroom's
+        under-trained rule applies."""
+        if hypothesis_type in self.tables["types"]:
+            return dict(self.tables["types"][hypothesis_type])
+        from netcoop.catalogue import get_catalogue
+
+        h = (cat or get_catalogue()).hypotheses[hypothesis_type]
+        pooled = self.tables.get("pooled", {})
+        neutral = {s: 0.0 for s in STATUSES}
+        return {
+            "prior_logit": self.tables.get("global_prior_logit", 0.0),
+            "n_true": 0,
+            "n_false": 0,
+            "elements": [pooled.get(f"{e.role}|{e.expect}", neutral) for e in h.signature],
+        }
+
     def score(self, c: Candidate | dict[str, Any]) -> float:
         rec = c.to_record() if isinstance(c, Candidate) else c
-        t = self.tables["types"][rec["type"]]
+        t = self.type_table(rec["type"])
         s = t["prior_logit"] + sum(
             el[st] for el, st in zip(t["elements"], rec["statuses"], strict=True)
         )

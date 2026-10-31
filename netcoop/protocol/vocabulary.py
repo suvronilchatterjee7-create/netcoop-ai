@@ -14,6 +14,8 @@ from typing import Literal
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from netcoop.extensions import merge_section
+
 VOCAB_DIR = Path(__file__).resolve().parents[2] / "data" / "vocabulary"
 
 
@@ -120,7 +122,11 @@ def load_vocabulary(vocab_dir: Path = VOCAB_DIR) -> Vocabulary:
         metrics=files["metrics"]["metrics"],
         dimensions=files["units"]["dimensions"],
         entity_types=files["entity_types"]["entity_types"],
-        hypothesis_types=files["hypothesis_types"]["hypothesis_types"],
+        hypothesis_types=merge_section(
+            files["hypothesis_types"]["hypothesis_types"],
+            "vocabulary/hypothesis_types.yaml",
+            "hypothesis_types",
+        ),
     )
 
 

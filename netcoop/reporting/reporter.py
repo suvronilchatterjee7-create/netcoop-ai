@@ -351,7 +351,7 @@ class Reporter:
     def _breakdown(self, c: Candidate | None) -> list[ScoreTerm]:
         if c is None or self.model is None:
             return []
-        t = self.model.tables["types"][c.hypothesis_type]
+        t = self.model.type_table(c.hypothesis_type)
         h: HypothesisSpec = self.cat.hypotheses[c.hypothesis_type]
         out = [
             ScoreTerm(

@@ -63,7 +63,7 @@ class Correlator:
 
     def _under_trained(self, hypothesis_type: str) -> bool:
         assert self.model is not None
-        return int(self.model.tables["types"][hypothesis_type]["n_true"]) < self.min_positives
+        return int(self.model.type_table(hypothesis_type)["n_true"]) < self.min_positives
 
     def _open_case(self, out: Outcome, cat: Catalogue, topo: Topo) -> Case | None:
         """Near tie, or a plausible competing contender the learned model cannot judge."""

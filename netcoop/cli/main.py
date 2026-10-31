@@ -105,8 +105,24 @@ def _cmd_run(args: argparse.Namespace) -> int:
         elif e.kind in ("round_end", "agent_failed", "stage"):
             print(f"[{e.kind}] round {e.round} {e.data}")
 
+    if args.pause_after is not None:
+        from netcoop.orchestrator.orchestrator import Orchestrator
+
+        paused = Orchestrator().run(
+            args.input,
+            incident_id=args.incident,
+            out_dir=args.out,
+            on_event=show,
+            pause_after=args.pause_after,
+        )
+        print(
+            f"paused after round {args.pause_after}; checkpoint in {paused.run_dir} "
+            f"(continue with: netcoop resume {paused.run_dir})"
+        )
+        return 0
     result = run_diagnosis(args.input, incident_id=args.incident, out_dir=args.out, on_event=show)
     r = result.report
+    assert r is not None
     print(
         f"status: {r.status.value}  root cause: {r.suspected_root_cause}  "
         f"confidence: {r.confidence:.2f}"
@@ -114,6 +130,58 @@ def _cmd_run(args: argparse.Namespace) -> int:
     print(f"messages: {result.board.counts()}")
     if result.run_dir:
         print(f"trace, manifest and report in {result.run_dir}")
+    return 0
+
+
+def _cmd_resume(args: argparse.Namespace) -> int:
+    import json
+
+    from netcoop.orchestrator.orchestrator import Orchestrator
+
+    manifest = json.loads((args.run_dir / "manifest.json").read_text(encoding="utf-8"))
+    if not manifest.get("paused"):
+        print(f"error: {args.run_dir} is not a paused run", file=sys.stderr)
+        return 2
+    inputs = [Path(x) for x in manifest["inputs"]]
+    res = Orchestrator().run(
+        inputs, out_dir=args.out or args.run_dir.parent, resume_from=args.run_dir / "trace.jsonl"
+    )
+    assert res.report is not None
+    print(
+        f"resumed from round {manifest['checkpoint_round']}: {res.report.status.value}: "
+        f"{res.report.suspected_root_cause} -> {res.run_dir}"
+    )
+    return 0
+
+
+def _cmd_review(args: argparse.Namespace) -> int:
+    from netcoop.review import Decision, actions, review
+
+    acts = actions(args.run_dir)
+    decisions = [Decision(i, True, args.note or "") for i in args.approve or []]
+    decisions += [Decision(i, False, args.note or "") for i in args.reject or []]
+    if not decisions and sys.stdin.isatty():
+        for i, a in enumerate(acts, 1):
+            ans = input(f"[{i}] {a}\n    approve / reject / skip? [a/r/s] ").strip().lower()
+            if ans in ("a", "r"):
+                decisions.append(Decision(i, ans == "a", input("    note (optional): ").strip()))
+    if not decisions:
+        for i, a in enumerate(acts, 1):
+            print(f"[{i}] {a}")
+        print("(no decisions given: use --approve / --reject N, or run interactively)")
+        return 0
+    for r in review(args.run_dir, decisions, args.reviewer):
+        print(
+            f"action {r['action']}: {'approved' if r['approved'] else 'rejected'} "
+            f"by {r['reviewer']}"
+        )
+    return 0
+
+
+def _cmd_mcp(_args: argparse.Namespace) -> int:
+    from netcoop.mcp_server import main as serve
+
+    serve()
     return 0
 
 
@@ -229,7 +297,30 @@ def build_parser() -> argparse.ArgumentParser:
         "--out", type=Path, default=REPO_ROOT / "runs", help="where runs/<incident>/ is written"
     )
     rn.add_argument("-v", "--verbose", action="store_true", help="print every board message")
+    rn.add_argument(
+        "--pause-after", type=int, help="stop after this collaboration round (checkpoint)"
+    )
     rn.set_defaults(func=_cmd_run)
+
+    mc = sub.add_parser("mcp", help="serve NetCoop as an MCP server over stdio")
+    mc.set_defaults(func=_cmd_mcp)
+
+    rs = sub.add_parser("resume", help="continue a paused run from its trace checkpoint")
+    rs.add_argument("run_dir", type=Path)
+    rs.add_argument("--out", type=Path, help="runs directory (default: next to the paused run)")
+    rs.set_defaults(func=_cmd_resume)
+
+    rv = sub.add_parser(
+        "review", help="approve / reject recommended actions (recorded in the trace)"
+    )
+    rv.add_argument("run_dir", type=Path)
+    rv.add_argument("--approve", type=int, nargs="*", help="action numbers to approve")
+    rv.add_argument("--reject", type=int, nargs="*", help="action numbers to reject")
+    rv.add_argument("--note", help="note attached to these decisions")
+    rv.add_argument(
+        "--reviewer", default="operator", help="reviewer name (recorded as human.<name>)"
+    )
+    rv.set_defaults(func=_cmd_review)
 
     rp = sub.add_parser(
         "replay", help="rebuild and verify a board from runs/<incident>/trace.jsonl"

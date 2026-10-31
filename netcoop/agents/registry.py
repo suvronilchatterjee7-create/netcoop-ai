@@ -8,10 +8,13 @@ adding a module: no engine change.
 from __future__ import annotations
 
 import importlib
+import importlib.util
 import pkgutil
+import sys
 from collections.abc import Callable
 
 from netcoop.agents.base import Agent
+from netcoop.extensions import plugin_files, plugin_modules
 
 AgentFactory = Callable[[], Agent]
 _REGISTRY: dict[str, type[Agent]] = {}
@@ -35,6 +38,15 @@ def discover(extra_modules: tuple[str, ...] = ()) -> None:
         for mod in pkgutil.iter_modules(pkg.__path__, prefix=f"{pkg.__name__}."):
             if mod.name.rsplit(".", 1)[-1] not in ("base", "registry"):
                 importlib.import_module(mod.name)
+        for name in plugin_modules():
+            importlib.import_module(name)
+        for path in plugin_files():
+            spec = importlib.util.spec_from_file_location(f"netcoop_plugin_{path.stem}", path)
+            if spec is None or spec.loader is None:
+                raise ImportError(f"cannot load plugin {path}")
+            module = importlib.util.module_from_spec(spec)
+            sys.modules[spec.name] = module
+            spec.loader.exec_module(module)
         _DISCOVERED = True
     for name in extra_modules:
         importlib.import_module(name)

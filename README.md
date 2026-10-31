@@ -6,7 +6,7 @@ Specialised agents analyse different aspects of network health, exchange structu
 messages on a shared case board, reconcile their findings and produce one explainable
 diagnostic report, including an honest `insufficient_evidence` outcome.
 
-> **Status:** Phases 0–8 done: data, protocol, Translator, board + orchestrator, specialist agents, calibrated correlation, courtroom tie-break, reporting, evaluation. On 1,080 fresh test runs: 77.2% accuracy, 98.3% precision of claims, 21.5% honest abstentions ([EVALUATION.md](docs/EVALUATION.md)).
+> **Status:** Phases 0–9 done: data, protocol, Translator, board + orchestrator, specialist agents, calibrated correlation, courtroom tie-break, reporting, evaluation, MCP + extensions + pause/resume + human review. On 1,080 fresh test runs: 77.2% accuracy, 98.3% precision of claims, 21.5% honest abstentions ([EVALUATION.md](docs/EVALUATION.md)).
 
 ## Architecture (planned)
 
@@ -38,6 +38,9 @@ make calibrate    # derive normal baselines (config/baselines.yaml) from trainin
 netcoop fit       # fit the correlation model on training seeds; docs/CALIBRATION.md on holdout
 netcoop courtroom-eval   # courtroom ablation on ambiguous + held-out cases
 netcoop eval             # full evaluation on fresh test seeds -> docs/EVALUATION.md (--quick: smoke)
+netcoop run <input> --pause-after 1; netcoop resume runs/<id>   # checkpoint and continue
+netcoop review runs/<id> --approve 1 --reject 2 --reviewer me  # human decision, recorded in the trace
+netcoop mcp              # serve NetCoop as an MCP server (stdio)
 make test
 netcoop run data/generated/link_congestion/<run> -v      # full pipeline, live message trace
 netcoop replay runs/<incident_id>                         # rebuild + verify the board from the trace
@@ -48,7 +51,7 @@ netcoop schemas                                          # re-export JSON Schema
 
 Docs: [PROTOCOL.md](docs/PROTOCOL.md) (message protocol), [TRANSLATOR.md](docs/TRANSLATOR.md)
 (ingestion and validation), [SCORING.md](docs/SCORING.md) (every formula), [CALIBRATION.md](docs/CALIBRATION.md) (calibration and decision metrics),
-[ORCHESTRATION.md](docs/ORCHESTRATION.md) (board, rounds, trace, replay), [AGENTS.md](docs/AGENTS.md) (agents, catalogue), [COURTROOM.md](docs/COURTROOM.md) (tie-break), [REPORTING.md](docs/REPORTING.md) (report format, [examples](docs/examples/)), [DECISIONS.md](docs/DECISIONS.md) (decision log).
+[ORCHESTRATION.md](docs/ORCHESTRATION.md) (board, rounds, trace, replay), [AGENTS.md](docs/AGENTS.md) (agents, catalogue), [COURTROOM.md](docs/COURTROOM.md) (tie-break), [EXTENDING.md](docs/EXTENDING.md) (new faults, agents, MCP), [REPORTING.md](docs/REPORTING.md) (report format, [examples](docs/examples/)), [DECISIONS.md](docs/DECISIONS.md) (decision log).
 
 Without `make` (e.g. on Windows): `python -m venv .venv`, activate it, then
 `pip install -e ".[dev]"` and use the `netcoop` command directly.

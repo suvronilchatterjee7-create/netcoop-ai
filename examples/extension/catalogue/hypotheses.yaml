@@ -1,0 +1,20 @@
+# Extension: the new fault's signature (merged into config/catalogue/hypotheses.yaml).
+version: "1.0"
+hypotheses:
+  ap_client_overload:
+    description: "Too many stations on one access point: airtime contention slows every client."
+    locus: {category: device, entity_types: [access_point]}
+    signature:
+      - {metric: associated_clients, expect: deviates, direction: above, scope: root, role: required}
+      - {metric: retransmission_rate, expect: deviates, direction: above, scope: root, role: supporting}
+      - {metric: service_response_time, expect: deviates, direction: above, scope: probes_from_root, role: supporting, quorum: 0.5}
+      - {metric: rssi, expect: normal, direction: below, scope: root, role: supporting}
+    competes_with: [weak_wifi_signal]
+    explains: []
+    actions:
+      - "Balance clients away from {root}: enable band steering / load balancing, or lower its maximum client count."
+      - "Add an access point next to {root} for the busy area."
+    rationale: >
+      Contention: client count far above normal, retransmissions and slower service for clients of
+      that AP, while signal strength stays normal (which separates it from weak Wi-Fi).
+    source: "Common WLAN capacity guidance (per-AP client limits, airtime fairness)"

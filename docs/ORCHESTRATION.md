@@ -104,3 +104,36 @@ sequence or from data sizes; see the rationale in the file.
 
 **Known limitation:** Python threads cannot be killed. A timed-out agent keeps its thread
 until it returns, but its results are discarded and it is never called again.
+
+
+## Pause, resume and human review (Phase 9)
+
+```bash
+netcoop run <input> --pause-after 1          # checkpoint after collaboration round 1
+netcoop resume runs/<incident_id>            # continue from the checkpoint
+netcoop review runs/<incident_id> --approve 1 2 --reject 3 --reviewer "Asha N" --note "..."
+netcoop replay runs/<incident_id>            # verifies the whole history, reviews included
+```
+
+**Pause.** A paused run writes its trace so far and a manifest with `paused: true`,
+`checkpoint_round` and the input paths.
+
+**Resume.** Resume re-posts the checkpoint into a fresh board, each entry keeping its original
+round, and then runs the normal pipeline:
+
+- **Same inboxes:** during replayed rounds each agent sees exactly the messages it saw then
+  (a visibility horizon per round), so agents rebuild their internal state.
+- **Duplicates fall away:** agents re-emit identical messages, because ids are content
+  hashes, and the board drops them as duplicates.
+- **New work after the checkpoint:** only messages after the checkpoint are new.
+- **Same trace:** the finished trace is **byte-identical** to an uninterrupted run (tested
+  for pauses after rounds 1 and 2).
+
+**Review.** Each decision on a recommended action is an ACK from `human.<reviewer>`, caused by
+the REPORT, appended to the trace:
+
+- the manifest's trace hash is updated, so replay still verifies
+- `report.md` gains a "Human review" section
+- repeating an identical decision is a no-op
+
+Recommendations are never executed by NetCoop.

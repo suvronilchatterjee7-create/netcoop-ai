@@ -19,6 +19,7 @@
 from __future__ import annotations
 
 import concurrent.futures as cf
+import json
 import time
 from collections import Counter
 from collections.abc import Callable
@@ -42,6 +43,7 @@ from netcoop.orchestrator.trace import (
     TRACE,
     TraceWriter,
     code_version,
+    input_files,
     input_hash,
     run_seed,
     write_manifest,
@@ -55,7 +57,7 @@ from netcoop.protocol.common import (
     ProtocolModel,
     Severity,
 )
-from netcoop.protocol.messages import Envelope, make_message
+from netcoop.protocol.messages import Envelope, make_message, parse_message
 from netcoop.protocol.payloads import (
     CapabilityPayload,
     ErrorPayload,
@@ -99,7 +101,7 @@ EventHook = Callable[[Event], None]
 
 @dataclass
 class RunResult:
-    report: Report
+    report: Report | None  # None only when the run was paused (see Orchestrator.run pause_after)
     board: Board
     info: RunInfo
     translation: TranslationResult
@@ -147,6 +149,8 @@ class Orchestrator:
         self.budget = int(get_value(cfg, "board.per_agent_round_budget"))
         self.timeout_s = timeout_s or float(get_value(cfg, "agents.timeout_s"))
         self.max_workers = int(get_value(cfg, "agents.max_workers"))
+        self._horizon: dict[int, int] = {}
+        self._replayed: dict[int, int] = {}
 
     # ------------------------------------------------------------------ public
     def run(
@@ -155,11 +159,25 @@ class Orchestrator:
         incident_id: str | None = None,
         out_dir: Path | None = None,
         on_event: EventHook | None = None,
+        *,
+        pause_after: int | None = None,
+        resume_from: Path | None = None,
     ) -> RunResult:
+        """Run the pipeline.
+
+        ``pause_after=N`` stops after collaboration round N, writing the trace so far (a
+        checkpoint) and a manifest marked paused. ``resume_from=<trace.jsonl>`` replays such a
+        checkpoint and continues: replayed rounds give every agent exactly the inbox it had, so
+        agents rebuild their state and re-emit identical (content-addressed, hence duplicate)
+        messages; the finished trace equals that of an uninterrupted run (tested).
+        """
         emit = on_event or (lambda _e: None)
+        checkpoint = self._load_checkpoint(resume_from)
         started = time.time()
         ihash = input_hash(inputs)
-        incident = incident_id or f"inc-{ihash[:12]}"
+        incident = incident_id or (
+            checkpoint[0][2].correlation_id if checkpoint else f"inc-{ihash[:12]}"
+        )
         manifest = RunManifest(
             incident_id=incident,
             input_hash=ihash,
@@ -179,6 +197,13 @@ class Orchestrator:
         board.subscribe(
             lambda e: emit(Event("message", current_round[0], {"seq": e.seq, "msg": e.msg}))
         )
+        self._horizon, self._replayed = {}, {}
+        for _seq, rnd, msg in checkpoint:
+            board.post(msg, rnd, budgeted=False)
+            self._replayed[rnd] = self._replayed.get(rnd, 0) + (msg.sender != ORCHESTRATOR_ID)
+        for rnd in sorted(self._replayed):
+            if rnd >= 1:
+                self._horizon[rnd] = sum(1 for _s, r0, _m in checkpoint if r0 < rnd)
 
         translation = self.translator.translate(inputs, incident)
         now = translation.reference_time or datetime(1970, 1, 1, tzinfo=UTC)
@@ -225,6 +250,10 @@ class Orchestrator:
                 if posted == 0:
                     info.converged = True
                     break
+                if pause_after is not None and r >= pause_after:
+                    return self._paused(
+                        board, writer, run_dir, manifest, info, translation, inputs, r
+                    )
             else:
                 self._post(
                     board,
@@ -277,6 +306,8 @@ class Orchestrator:
             "message_counts": board.counts(),
             "rejections": len(board.rejections),
             "timing": {"started_unix": started, "elapsed_s": round(time.time() - started, 3)},
+            "inputs": [str(p) for p in input_files(inputs)],
+            "resumed_from": str(resume_from) if resume_from else None,
         }
         if writer is not None and run_dir is not None:
             manifest_data["trace_sha256"] = writer.close()
@@ -287,6 +318,43 @@ class Orchestrator:
             (run_dir / "report.md").write_text(render_markdown(report), encoding="utf-8")
         emit(Event("done", r_final, {"status": report.status.value}))
         return RunResult(report, board, info, translation, run_dir, manifest_data)
+
+    # ------------------------------------------------------------------ pause / resume
+    @staticmethod
+    def _load_checkpoint(trace: Path | None) -> list[tuple[int, int, Envelope]]:
+        if trace is None:
+            return []
+        out = []
+        # read completely before the new run rewrites the same trace file
+        for line in trace.read_text(encoding="utf-8").splitlines():
+            rec = json.loads(line)
+            out.append((rec["seq"], rec["round"], parse_message(rec["msg"])))
+        if any(m.type is MessageType.REPORT for _s, _r, m in out):
+            raise ValueError(f"{trace} is a finished run, not a checkpoint")
+        return out
+
+    def _paused(
+        self,
+        board: Board,
+        writer: TraceWriter | None,
+        run_dir: Path | None,
+        manifest: RunManifest,
+        info: RunInfo,
+        translation: TranslationResult,
+        inputs: Path | list[Path],
+        r: int,
+    ) -> RunResult:
+        data: dict[str, Any] = {
+            **manifest.model_dump(mode="json"),
+            "paused": True,
+            "checkpoint_round": r,
+            "inputs": [str(p) for p in input_files(inputs)],
+            "message_counts": board.counts(),
+        }
+        if writer is not None and run_dir is not None:
+            data["trace_sha256"] = writer.close()
+            write_manifest(run_dir, data)
+        return RunResult(None, board, info, translation, run_dir, data)
 
     # ------------------------------------------------------------------ courtroom
     def _court(
@@ -433,14 +501,16 @@ class Orchestrator:
         emit: EventHook,
     ) -> int:
         version_before = board.version
+        horizon = self._horizon.get(r)  # replayed round: show only what existed back then
         jobs: dict[str, tuple[AgentContext, cf.Future[None]]] = {}
         for a in active:
             if a.agent_id in info.failed_agents:
                 continue
-            inbox = [
-                e.msg for e in board.entries(cursors[a.agent_id]) if self._deliverable(e.msg, a)
-            ]
-            cursors[a.agent_id] = board.version
+            visible = board.entries(cursors[a.agent_id])
+            if horizon is not None:
+                visible = [e for e in visible if e.seq < horizon]
+            inbox = [e.msg for e in visible if self._deliverable(e.msg, a)]
+            cursors[a.agent_id] = horizon if horizon is not None else board.version
             if not inbox:
                 continue
             ctx = AgentContext(a.agent_id, board, r, now)
@@ -481,6 +551,8 @@ class Orchestrator:
                 board.post(msg, r)
         self._report_rejections(board, r, info.incident_id, now)
         self._route_requests(board, version_before, active, info, now, r)
+        if horizon is not None:  # replayed round: its posts are on the board already
+            return self._replayed.get(r, 0)
         return sum(1 for e in board.entries(version_before) if e.msg.sender != ORCHESTRATOR_ID)
 
     def _fail(

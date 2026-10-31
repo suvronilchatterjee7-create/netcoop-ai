@@ -33,7 +33,9 @@ def run_diagnosis(
 
 def diagnose(inputs: Path | list[Path], **kwargs: object) -> Report:
     """Diagnose telemetry files or a run directory and return the unified report."""
-    return run_diagnosis(inputs, **kwargs).report  # type: ignore[arg-type]
+    report = run_diagnosis(inputs, **kwargs).report  # type: ignore[arg-type]
+    assert report is not None  # only a paused run has no report, and diagnose never pauses
+    return report
 
 
 __all__ = ["Event", "EventHook", "RunResult", "diagnose", "run_diagnosis"]

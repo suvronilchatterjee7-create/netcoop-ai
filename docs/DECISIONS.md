@@ -263,6 +263,32 @@ decisive). Without the courtroom, accuracy is higher on ordinary data (80% vs 75
 courtroom defers some correct but un-discriminable interface faults. Its benefit appears only on
 faults the model never saw (32 to 0 wrong claims, COURTROOM_RESULTS.md).
 
+## D-046 · 2026-11-01 · Resume by deterministic re-execution
+A checkpoint is just a trace prefix. Instead of serialising agent internals, resume replays the
+prefix and re-runs agents with the inboxes they had, which rebuilds their state. Their
+re-emitted messages are content-addressed duplicates that the board drops. This keeps agents
+free of persistence code and makes resumed runs provably identical to uninterrupted ones.
+
+## D-047 · 2026-11-01 · Human review as ACK messages
+Approvals and rejections are protocol messages from `human.<name>` with the REPORT as their
+cause, so they live in the same verified trace as the machine reasoning. NetCoop never acts on
+them: they record accountability for actions humans take.
+
+## D-048 · 2026-11-01 · Additive extensions; pooled fallback for untrained faults
+Extension directories and plugins may only add entries. A fault type added after fitting is
+scored with the pooled (role, expect) likelihood ratios and the global prior that `netcoop fit`
+now stores, with n_true = 0 so the courtroom's under-trained rule applies. Found while building
+the tutorial: `associated_clients` was declared with no 'worse' direction, so detection never
+evaluated it. It is now `worse_when: higher` (more clients than normal means contention), and
+the model was refitted (held-out precision unchanged at 98.9%).
+
+## D-049 · 2026-11-01 · MCP server and external-agent bridge
+`netcoop mcp` (MCP Python SDK 2.x, stdio) exposes diagnosis, Translator checks, reports,
+traces, topology and review as tools, and the schema, vocabulary and catalogue as resources.
+External agents join through `diagnose` with a capability card and protocol 1.0 lite or 2.0
+messages. The bridge upgrades and re-issues them, adding protocol 2.0 to the card because it
+speaks 2.0 on the agent's behalf.
+
 ## Open questions
 - **Q-001** ~~Sweep sizes~~ resolved by D-005.
 - **Q-002** Canonical schema: derive from `docs/DATA_PROFILE.md` (Phase 1). Re-check if the

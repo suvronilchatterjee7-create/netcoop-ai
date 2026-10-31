@@ -1,0 +1,9 @@
+# Extension: a new data-defined specialist (merged into config/catalogue/agents.yaml).
+version: "1.0"
+specialists:
+  client_load:
+    description: "Client Load agent: number of associated stations per access point."
+    metrics: [associated_clients]
+    optional: true
+    rationale: "Capacity view of the WLAN, separate from radio quality."
+    source: "docs/EXTENDING.md tutorial"

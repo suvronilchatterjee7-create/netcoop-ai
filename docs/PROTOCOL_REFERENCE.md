@@ -465,7 +465,7 @@ Directed query for targeted evidence, routed by capability.
 | `snr` | dB | numeric | device | lower | [-20.0, 100.0] | Signal-to-noise ratio of the wireless channel. |
 | `retransmission_rate` | percent | numeric | device | higher | [0.0, 100.0] | Share of wireless frames retransmitted. |
 | `wireless_packet_loss` | percent | numeric | device | higher | [0.0, 100.0] | Share of wireless frames lost (distinct from wired packet_loss, see DATA_PROFILE notes). |
-| `associated_clients` | count | numeric | device | none | [0.0, -] | Number of stations associated with an access point. |
+| `associated_clients` | count | numeric | device | higher | [0.0, -] | Number of stations associated with an access point (more than normal = contention). |
 | `service_success_rate` | percent | numeric | service | lower | [0.0, 100.0] | Share of successful probes of a network service (DNS lookup, DHCP exchange) from a vantage point. |
 | `service_response_time` | ms | numeric | service | higher | [0.0, -] | Response time of a network service probe from a vantage point. |
 

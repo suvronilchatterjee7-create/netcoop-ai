@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 
+### Phase 9 — Optional enhancements
+- Pause/resume: `netcoop run --pause-after N` and `netcoop resume`; resumed traces are
+  byte-identical to uninterrupted runs.
+- Human review: `netcoop review` (approve/reject with reviewer and note), recorded as ACK
+  messages in the verified trace and in report.md.
+- Extension points: `NETCOOP_EXTENSIONS` (vocabulary, catalogue and agent drop-ins, plus
+  `plugins/*.py`) and `NETCOOP_PLUGINS`; pooled-LLR fallback for fault types without training
+  data. Worked example in `examples/extension/` (ap_client_overload and a client_load agent).
+- MCP server: `netcoop mcp` (tools: diagnose, translate, list_runs, get_report, get_trace,
+  get_topology, review_actions; resources: schema, vocabulary, catalogue); external-agent
+  bridge accepting protocol 1.0 lite or 2.0.
+- Vocabulary fix: `associated_clients` has `worse_when: higher`; model refitted.
+- Docs: EXTENDING.md, ORCHESTRATION.md pause/resume/review section, decisions D-046 to D-049.
+
 ### Phase 8 — Evaluation, robustness and testing
 - `netcoop.evaluation`: parallel harness over configurations; metrics (accuracy, precision of
   claims, macro-F1, confusion matrix, root and affected-set localisation, abstention

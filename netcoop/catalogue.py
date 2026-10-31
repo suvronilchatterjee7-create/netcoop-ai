@@ -10,6 +10,7 @@ import yaml
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from netcoop.config import CONFIG_DIR
+from netcoop.extensions import merge_section
 from netcoop.protocol.vocabulary import get_vocabulary
 
 CATALOGUE_DIR = CONFIG_DIR / "catalogue"
@@ -123,7 +124,12 @@ def load_catalogue(base: Path = CATALOGUE_DIR) -> Catalogue:
     raw = _read("hypotheses.yaml", base)
     return Catalogue(
         version=str(raw["version"]),
-        hypotheses={k: HypothesisSpec(id=k, **v) for k, v in raw["hypotheses"].items()},
+        hypotheses={
+            k: HypothesisSpec(id=k, **v)
+            for k, v in merge_section(
+                raw["hypotheses"], "catalogue/hypotheses.yaml", "hypotheses"
+            ).items()
+        },
     )
 
 
@@ -131,7 +137,7 @@ def load_specialists(base: Path = CATALOGUE_DIR) -> list[SpecialistSpec]:
     raw = _read("agents.yaml", base)
     vocab = get_vocabulary()
     out = []
-    for k, v in raw["specialists"].items():
+    for k, v in merge_section(raw["specialists"], "catalogue/agents.yaml", "specialists").items():
         spec = SpecialistSpec(id=k, **v)
         bad = set(spec.metrics) - set(vocab.metrics)
         if bad:

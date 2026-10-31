@@ -1,0 +1,7 @@
+# Extension: one new fault type (merged into data/vocabulary/hypothesis_types.yaml).
+version: "1.0"
+hypothesis_types:
+  ap_client_overload:
+    kind: fault
+    family: null
+    description: "Too many stations on one access point: airtime contention slows every client."

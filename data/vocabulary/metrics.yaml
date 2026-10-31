@@ -135,11 +135,11 @@ metrics:
     range: [0, 100]
     range_source: "Percentage of frames."
   associated_clients:
-    description: "Number of stations associated with an access point."
+    description: "Number of stations associated with an access point (more than normal = contention)."
     unit: count
     kind: numeric
     applies_to: [device]
-    worse_when: none
+    worse_when: higher
     range: [0, null]
     range_source: "Counts cannot be negative."
   service_success_rate:
