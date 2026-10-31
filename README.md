@@ -22,6 +22,30 @@ On **1,080 fresh test runs** never used for development:
 
 Details, slices, ablations and robustness curves: [docs/EVALUATION.md](docs/EVALUATION.md).
 
+## Judging criteria at a glance
+
+| criterion (weight) | what NetCoop does | evidence to check |
+|---|---|---|
+| **Interoperability and protocol (30%)** | 13 typed, versioned message types with capability cards and 1.0 ↔ 2.0 adapters. A declarative Translator reads any CSV / JSON / JSONL dialect and never crashes on input. | [PROTOCOL.md](docs/PROTOCOL.md), [JSON Schemas](docs/schemas/), [TRANSLATOR.md](docs/TRANSLATOR.md), [INTEROP_RESULTS.md](docs/INTEROP_RESULTS.md) (22 mutation kinds, 0 failures, 0 crashes), demo scene 2 |
+| **Diagnostic accuracy and evidence (25%)** | Calibrated detection and correlation. Every evidence item is traced to raw observations and to the config key it was judged against. | [EVALUATION.md](docs/EVALUATION.md) (98.6% precision of claims, 100% root localisation), [SCORING.md](docs/SCORING.md), [example reports](docs/examples/) |
+| **Orchestration and conflict resolution (15%)** | Shared case board with capability routing, concurrent rounds with deterministic commits, failure isolation, and a courtroom tie-break that argues only from discriminating evidence. | [ORCHESTRATION.md](docs/ORCHESTRATION.md), [COURTROOM.md](docs/COURTROOM.md), [COURTROOM_RESULTS.md](docs/COURTROOM_RESULTS.md) (wrong claims 32 → 0 on ambiguous cases), demo scenes 1, 4, 5 |
+| **Robustness (15%)** | Typed errors, data-quality scores, and abstention instead of guessing. A fatal input error can never yield "no fault". | Robustness tables in [EVALUATION.md](docs/EVALUATION.md) (precision ≥ 95.7% with 3 stacked interop mutations), demo scene 3 |
+| **Innovation and extensibility (10%)** | Agents and faults defined as data, an MCP server and external-agent bridge, pause/resume with identical traces, and human review recorded in the trace. | [EXTENDING.md](docs/EXTENDING.md), [examples/extension/](examples/extension/) |
+| **Code, docs and demo (5%)** | CI (ruff, mypy strict, schema freshness, pytest), 238 tests at 84% coverage, a self-checking demo, and a decision log. | [.github/workflows/ci.yml](.github/workflows/ci.yml), [DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md), [DECISIONS.md](docs/DECISIONS.md), [RUBRIC_MAP.md](docs/RUBRIC_MAP.md) |
+
+## Deliverables
+
+| deliverable | where |
+|---|---|
+| Source code (agents, protocol, Translator, orchestrator, correlation, courtroom, reporting) | [netcoop/](netcoop/) |
+| Protocol specification and schemas | [docs/PROTOCOL.md](docs/PROTOCOL.md), [docs/schemas/](docs/schemas/) |
+| Unified diagnostic reports (JSON and Markdown) | [docs/examples/](docs/examples/); every run writes `runs/<incident>/report.json` and `report.md` |
+| Message traces | `runs/<incident>/trace.jsonl`, replayable with `netcoop replay` |
+| Evaluation results | [docs/EVALUATION.md](docs/EVALUATION.md), [docs/CALIBRATION.md](docs/CALIBRATION.md) |
+| Labelled sample data | [data/samples/](data/samples/README.md) |
+| Demo and video script | `netcoop demo`, [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) |
+| Design decisions | [docs/DECISIONS.md](docs/DECISIONS.md) |
+
 ## Quick start
 
 Requires Python 3.11+. Nine labelled sample runs are committed in

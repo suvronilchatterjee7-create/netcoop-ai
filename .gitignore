@@ -13,3 +13,10 @@ data/generated/*
 .ipynb_checkpoints/
 data/ambiguity/
 data/test/
+
+# local environment and secrets
+.env
+.env.*
+*.env
+.venv*/
+venv/
