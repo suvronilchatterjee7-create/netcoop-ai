@@ -190,7 +190,9 @@ class StancePayload(ProtocolModel):
     """SUPPORT or CONTRADICT: one agent's evidence bearing on another agent's post."""
 
     target_msg_id: str = F("msg_id of the CLUE or HYPOTHESIS being supported/contradicted.")
-    clue_ids: tuple[str, ...] = F("The sender's own CLUEs that justify the stance.", min_length=1)
+    clue_ids: tuple[str, ...] = F(
+        "CLUEs that justify the stance (the sender's own, or cited symptoms).", min_length=1
+    )
     strength: float = F("How strongly the evidence bears on the target.", "ratio", ge=0, le=1)
     reason_code: str = F("Machine-readable reason, e.g. 'corroborates', 'transport_healthy'.")
     note: str = F("Short human-readable explanation.", default="")

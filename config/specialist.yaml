@@ -1,0 +1,43 @@
+description: Parameters of the generic specialist engine and the Connectivity agent (docs/AGENTS.md).
+
+local_confidence:
+  weights:
+    value: {required: 2.0, supporting: 1.0}
+    unit: "relative weight of a signature element"
+    rationale: >
+      local_confidence = (sum of weights of satisfied elements / sum of weights of elements the
+      agent could assess) x mean data quality of the clues used. Required elements define the
+      fault, so they count double; supporting elements add corroboration. The proposer's local
+      confidence is only an input: the correlator recomputes support from all agents.
+    source: "Engineering choice, documented in docs/SCORING.md section 3; candidate for fitting in Phase 5"
+
+connectivity:
+  support_min_fraction:
+    value: 0.6
+    unit: "share of symptomatic locations inside the hypothesis' blast radius"
+    rationale: >
+      If most (>= 60%) symptomatic locations lie in the region a fault at the hypothesised
+      root would affect, the topology corroborates the localisation.
+    source: "Engineering choice (clear majority); docs/SCORING.md section 3"
+  contradict_max_fraction:
+    value: 0.3
+    unit: "share of symptomatic locations inside the blast radius"
+    rationale: >
+      If fewer than 30% of symptoms are explainable by the root, the symptoms point elsewhere
+      and the localisation is contradicted. Between 30% and 60% the topology is inconclusive and
+      no stance is taken.
+    source: "Engineering choice (leaves an explicit 'no opinion' band); docs/SCORING.md section 3"
+  min_locations:
+    value: 2
+    unit: "symptomatic locations inside the blast radius"
+    rationale: >
+      Localisation evidence needs symptoms at two or more places: if the only symptom is the
+      root's own clue, 'all symptoms are inside the blast radius' is circular and says nothing
+      about where the fault is. Below this the agent takes no stance (no SUPPORT); contradiction
+      still applies when symptoms are elsewhere.
+    source: "Engineering rule against self-confirming evidence (D-027)"
+  max_cited_clues:
+    value: 20
+    unit: "clue ids per stance"
+    rationale: "Keeps stance messages small; the full symptom list is recoverable from the board."
+    source: "Engineering choice; documentation/size only"

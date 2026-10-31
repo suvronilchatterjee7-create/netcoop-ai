@@ -92,7 +92,7 @@ SUPPORT or CONTRADICT: one agent's evidence bearing on another agent's post.
 | field | type | required | unit | allowed values / constraints | meaning |
 |---|---|---|---|---|---|
 | `target_msg_id` | string | yes |  |  | msg_id of the CLUE or HYPOTHESIS being supported/contradicted. |
-| `clue_ids` | list[string] | yes |  | min len 1 | The sender's own CLUEs that justify the stance. |
+| `clue_ids` | list[string] | yes |  | min len 1 | CLUEs that justify the stance (the sender's own, or cited symptoms). |
 | `strength` | number | yes | ratio | >=0, <=1 | How strongly the evidence bears on the target. |
 | `reason_code` | string | yes |  |  | Machine-readable reason, e.g. 'corroborates', 'transport_healthy'. |
 | `note` | string | no (default `''`) |  |  | Short human-readable explanation. |

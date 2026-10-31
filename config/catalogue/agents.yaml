@@ -1,0 +1,26 @@
+# Specialist agents defined as data. Each becomes a plugin agent running the generic
+# specialist engine (netcoop/agents/specialist.py); responsibilities are split by metric
+# family, following the roles suggested in problem statement A3. The hypotheses an agent
+# may propose are derived from the catalogue: those whose required metrics it consumes.
+version: "1.0"
+specialists:
+  performance:
+    description: "Telemetry and Performance agent: latency, jitter, packet loss, throughput and link utilisation."
+    metrics: [latency, jitter, packet_loss, throughput, utilization]
+    optional: false
+    rationale: "Link-level performance metrics share one entity type (link) and one analysis method."
+    source: "Problem statement A3 (Telemetry and Performance Agent)"
+  infrastructure:
+    description: "Infrastructure Health agent: device status, CPU, memory, egress queue drops and interface errors."
+    metrics: [device_status, cpu_utilization, memory_utilization, egress_queue_drops, interface_in_errors, interface_out_errors]
+    optional: false
+    rationale: "Device-health metrics, including the counter trends that reveal failing interfaces."
+    source: "Problem statement A3 (Infrastructure Health Agent)"
+  wireless_service:
+    description: "Wireless and Service agent: radio quality, retransmissions, wireless loss and DNS/DHCP service health."
+    metrics: [rssi, snr, retransmission_rate, wireless_packet_loss, associated_clients, service_success_rate, service_response_time]
+    optional: true
+    rationale: >
+      Optional: it activates only when wireless or service-probe data exists. Its absence on a
+      wired-only network is expected and must not lower confidence.
+    source: "Problem statement A6 (weak Wi-Fi; DNS/DHCP failure); Part D Phase 4.5"

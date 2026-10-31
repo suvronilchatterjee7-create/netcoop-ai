@@ -19,6 +19,10 @@ from netcoop.protocol.common import BOARD, MessageType, ProtocolModel
 from netcoop.protocol.messages import Envelope, make_message
 from netcoop.protocol.payloads import ObservationPayload, TopologyPayload
 
+# Decimal places kept when agents serialise scores (stable msg_ids across platforms);
+# a presentation constant, not a tunable.
+SCORE_DIGITS = 6
+
 
 class AgentContext:
     """What an agent may see and do during one step."""

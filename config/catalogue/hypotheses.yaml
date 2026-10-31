@@ -1,0 +1,153 @@
+# Hypothesis catalogue (docs/CATALOGUE.md). The engine knows nothing about specific faults:
+# every fault is described here by WHERE its root can be (locus), WHAT evidence it predicts
+# (signature) and HOW it relates to other faults. Adding a fault = adding an entry.
+#
+# Signature element fields
+#   metric     canonical metric (data/vocabulary/metrics.yaml)
+#   expect     deviates (a significant clue in `direction` supports it)
+#              normal   (a NON-significant clue supports it; a significant one contradicts)
+#   direction  above | below | changed (level / state clues) | rising (trend clue)
+#   scope      where, relative to the candidate root, the evidence is looked for:
+#                root               the root entity itself
+#                root_upstream      upstream end device of a root link
+#                root_downstream    downstream end device of a root link
+#                root_endpoints     both end devices of a root link
+#                attached_links     links touching a root device
+#                probes_of_root     service probes of a root service (from any vantage)
+#                probes_from_root   service probes taken from the root device as vantage point
+#                probes_downstream  service probes taken from vantages below the root
+#                probe_paths        links on the paths from a root service's probing vantages to the core
+#   role       required (each required group must be satisfied to propose) | supporting
+#   group      required elements sharing a group are alternatives (any one satisfies the group)
+#   quorum     for scopes with several matching series: share of them that must agree
+version: "1.0"
+hypotheses:
+  link_congestion:
+    description: "Traffic on a link exceeds what it can forward without queueing and loss."
+    locus: {category: link}
+    signature:
+      - {metric: utilization, expect: deviates, direction: above, scope: root, role: required}
+      - {metric: egress_queue_drops, expect: deviates, direction: above, scope: root_upstream, role: supporting}
+      - {metric: latency, expect: deviates, direction: above, scope: root, role: supporting}
+      - {metric: jitter, expect: deviates, direction: above, scope: root, role: supporting}
+      - {metric: packet_loss, expect: deviates, direction: above, scope: root, role: supporting}
+      - {metric: service_response_time, expect: deviates, direction: above, scope: probes_downstream, role: supporting, quorum: 0.5}
+      - {metric: interface_in_errors, expect: normal, direction: above, scope: root_endpoints, role: supporting}
+    competes_with: [interface_fault]
+    explains: [weak_wifi_signal]
+    actions:
+      - "Identify the top traffic sources on {root} and rate-limit or reschedule bulk transfers."
+      - "Apply or review QoS so interactive traffic is prioritised on {root}."
+      - "If sustained, plan a capacity upgrade or add a parallel uplink for {root}."
+    rationale: >
+      Congestion shows first as high utilisation on the link, then as egress-queue drops on
+      the device feeding it, rising delay/jitter, tail-drop loss and slower services for clients
+      behind it; interface errors stay normal (no physical fault).
+    source: "Problem statement A6 (link congestion: high utilization, queue drops, latency); standard queueing behaviour"
+
+  interface_fault:
+    description: "Physical or link-layer fault on one link: errors, loss, instability."
+    locus: {category: link}
+    signature:
+      - {metric: interface_in_errors, expect: deviates, direction: rising, scope: root_endpoints, role: required, group: errors}
+      - {metric: interface_in_errors, expect: deviates, direction: above, scope: root_endpoints, role: required, group: errors}
+      - {metric: interface_out_errors, expect: deviates, direction: above, scope: root_endpoints, role: required, group: errors}
+      - {metric: packet_loss, expect: deviates, direction: above, scope: root, role: supporting}
+      - {metric: device_status, expect: deviates, direction: changed, scope: root_downstream, role: supporting}
+      - {metric: utilization, expect: normal, direction: above, scope: root, role: supporting}
+    competes_with: [link_congestion, hardware_failure]
+    explains: []
+    actions:
+      - "Check cabling, transceivers and port counters on both ends of {root} ({upstream} / {downstream})."
+      - "Move {root} to a spare port or replace the cable/SFP; verify duplex and speed settings match."
+      - "Monitor interface error counters after the change to confirm they stop rising."
+    rationale: >
+      A failing cable, port or transceiver produces CRC/frame errors that rise over time,
+      corrupt-frame loss and link flaps, without the high utilisation of congestion.
+    source: "Problem statement A6 (rising errors, link instability, packet loss)"
+
+  hardware_failure:
+    description: "A device fails as a whole (not a single interface)."
+    locus: {category: device}
+    signature:
+      - {metric: device_status, expect: deviates, direction: changed, scope: root, role: required}
+      - {metric: packet_loss, expect: deviates, direction: above, scope: attached_links, role: supporting, quorum: 0.5}
+      - {metric: interface_in_errors, expect: deviates, direction: above, scope: root, role: supporting}
+    competes_with: [interface_fault, device_overload]
+    explains: [interface_fault, link_congestion, weak_wifi_signal]
+    actions:
+      - "Check power, environment and hardware logs of {root}; run vendor diagnostics."
+      - "Fail over to redundant hardware for {root} if available, then schedule replacement."
+    rationale: >
+      A whole-device failure changes the device's state and affects most of its links at once,
+      unlike an interface fault, which affects one link.
+    source: "Problem statement A1 (hardware failure)"
+
+  device_overload:
+    description: "Device CPU or memory exhaustion degrades forwarding or the control plane."
+    locus: {category: device}
+    signature:
+      - {metric: cpu_utilization, expect: deviates, direction: above, scope: root, role: required, group: load}
+      - {metric: memory_utilization, expect: deviates, direction: above, scope: root, role: required, group: load}
+      - {metric: egress_queue_drops, expect: deviates, direction: above, scope: root, role: supporting}
+      - {metric: latency, expect: deviates, direction: above, scope: attached_links, role: supporting, quorum: 0.5}
+    competes_with: [hardware_failure]
+    explains: [link_congestion]
+    actions:
+      - "Identify the processes or traffic punted to the CPU on {root} (e.g. broadcast storms, routing churn)."
+      - "Apply control-plane policing and remove unnecessary features on {root}; upgrade if load is legitimate."
+    rationale: "Sustained CPU or memory exhaustion causes slow control-plane processing, drops and delay on attached links."
+    source: "Problem statement A1 (device CPU overload)"
+
+  weak_wifi_signal:
+    description: "Poor radio conditions at an access point degrade wireless service."
+    locus: {category: device, entity_types: [access_point]}
+    signature:
+      - {metric: rssi, expect: deviates, direction: below, scope: root, role: required, group: signal}
+      - {metric: snr, expect: deviates, direction: below, scope: root, role: required, group: signal}
+      - {metric: retransmission_rate, expect: deviates, direction: above, scope: root, role: supporting}
+      - {metric: wireless_packet_loss, expect: deviates, direction: above, scope: root, role: supporting}
+      - {metric: service_response_time, expect: deviates, direction: above, scope: probes_from_root, role: supporting, quorum: 0.5}
+      - {metric: utilization, expect: normal, direction: above, scope: attached_links, role: supporting}
+    competes_with: [link_congestion]
+    explains: []
+    actions:
+      - "Survey RF around {root}: check for new obstructions, interference and channel overlap."
+      - "Adjust channel/transmit power of {root} or add an access point to close the coverage gap."
+    rationale: "Weak signal (low RSSI/SNR) forces low data rates and retries, raising wireless loss and service delay, while the wired uplink stays healthy."
+    source: "Problem statement A6 (poor signal, retransmissions)"
+
+  dns_service_failure:
+    description: "DNS fails or is slow while the transport network is healthy."
+    locus: {category: service, entity_ids: [dns, domain, resolver, name_service]}
+    signature:
+      - {metric: service_success_rate, expect: deviates, direction: below, scope: probes_of_root, role: required, quorum: 0.5}
+      - {metric: service_response_time, expect: deviates, direction: above, scope: probes_of_root, role: supporting, quorum: 0.5}
+      - {metric: packet_loss, expect: normal, direction: above, scope: probe_paths, role: supporting}
+      - {metric: latency, expect: normal, direction: above, scope: probe_paths, role: supporting}
+    competes_with: [dhcp_service_failure]
+    explains: []
+    actions:
+      - "Check the DNS resolver process, logs and upstream forwarders; restart or fail over to the secondary resolver."
+      - "Verify clients receive the correct resolver address and that firewall rules allow DNS."
+    rationale: >
+      A service-side failure shows as failing/slow probes from most vantage points at once,
+      while the transport (loss, delay on the paths to the service) stays normal: the
+      'transport healthy, service fails' pattern.
+    source: "Problem statement A6 (DNS or DHCP failure: service-specific connectivity problems)"
+
+  dhcp_service_failure:
+    description: "DHCP fails or is slow while the transport network is healthy."
+    locus: {category: service, entity_ids: [dhcp, bootp, address_service]}
+    signature:
+      - {metric: service_success_rate, expect: deviates, direction: below, scope: probes_of_root, role: required, quorum: 0.5}
+      - {metric: service_response_time, expect: deviates, direction: above, scope: probes_of_root, role: supporting, quorum: 0.5}
+      - {metric: packet_loss, expect: normal, direction: above, scope: probe_paths, role: supporting}
+      - {metric: latency, expect: normal, direction: above, scope: probe_paths, role: supporting}
+    competes_with: [dns_service_failure]
+    explains: []
+    actions:
+      - "Check the DHCP server process, scope utilisation (address pool exhaustion) and relay configuration."
+      - "Fail over to the standby DHCP server; verify helper/relay addresses on the access layer."
+    rationale: "As for DNS: probes fail across vantage points while the transport stays healthy."
+    source: "Problem statement A6 (DNS or DHCP failure)"

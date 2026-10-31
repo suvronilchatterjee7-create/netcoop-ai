@@ -123,9 +123,39 @@ for no information. ACK messages remain available for external agents and transp
 Until the documented scoring method exists (Phase 5), the pipeline's only honest verdict is
 `insufficient_evidence`. A ranking by proposer confidence is included for transparency only.
 
+## D-024 · 2026-11-01 · Specialists are data on one generic engine
+The performance, infrastructure and wireless/service agents differ only in their cards
+(config/catalogue/agents.yaml). Proposable hypotheses are derived from the catalogue. This
+keeps every fault-specific fact in config and makes adding agents and faults code-free.
+Connectivity is code because its analysis is graph reasoning, not metric detection.
+
+## D-025 · 2026-11-01 · Three detection tests, not one
+Pooled calibration bands were measured to be too wide at high noise: normal DNS success goes
+down to about 46% and RSSI to about -86 dBm. The bands alone would miss most faults on clean
+runs. We added (a) cited thresholds with a standard-error gate, and (b) an in-window change
+test that uses the run's own noise and autocorrelation. Thresholds come from training-seed
+sweeps (config rationale). The held-out seeds were used only for the reported measurements.
+
+## D-026 · 2026-11-01 · AR(1)-corrected standard errors
+Found by test: noise-free normal runs (pure AR(1) baseline) produced spurious CPU changes,
+because an i.i.d. SE understates autocorrelated noise. Each segment's SE is now inflated by
+sqrt((1+rho)/(1-rho)) with rho = lag-1 autocorrelation, capped at 0.9.
+
+## D-027 · 2026-11-01 · No self-confirming localisation
+Connectivity supports a hypothesis only when symptoms at two or more distinct locations fall
+inside its blast radius. Found in a normal run, where a lone CPU blip was "100% inside" its
+own device's radius.
+
+## D-028 · 2026-11-01 · Negative evidence is posted
+Non-significant clues are posted. Without them, `expect: normal` signature elements (e.g.
+"transport healthy" for DNS failure, "no interface errors" for congestion) could never be
+assessed, and contradictions would be impossible.
+
 ## Open questions
 - **Q-001** ~~Sweep sizes~~ resolved by D-005.
 - **Q-002** Canonical schema: derive from `docs/DATA_PROFILE.md` (Phase 1). Re-check if the
   organiser generator is later provided.
+- **Q-004** Local-confidence weights (2/1) and connectivity fractions (0.6/0.3) are
+  engineering choices; Phase 5 fitting may replace them.
 - **Q-003** Ask the organisers whether their generator will be released; if so, re-run
   `make generate && make profile` and diff the profile against the current one.

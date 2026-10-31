@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 
+### Phase 4 — Specialist agents
+- `netcoop.detection`: calibrated percentile bands with robust z, cited thresholds with a
+  standard-error gate, an in-window median-shift test with AR(1)-corrected SE, Mann-Kendall
+  and Theil-Sen trends, enum-state fractions, and a persistence requirement.
+- `netcoop calibrate`: derives `config/baselines.yaml` from training-seed normal runs only,
+  each entry with a generated rationale and source.
+- `config/catalogue/hypotheses.yaml`: 7 faults with locus, signature, scopes, relations,
+  parametrised actions, rationale and source. `config/catalogue/agents.yaml` defines the specialists.
+- Generic specialist engine (clues, proposals by scope inversion, capability requests,
+  stances, responses); agents performance, infrastructure, wireless_service (optional) and
+  connectivity (blast radius, lowest common upstream).
+- `config.resolve_key`; config hash now covers config/catalogue.
+- Docs: AGENTS.md, SCORING.md sections 2-3, decisions D-024 to D-028.
+
 ### Phase 3 — Case board and orchestrator
 - `netcoop.board.Board`: append-only versioned store with idempotency, causal integrity,
   depth-based loop prevention, per-agent round budget, indexed queries and filtered subscriptions.

@@ -108,12 +108,25 @@ def get_value(cfg: dict[str, Any], dotted: str) -> Any:
     raise ConfigError(f"{dotted} is a group, not a parameter entry")
 
 
+def resolve_key(dotted: str, config_dir: Path | None = None) -> Any:
+    """Look up a full key such as 'detection.thresholds.rssi' (file name = first segment).
+
+    Used to trace a clue's ``comparison.config_key`` back to the justified config entry.
+    """
+    name, _, rest = dotted.partition(".")
+    cfg = load_config(name, config_dir)
+    try:
+        return get_value(cfg, rest)
+    except ConfigError:
+        return get_value(cfg, dotted)  # files whose top-level key repeats the file name
+
+
 def config_hash(config_dir: Path | None = None) -> str:
     """Stable SHA-256 over all config files, for run manifests."""
     root = config_dir or CONFIG_DIR
     h = hashlib.sha256()
-    for path in sorted(root.glob("*.yaml")):
-        h.update(path.name.encode())
+    for path in sorted(root.rglob("*.yaml")):  # includes config/catalogue/
+        h.update(path.relative_to(root).as_posix().encode())
         data = yaml.safe_load(path.read_text(encoding="utf-8"))
         h.update(json.dumps(data, sort_keys=True, default=str).encode())
     return h.hexdigest()

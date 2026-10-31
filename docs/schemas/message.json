@@ -2488,7 +2488,7 @@
       "description": "SUPPORT or CONTRADICT: one agent's evidence bearing on another agent's post.",
       "properties": {
         "clue_ids": {
-          "description": "The sender's own CLUEs that justify the stance.",
+          "description": "CLUEs that justify the stance (the sender's own, or cited symptoms).",
           "items": {
             "type": "string"
           },

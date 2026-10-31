@@ -133,6 +133,19 @@ def _cmd_replay(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_calibrate(args: argparse.Namespace) -> int:
+    from netcoop.calibration import BASELINES, calibrate, seed_split
+
+    train, hold = seed_split()
+    doc = calibrate(args.input, BASELINES, limit=args.limit)
+    n = sum(len(v) for v in doc["baselines"].values())
+    print(
+        f"wrote {n} baselines for {len(doc['baselines'])} metrics to {BASELINES} "
+        f"(training seeds {train}; held out {hold})"
+    )
+    return 0
+
+
 def _not_yet(phase: str) -> int:
     print(f"error: this command is implemented in {phase}", file=sys.stderr)
     return 3
@@ -184,8 +197,12 @@ def build_parser() -> argparse.ArgumentParser:
     rp.add_argument("trace", type=Path)
     rp.set_defaults(func=_cmd_replay)
 
+    ca = sub.add_parser("calibrate", help="derive normal baselines from training-seed normal runs")
+    ca.add_argument("--input", type=Path, default=DEFAULT_OUT)
+    ca.add_argument("--limit", type=int, help="use at most this many runs (quick check)")
+    ca.set_defaults(func=_cmd_calibrate)
+
     for name, phase in [
-        ("calibrate", "Phase 4/5"),
         ("eval", "Phase 8"),
     ]:
         sp = sub.add_parser(name, help=f"(coming in {phase})")

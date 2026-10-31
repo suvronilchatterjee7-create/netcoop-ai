@@ -1,0 +1,157 @@
+description: >
+  Anomaly-detection parameters shared by all specialist agents (docs/SCORING.md section 2).
+  Statistical baselines themselves are produced from data by `netcoop calibrate` into
+  config/baselines.yaml; this file holds only method parameters and cited thresholds.
+
+window:
+  recent_fraction:
+    value: 0.5
+    unit: "fraction of the series (most recent samples)"
+    rationale: >
+      A diagnosis is requested while the problem is happening, so the evidence is judged on
+      the most recent half of each series. Half balances responsiveness (a fault that began
+      mid-window still dominates) against noise (enough samples for a robust median).
+    source: "Engineering choice; tested against fault onsets across the generated suite"
+  min_samples:
+    value: 5
+    unit: "samples"
+    rationale: "Below five samples a median and a persistence fraction are too coarse to call anything significant."
+    source: "Common minimum for robust location estimates"
+
+significance:
+  band_quantile:
+    value: 0.995
+    unit: "quantile of the calibrated normal distribution"
+    rationale: >
+      A sample is abnormal when it lies beyond the 99.5th (or 0.5th, for lower-is-worse
+      metrics) percentile of samples from normal operation of the same metric and device
+      type. Per sample that is a 0.5% false-alarm rate before the persistence requirement.
+    source: "Percentile band method (Part C1.2); quantile chosen to keep per-sample false alarms at 0.5%"
+  min_persistence:
+    value: 0.5
+    unit: "fraction of recent samples"
+    rationale: >
+      Evidence is significant only if a majority of recent samples are abnormal, so single
+      spikes and short bursts are ignored. With an independent 0.5% per-sample rate the chance
+      of >= 50% of 15 samples exceeding by chance is negligible (binomial tail < 1e-20).
+    source: "Persistence check (Part D Phase 4.1); binomial tail bound"
+  z_at_band:
+    value: 2.576
+    unit: "standard-normal z"
+    rationale: >
+      The z value of the band quantile (99.5% one-sided). Used to turn the band width into a
+      spread estimate when the MAD is zero (e.g. counters that are normally 0), so deviations
+      remain finite and comparable across metrics.
+    source: "Standard normal quantile Phi^-1(0.995)"
+  max_deviation:
+    value: 50.0
+    unit: "robust z"
+    rationale: >
+      Deviations are capped so a counter jumping from 0 to thousands cannot dominate
+      correlation by sheer magnitude; beyond ~50 sigma the evidence is 'certainly abnormal'
+      either way.
+    source: "Engineering choice (bounded evidence weight)"
+
+change:
+  min_z:
+    value: 5.0
+    unit: "z of the median shift (shift / sqrt(SE_recent^2 + SE_early^2))"
+    rationale: >
+      In-window change test: the recent median must differ from the series' own earlier median
+      by 5 standard errors of the difference, AND a majority of recent samples must lie beyond
+      the earlier extreme. Each segment's SE = 1.2533 * 1.4826 * MAD / sqrt(n) * sqrt((1+rho)/(1-rho))
+      uses that segment's own noise level and lag-1 autocorrelation rho (AR(1) variance
+      inflation), so the test adapts to noisy, clean and autocorrelated data. Chosen on TRAINING
+      seeds (0-2) by sweeping 2/3/4/5/6: false-positive rate of findings on normal runs
+      1.00/0.38/0.17/0.09/0.06 % vs required-signature detection on fault targets
+      85.2/81.5/79.6/79.6/77.8 %; 5 has the power of 4 at half the false alarms.
+    source: "Two-sample test on medians with AR(1) effective-sample-size correction; threshold by sweep on training seeds (D-025)"
+
+threshold_test:
+  min_standard_errors:
+    value: 2.0
+    unit: "standard errors of the recent median"
+    rationale: >
+      A cited threshold is only considered exceeded when the recent median lies beyond it by
+      more than two standard errors of that median (SE = 1.2533 * sigma / sqrt(n), sigma from
+      the recent samples' MAD). Without this, a noisy series whose true level sits just inside
+      the threshold crosses it by chance (measured: 0.96% of findings on held-out normal runs,
+      all from service_success_rate at the highest noise level).
+    source: "Asymptotic standard error of the sample median (1.2533 sigma / sqrt n); ~97.7% one-sided confidence"
+
+trend:
+  metrics:
+    catalog: [interface_in_errors, interface_out_errors, egress_queue_drops]
+    rationale: "Counters whose *rising* behaviour is itself a fault signature (problem statement A6: 'rising errors')."
+    source: "Problem statement A6; hypothesis catalogue signatures with direction 'rising'"
+  alpha:
+    value: 0.01
+    unit: "two-sided p-value"
+    rationale: "Mann-Kendall trend test significance level; strict because it is applied to many series per incident."
+    source: "Mann (1945), Kendall (1975); conventional 1% level"
+  min_samples:
+    value: 10
+    unit: "samples"
+    rationale: "The normal approximation of the Mann-Kendall statistic is adequate from about 10 samples."
+    source: "Hipel & McLeod (1994), Time Series Modelling of Water Resources"
+
+enum_health:
+  device_status:
+    value: [up]
+    unit: "healthy enum values"
+    rationale: "Any status other than 'up' (degraded, down) counts as abnormal for device_status."
+    source: "Vocabulary definition of device_status (data/vocabulary/metrics.yaml)"
+
+# Cited absolute thresholds. A metric beyond its cited threshold for a majority of recent
+# samples is significant even if the statistical baseline is not (or is missing).
+thresholds:
+  latency:
+    value: 150.0
+    unit: ms
+    rationale: "One-way delay above 150 ms degrades interactive applications."
+    source: "ITU-T G.114 (05/2003), one-way transmission time"
+  jitter:
+    value: 30.0
+    unit: ms
+    rationale: "Jitter above 30 ms impairs real-time traffic."
+    source: "Cisco QoS SRND guidance for voice (jitter <= 30 ms)"
+  packet_loss:
+    value: 1.0
+    unit: percent
+    rationale: "Loss above 1% visibly harms voice and TCP throughput."
+    source: "Cisco QoS SRND (voice loss <= 1%); ITU-T Y.1541 class 0/1 IPLR 1e-3 is stricter"
+  utilization:
+    value: 80.0
+    unit: percent
+    rationale: "Sustained utilisation above ~80% leads to queueing delay and drops on packet links."
+    source: "Common capacity-planning guidance (70-80% sustained utilisation trigger)"
+  cpu_utilization:
+    value: 90.0
+    unit: percent
+    rationale: "Control-plane CPU above 90% risks protocol timeouts and slow forwarding of punted traffic."
+    source: "Vendor guidance (e.g. Cisco 'Troubleshooting High CPU Utilization')"
+  memory_utilization:
+    value: 90.0
+    unit: percent
+    rationale: "Memory above 90% risks allocation failures and process crashes."
+    source: "Vendor guidance (common NMS default alert at 90%)"
+  rssi:
+    value: -70.0
+    unit: dBm
+    rationale: "Below about -70 dBm data rates fall sharply and roaming/retries increase (-67 dBm is the voice-grade design minimum)."
+    source: "Cisco Wireless LAN design guides; Aruba VHD VRD (-67 dBm voice, -70 dBm data)"
+  snr:
+    value: 20.0
+    unit: dB
+    rationale: "SNR below ~20 dB limits 802.11 data rates; 25 dB is the usual design target."
+    source: "Cisco / Aruba WLAN design guidance (SNR >= 25 dB target, 20 dB minimum for data)"
+  retransmission_rate:
+    value: 15.0
+    unit: percent
+    rationale: "802.11 retry rates above ~15% indicate a poor radio channel."
+    source: "WLAN troubleshooting guidance (retry rate > 10-15% considered problematic)"
+  service_success_rate:
+    value: 95.0
+    unit: percent
+    rationale: "Fewer than 95% successful DNS/DHCP exchanges is a user-visible service failure."
+    source: "Engineering choice aligned with common SLO practice for core services"

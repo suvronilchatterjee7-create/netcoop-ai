@@ -1,0 +1,615 @@
+baselines:
+  associated_clients:
+    access_point:
+      rationale: Normal-operation distribution of associated_clients for access_point entities; p_low/p_high are
+        the 0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: count
+      value:
+        mad: 3.0
+        median: 12.0
+        n: 40490
+        p_high: 25.0
+        p_low: 2.0
+    category:device:
+      rationale: Normal-operation distribution of associated_clients for any device entities; p_low/p_high are the
+        0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: count
+      value:
+        mad: 3.0
+        median: 12.0
+        n: 40490
+        p_high: 25.0
+        p_low: 2.0
+  cpu_utilization:
+    access_point:
+      rationale: Normal-operation distribution of cpu_utilization for access_point entities; p_low/p_high are the
+        0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: percent
+      value:
+        mad: 3.9325
+        median: 21.7325
+        n: 40474
+        p_high: 40.1283
+        p_low: 7.33883
+    category:device:
+      rationale: Normal-operation distribution of cpu_utilization for any device entities; p_low/p_high are the
+        0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: percent
+      value:
+        mad: 3.9465
+        median: 21.753
+        n: 76234
+        p_high: 40.466
+        p_low: 7.367
+    router:
+      rationale: Normal-operation distribution of cpu_utilization for router entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: percent
+      value:
+        mad: 4.023
+        median: 21.765
+        n: 2651
+        p_high: 39.4562
+        p_low: 7.15425
+    server:
+      rationale: Normal-operation distribution of cpu_utilization for server entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: percent
+      value:
+        mad: 3.961
+        median: 21.72
+        n: 5318
+        p_high: 40.0263
+        p_low: 7.23546
+    switch:
+      rationale: Normal-operation distribution of cpu_utilization for switch entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: percent
+      value:
+        mad: 3.954
+        median: 21.779
+        n: 27791
+        p_high: 40.9665
+        p_low: 7.4048
+  device_status:
+    access_point:
+      rationale: Normal-operation distribution of device_status for access_point entities; p_low/p_high are the
+        0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: ratio (abnormal fraction)
+      value:
+        mad: 0.0
+        median: 0.0
+        n: 1658
+        p_high: 0.0
+        p_low: 0.0
+    category:device:
+      rationale: Normal-operation distribution of device_status for any device entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: ratio (abnormal fraction)
+      value:
+        mad: 0.0
+        median: 0.0
+        n: 3118
+        p_high: 0.0
+        p_low: 0.0
+    router:
+      rationale: Normal-operation distribution of device_status for router entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: ratio (abnormal fraction)
+      value:
+        mad: 0.0
+        median: 0.0
+        n: 108
+        p_high: 0.0
+        p_low: 0.0
+    server:
+      rationale: Normal-operation distribution of device_status for server entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: ratio (abnormal fraction)
+      value:
+        mad: 0.0
+        median: 0.0
+        n: 216
+        p_high: 0.0
+        p_low: 0.0
+    switch:
+      rationale: Normal-operation distribution of device_status for switch entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: ratio (abnormal fraction)
+      value:
+        mad: 0.0
+        median: 0.0
+        n: 1136
+        p_high: 0.0
+        p_low: 0.0
+  egress_queue_drops:
+    access_point:
+      rationale: Normal-operation distribution of egress_queue_drops for access_point entities; p_low/p_high are
+        the 0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: count
+      value:
+        mad: 0.0
+        median: 0.0
+        n: 40565
+        p_high: 3.0
+        p_low: 0.0
+    category:device:
+      rationale: Normal-operation distribution of egress_queue_drops for any device entities; p_low/p_high are the
+        0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: count
+      value:
+        mad: 0.0
+        median: 0.0
+        n: 76305
+        p_high: 3.0
+        p_low: 0.0
+    router:
+      rationale: Normal-operation distribution of egress_queue_drops for router entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: count
+      value:
+        mad: 0.0
+        median: 0.0
+        n: 2649
+        p_high: 3.0
+        p_low: 0.0
+    server:
+      rationale: Normal-operation distribution of egress_queue_drops for server entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: count
+      value:
+        mad: 0.0
+        median: 0.0
+        n: 5290
+        p_high: 3.0
+        p_low: 0.0
+    switch:
+      rationale: Normal-operation distribution of egress_queue_drops for switch entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: count
+      value:
+        mad: 0.0
+        median: 0.0
+        n: 27801
+        p_high: 3.0
+        p_low: 0.0
+  interface_in_errors:
+    access_point:
+      rationale: Normal-operation distribution of interface_in_errors for access_point entities; p_low/p_high are
+        the 0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: count
+      value:
+        mad: 0.0
+        median: 0.0
+        n: 40426
+        p_high: 2.0
+        p_low: 0.0
+    category:device:
+      rationale: Normal-operation distribution of interface_in_errors for any device entities; p_low/p_high are
+        the 0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: count
+      value:
+        mad: 0.0
+        median: 0.0
+        n: 76046
+        p_high: 2.0
+        p_low: 0.0
+    router:
+      rationale: Normal-operation distribution of interface_in_errors for router entities; p_low/p_high are the
+        0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: count
+      value:
+        mad: 0.0
+        median: 0.0
+        n: 2632
+        p_high: 2.0
+        p_low: 0.0
+    server:
+      rationale: Normal-operation distribution of interface_in_errors for server entities; p_low/p_high are the
+        0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: count
+      value:
+        mad: 0.0
+        median: 0.0
+        n: 5289
+        p_high: 2.0
+        p_low: 0.0
+    switch:
+      rationale: Normal-operation distribution of interface_in_errors for switch entities; p_low/p_high are the
+        0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: count
+      value:
+        mad: 0.0
+        median: 0.0
+        n: 27699
+        p_high: 2.0
+        p_low: 0.0
+  interface_out_errors:
+    access_point:
+      rationale: Normal-operation distribution of interface_out_errors for access_point entities; p_low/p_high are
+        the 0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: count
+      value:
+        mad: 0.0
+        median: 0.0
+        n: 40556
+        p_high: 2.0
+        p_low: 0.0
+    category:device:
+      rationale: Normal-operation distribution of interface_out_errors for any device entities; p_low/p_high are
+        the 0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: count
+      value:
+        mad: 0.0
+        median: 0.0
+        n: 76363
+        p_high: 2.0
+        p_low: 0.0
+    router:
+      rationale: Normal-operation distribution of interface_out_errors for router entities; p_low/p_high are the
+        0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: count
+      value:
+        mad: 0.0
+        median: 0.0
+        n: 2657
+        p_high: 2.0
+        p_low: 0.0
+    server:
+      rationale: Normal-operation distribution of interface_out_errors for server entities; p_low/p_high are the
+        0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: count
+      value:
+        mad: 0.0
+        median: 0.0
+        n: 5320
+        p_high: 2.0
+        p_low: 0.0
+    switch:
+      rationale: Normal-operation distribution of interface_out_errors for switch entities; p_low/p_high are the
+        0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: count
+      value:
+        mad: 0.0
+        median: 0.0
+        n: 27830
+        p_high: 2.0
+        p_low: 0.0
+  jitter:
+    category:link:
+      rationale: Normal-operation distribution of jitter for any link entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: ms
+      value:
+        mad: 0.038
+        median: 0.197
+        n: 73594
+        p_high: 0.381
+        p_low: 0.06
+    link:
+      rationale: Normal-operation distribution of jitter for link entities; p_low/p_high are the 0.500%/99.5% quantiles
+        used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: ms
+      value:
+        mad: 0.038
+        median: 0.197
+        n: 73594
+        p_high: 0.381
+        p_low: 0.06
+  latency:
+    category:link:
+      rationale: Normal-operation distribution of latency for any link entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: ms
+      value:
+        mad: 0.154
+        median: 0.792
+        n: 73633
+        p_high: 1.521
+        p_low: 0.232
+    link:
+      rationale: Normal-operation distribution of latency for link entities; p_low/p_high are the 0.500%/99.5% quantiles
+        used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: ms
+      value:
+        mad: 0.154
+        median: 0.792
+        n: 73633
+        p_high: 1.521
+        p_low: 0.232
+  memory_utilization:
+    access_point:
+      rationale: Normal-operation distribution of memory_utilization for access_point entities; p_low/p_high are
+        the 0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: percent
+      value:
+        mad: 4.234
+        median: 44.837
+        n: 40514
+        p_high: 72.3121
+        p_low: 20.172
+    category:device:
+      rationale: Normal-operation distribution of memory_utilization for any device entities; p_low/p_high are the
+        0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: percent
+      value:
+        mad: 4.222
+        median: 44.862
+        n: 76252
+        p_high: 72.1586
+        p_low: 19.8443
+    router:
+      rationale: Normal-operation distribution of memory_utilization for router entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: percent
+      value:
+        mad: 4.157
+        median: 44.793
+        n: 2671
+        p_high: 70.7441
+        p_low: 21.8826
+    server:
+      rationale: Normal-operation distribution of memory_utilization for server entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: percent
+      value:
+        mad: 4.2415
+        median: 44.8215
+        n: 5302
+        p_high: 73.3679
+        p_low: 19.7539
+    switch:
+      rationale: Normal-operation distribution of memory_utilization for switch entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: percent
+      value:
+        mad: 4.21
+        median: 44.909
+        n: 27765
+        p_high: 71.5986
+        p_low: 19.2381
+  packet_loss:
+    category:link:
+      rationale: Normal-operation distribution of packet_loss for any link entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: percent
+      value:
+        mad: 0.007
+        median: 0.02
+        n: 73622
+        p_high: 0.05
+        p_low: 0.0
+    link:
+      rationale: Normal-operation distribution of packet_loss for link entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: percent
+      value:
+        mad: 0.007
+        median: 0.02
+        n: 73622
+        p_high: 0.05
+        p_low: 0.0
+  retransmission_rate:
+    access_point:
+      rationale: Normal-operation distribution of retransmission_rate for access_point entities; p_low/p_high are
+        the 0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: percent
+      value:
+        mad: 0.78
+        median: 3.937
+        n: 40631
+        p_high: 7.6118
+        p_low: 1.18615
+    category:device:
+      rationale: Normal-operation distribution of retransmission_rate for any device entities; p_low/p_high are
+        the 0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: percent
+      value:
+        mad: 0.78
+        median: 3.937
+        n: 40631
+        p_high: 7.6118
+        p_low: 1.18615
+  rssi:
+    access_point:
+      rationale: Normal-operation distribution of rssi for access_point entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: dBm
+      value:
+        mad: 3.923
+        median: -54.967
+        n: 40591
+        p_high: -24.9549
+        p_low: -85.903
+    category:device:
+      rationale: Normal-operation distribution of rssi for any device entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: dBm
+      value:
+        mad: 3.923
+        median: -54.967
+        n: 40591
+        p_high: -24.9549
+        p_low: -85.903
+  service_response_time:
+    category:service:
+      rationale: Normal-operation distribution of service_response_time for any service entities; p_low/p_high are
+        the 0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: ms
+      value:
+        mad: 1.548
+        median: 7.888
+        n: 120915
+        p_high: 15.0487
+        p_low: 2.369
+    service:
+      rationale: Normal-operation distribution of service_response_time for service entities; p_low/p_high are the
+        0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: ms
+      value:
+        mad: 1.548
+        median: 7.888
+        n: 120915
+        p_high: 15.0487
+        p_low: 2.369
+  service_success_rate:
+    category:service:
+      rationale: Normal-operation distribution of service_success_rate for any service entities; p_low/p_high are
+        the 0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: percent
+      value:
+        mad: 0.504
+        median: 99.496
+        n: 120702
+        p_high: 100.0
+        p_low: 45.6075
+    service:
+      rationale: Normal-operation distribution of service_success_rate for service entities; p_low/p_high are the
+        0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: percent
+      value:
+        mad: 0.504
+        median: 99.496
+        n: 120702
+        p_high: 100.0
+        p_low: 45.6075
+  snr:
+    access_point:
+      rationale: Normal-operation distribution of snr for access_point entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: dB
+      value:
+        mad: 3.172
+        median: 34.864
+        n: 40497
+        p_high: 55.6503
+        p_low: 15.908
+    category:device:
+      rationale: Normal-operation distribution of snr for any device entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: dB
+      value:
+        mad: 3.172
+        median: 34.864
+        n: 40497
+        p_high: 55.6503
+        p_low: 15.908
+  throughput:
+    category:link:
+      rationale: Normal-operation distribution of throughput for any link entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: Mbit/s
+      value:
+        mad: 93.3405
+        median: 307.13
+        n: 73722
+        p_high: 4353.42
+        p_low: 54.8543
+    link:
+      rationale: Normal-operation distribution of throughput for link entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: Mbit/s
+      value:
+        mad: 93.3405
+        median: 307.13
+        n: 73722
+        p_high: 4353.42
+        p_low: 54.8543
+  utilization:
+    category:link:
+      rationale: Normal-operation distribution of utilization for any link entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: percent
+      value:
+        mad: 6.723
+        median: 27.364
+        n: 73689
+        p_high: 58.598
+        p_low: 5.35272
+    link:
+      rationale: Normal-operation distribution of utilization for link entities; p_low/p_high are the 0.500%/99.5%
+        quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: percent
+      value:
+        mad: 6.723
+        median: 27.364
+        n: 73689
+        p_high: 58.598
+        p_low: 5.35272
+  wireless_packet_loss:
+    access_point:
+      rationale: Normal-operation distribution of wireless_packet_loss for access_point entities; p_low/p_high are
+        the 0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: percent
+      value:
+        mad: 0.074
+        median: 0.295
+        n: 40509
+        p_high: 0.631
+        p_low: 0.04
+    category:device:
+      rationale: Normal-operation distribution of wireless_packet_loss for any device entities; p_low/p_high are
+        the 0.500%/99.5% quantiles used as the abnormal band.
+      source: derived empirically via `netcoop calibrate` on 108 'normal' runs, training seeds [0, 1, 2], 2026-10-31
+      unit: percent
+      value:
+        mad: 0.074
+        median: 0.295
+        n: 40509
+        p_high: 0.631
+        p_low: 0.04
+description: GENERATED by `netcoop calibrate` - do not edit by hand. Normal-operation baselines per (metric, entity
+  type) with an entity-category fallback. Re-run after changing the generator or the Translator.
