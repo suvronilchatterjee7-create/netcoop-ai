@@ -6,7 +6,7 @@ Specialised agents analyse different aspects of network health, exchange structu
 messages on a shared case board, reconcile their findings and produce one explainable
 diagnostic report, including an honest `insufficient_evidence` outcome.
 
-> **Status:** Phases 0–6 done (data, protocol, Translator, board + orchestrator, specialist agents, calibrated correlation, courtroom tie-break). Full reporting and evaluation land next.
+> **Status:** Phases 0–7 done (data, protocol, Translator, board + orchestrator, specialist agents, calibrated correlation, courtroom tie-break, reporting). Evaluation harness lands next.
 
 ## Architecture (planned)
 
@@ -47,7 +47,7 @@ netcoop schemas                                          # re-export JSON Schema
 
 Docs: [PROTOCOL.md](docs/PROTOCOL.md) (message protocol), [TRANSLATOR.md](docs/TRANSLATOR.md)
 (ingestion and validation), [SCORING.md](docs/SCORING.md) (every formula), [CALIBRATION.md](docs/CALIBRATION.md) (calibration and decision metrics),
-[ORCHESTRATION.md](docs/ORCHESTRATION.md) (board, rounds, trace, replay), [AGENTS.md](docs/AGENTS.md) (agents, catalogue), [COURTROOM.md](docs/COURTROOM.md) (tie-break), [DECISIONS.md](docs/DECISIONS.md) (decision log).
+[ORCHESTRATION.md](docs/ORCHESTRATION.md) (board, rounds, trace, replay), [AGENTS.md](docs/AGENTS.md) (agents, catalogue), [COURTROOM.md](docs/COURTROOM.md) (tie-break), [REPORTING.md](docs/REPORTING.md) (report format, [examples](docs/examples/)), [DECISIONS.md](docs/DECISIONS.md) (decision log).
 
 Without `make` (e.g. on Windows): `python -m venv .venv`, activate it, then
 `pip install -e ".[dev]"` and use the `netcoop` command directly.

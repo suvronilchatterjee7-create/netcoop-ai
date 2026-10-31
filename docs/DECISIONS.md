@@ -218,6 +218,24 @@ out of the main sweep and the fit (config `ambiguity_suite`, fresh seeds 100-109
 thus measures behaviour on faults the learned model never saw, and the new seeds give a
 clean, never-touched evaluation set (partly addresses Q-005).
 
+## D-039 · 2026-11-01 · Report confidence means confidence in what is asserted
+The first rendering of a courtroom deferral read "Confidence: 1.00 (low)": the correlator's
+confidence in an explanation the courtroom had rejected. A7 `confidence` is now the
+calibrated confidence in the asserted outcome (root cause or 'no fault'), and 0.0 with
+category `none` when nothing is asserted. The contenders' calibrated confidences stay
+visible under `x_netcoop.alternatives_scored`.
+
+## D-040 · 2026-11-01 · Evidence comes from the recomputed signature
+Supporting evidence is taken from the correlator's independence-aware recomputation of the
+reported candidate's signature, not from the proposer's own supporting-clue list. The report
+therefore shows exactly the evidence the decision rested on, including other agents'
+corroboration and 'stayed normal' evidence.
+
+## D-041 · 2026-11-01 · Remediation is simulated only
+`simulated_remediation` lists, per action, the effects expected if the diagnosis is right
+(the metric returning to its cited baseline or threshold). Nothing is executed (`applied:
+false`), per the brief's rule against touching campus infrastructure.
+
 ## Open questions
 - **Q-001** ~~Sweep sizes~~ resolved by D-005.
 - **Q-002** Canonical schema: derive from `docs/DATA_PROFILE.md` (Phase 1). Re-check if the

@@ -35,7 +35,6 @@ from netcoop.courtroom.courtroom import CARDS as COURT_CARDS
 from netcoop.courtroom.courtroom import DEFENSE, JUDGE, PROSECUTOR, Case, Courtroom
 from netcoop.orchestrator.stages import (
     Correlator,
-    ProvisionalReporter,
     Reporter,
     RunInfo,
 )
@@ -67,6 +66,7 @@ from netcoop.protocol.payloads import (
 )
 from netcoop.protocol.report import Report, RunManifest
 from netcoop.protocol.vocabulary import get_vocabulary
+from netcoop.reporting.markdown import render as render_markdown
 from netcoop.translator.translator import TranslationResult, Translator
 from netcoop.translator.translator import capability_card as translator_card
 
@@ -133,7 +133,13 @@ class Orchestrator:
 
             correlator = Correlator()
         self.correlator = correlator
-        self.reporter = reporter or ProvisionalReporter()
+        if reporter is None:
+            from netcoop.reporting.reporter import (
+                Reporter as FullReporter,  # lazy: avoids an import cycle
+            )
+
+            reporter = FullReporter()
+        self.reporter = reporter
         self.courtroom = Courtroom() if courtroom else None
         self.translator = translator or Translator()
         self.max_rounds = max_rounds or int(get_value(cfg, "rounds.max_rounds"))
@@ -278,6 +284,7 @@ class Orchestrator:
             (run_dir / "report.json").write_text(
                 report.model_dump_json(indent=2) + "\n", encoding="utf-8"
             )
+            (run_dir / "report.md").write_text(render_markdown(report), encoding="utf-8")
         emit(Event("done", r_final, {"status": report.status.value}))
         return RunResult(report, board, info, translation, run_dir, manifest_data)
 

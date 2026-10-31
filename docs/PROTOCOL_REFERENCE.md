@@ -339,6 +339,8 @@ Directed query for targeted evidence, routed by capability.
 | `data_quality` | [DataQualitySummary](#dataqualitysummary) or null | no (default `None`) |  |  | Input quality summary. |
 | `courtroom` | [CourtroomSummary](#courtroomsummary) or null | no (default `None`) |  |  | Tie-break summary, if relevant. |
 | `missing_evidence` | list[string] | no (default `()`) |  |  | What extra data would resolve an abstention. |
+| `score_breakdown` | list[[ScoreTerm](#scoreterm)] | no (default `()`) |  |  | Itemised log-odds of the reported (or best) candidate. |
+| `simulated_remediation` | list[[SimulatedAction](#simulatedaction)] | no (default `()`) |  |  | Dry-run effects of the recommended actions. |
 | `manifest` | [RunManifest](#runmanifest) or null | no (default `None`) |  |  | Reproducibility manifest. |
 
 ### EvidenceProvenance
@@ -388,6 +390,26 @@ Directed query for targeted evidence, routed by capability.
 | `outcome` | string | no (default `''`) |  |  | 'resolved' or 'deferred'. |
 | `summary` | string | no (default `''`) |  |  | Short explanation of the ruling. |
 | `transcript_msg_ids` | list[string] | no (default `()`) |  |  | Trace messages of the debate. |
+
+### ScoreTerm
+
+
+
+| field | type | required | unit | allowed values / constraints | meaning |
+|---|---|---|---|---|---|
+| `term` | string | yes |  |  | Score component: 'prior', a signature element, 'analytic stance' or 'evidence quality'. |
+| `status` | string | yes |  |  | Status of the component (satisfied / violated / unknown, support / none, bin). |
+| `contribution` | number | yes | log-odds |  | Contribution to the candidate's log-odds score. |
+
+### SimulatedAction
+
+
+
+| field | type | required | unit | allowed values / constraints | meaning |
+|---|---|---|---|---|---|
+| `action` | string | yes |  |  | Recommended action (same text as in recommended_actions). |
+| `expected_effects` | list[string] | yes |  |  | What should change if the diagnosis is right and the action works. |
+| `applied` | boolean | no (default `False`) |  |  | Always false: remediation is simulated, never executed. |
 
 ### RunManifest
 

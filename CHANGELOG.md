@@ -2,6 +2,19 @@
 
 ## [Unreleased]
 
+### Phase 7 — Reporting
+- `netcoop.reporting.reporter.Reporter` (now the default): evidence from the recomputed
+  signature, interpretations generated from each clue's evidence model, catalogue actions
+  filled with real entities, conditional actions and data collection when abstaining,
+  aggregated limitations, confidence in the asserted outcome.
+- Report extensions: `score_breakdown` (itemised log-odds), `simulated_remediation` (dry run),
+  data-quality summary, courtroom summary.
+- `netcoop.reporting.markdown`: `report.md` next to `report.json` in every run directory.
+- `config/reporting.yaml`; example reports in docs/examples/.
+- Verified: 1,200 of 1,200 generated runs (main + ambiguity suites) give schema-valid A7
+  reports with every evidence item traced to observations.
+- Docs: REPORTING.md, decisions D-039 to D-041.
+
 ### Phase 6 — Courtroom tie-break
 - `netcoop.courtroom`: prosecutor / defense / judge. Discriminating-evidence briefs on
   differential scopes (signature semantics, independence, quality weighting), discovery

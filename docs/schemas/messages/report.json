@@ -357,6 +357,24 @@
           },
           "title": "Missing Evidence",
           "type": "array"
+        },
+        "score_breakdown": {
+          "default": [],
+          "description": "Itemised log-odds of the reported (or best) candidate.",
+          "items": {
+            "$ref": "#/$defs/ScoreTerm"
+          },
+          "title": "Score Breakdown",
+          "type": "array"
+        },
+        "simulated_remediation": {
+          "default": [],
+          "description": "Dry-run effects of the recommended actions.",
+          "items": {
+            "$ref": "#/$defs/SimulatedAction"
+          },
+          "title": "Simulated Remediation",
+          "type": "array"
         }
       },
       "required": [
@@ -440,6 +458,34 @@
       "title": "RunManifest",
       "type": "object"
     },
+    "ScoreTerm": {
+      "additionalProperties": false,
+      "properties": {
+        "contribution": {
+          "description": "Contribution to the candidate's log-odds score.",
+          "title": "Contribution",
+          "type": "number",
+          "x-unit": "log-odds"
+        },
+        "status": {
+          "description": "Status of the component (satisfied / violated / unknown, support / none, bin).",
+          "title": "Status",
+          "type": "string"
+        },
+        "term": {
+          "description": "Score component: 'prior', a signature element, 'analytic stance' or 'evidence quality'.",
+          "title": "Term",
+          "type": "string"
+        }
+      },
+      "required": [
+        "term",
+        "status",
+        "contribution"
+      ],
+      "title": "ScoreTerm",
+      "type": "object"
+    },
     "ScoredAlternative": {
       "additionalProperties": false,
       "properties": {
@@ -468,6 +514,36 @@
         "confidence"
       ],
       "title": "ScoredAlternative",
+      "type": "object"
+    },
+    "SimulatedAction": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "description": "Recommended action (same text as in recommended_actions).",
+          "title": "Action",
+          "type": "string"
+        },
+        "applied": {
+          "default": false,
+          "description": "Always false: remediation is simulated, never executed.",
+          "title": "Applied",
+          "type": "boolean"
+        },
+        "expected_effects": {
+          "description": "What should change if the diagnosis is right and the action works.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Expected Effects",
+          "type": "array"
+        }
+      },
+      "required": [
+        "action",
+        "expected_effects"
+      ],
+      "title": "SimulatedAction",
       "type": "object"
     }
   },

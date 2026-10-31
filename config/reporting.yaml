@@ -1,0 +1,55 @@
+description: Reporting agent parameters (docs/REPORTING.md).
+
+evidence:
+  max_items:
+    value: 8
+    unit: "supporting_evidence entries"
+    rationale: >
+      Enough for every required element plus the strongest corroborations of the largest
+      catalogue signature (7 elements); the full evidence remains in the trace and in
+      x_netcoop.evidence_provenance. Keeps the report readable for an operator.
+    source: "Catalogue signature sizes (config/catalogue/hypotheses.yaml); readability"
+  max_contenders:
+    value: 2
+    unit: "candidates"
+    rationale: "When no cause is claimed, evidence and actions are shown for the two best explanations (the pair a courtroom would argue)."
+    source: "Consistency with the courtroom's two-party procedure"
+
+alternatives:
+  min_confidence:
+    value: 0.01
+    unit: "calibrated confidence"
+    rationale: >
+      A7 asks for alternatives 'where appropriate': a competing candidate is listed when the
+      calibrated model gives it at least 1% (non-trivial support); merged (causally explained)
+      candidates and courtroom contenders are always listed.
+    source: "Problem statement A2/A7 (alternative explanations); calibration in docs/CALIBRATION.md"
+
+quality:
+  low_threshold:
+    value: 0.873
+    unit: "data-quality score (0-1)"
+    rationale: >
+      Evidence whose quality is below the 10th percentile of evidence quality of TRUE training
+      candidates (runs/fit/train.json) is flagged as a limitation: weaker than the evidence
+      behind 90% of correct diagnoses. Same reference as config/courtroom.yaml judge.win_margin.
+    source: "Derived from the training-seed evidence-quality distribution (p10 of true candidates)"
+
+actions:
+  no_fault:
+    value:
+      - "No corrective action needed; keep monitoring {scope}."
+      - "If users still report problems, collect telemetry for the affected period and re-run the diagnosis."
+    unit: "action templates"
+    rationale: "A 'no fault detected' report still gives the operator a next step instead of an empty list."
+    source: "Reporting policy (A7 recommended_actions must be practical)"
+  insufficient_prefix:
+    value: "If {cause} is confirmed: "
+    unit: "template"
+    rationale: "When no cause is claimed, each contender's first catalogue action is offered conditionally, never as a fix."
+    source: "Reporting policy (never claim an exact root cause without evidence, A2)"
+  collect_prefix:
+    value: "Collect: "
+    unit: "template"
+    rationale: "Missing-evidence items are turned into data-collection actions."
+    source: "Reporting policy"

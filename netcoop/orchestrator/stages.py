@@ -176,7 +176,7 @@ class ProvisionalReporter:
             cause = f"{v.hypothesis_type} at {', '.join(e.entity.entity_id for e in v.entities)}"
         else:
             cause = "insufficient evidence to name a root cause (" + ", ".join(v.rationale) + ")"
-        limitations = _limitations(board, run)
+        limitations = base_limitations(board, run)
         return Report(
             incident_id=run.incident_id,
             status=status,
@@ -195,7 +195,7 @@ class ProvisionalReporter:
                 confidence_category=v.confidence_category,
                 evidence_provenance=tuple(provenance),
                 missing_evidence=v.missing_evidence,
-                courtroom=_courtroom_summary(board, v),
+                courtroom=courtroom_summary(board, v),
                 manifest=run.manifest,
             ),
         )
@@ -204,7 +204,7 @@ class ProvisionalReporter:
 COURT_SENDERS = ("prosecutor", "defense", "judge")
 
 
-def _courtroom_summary(board: Board, v: VerdictPayload) -> CourtroomSummary | None:
+def courtroom_summary(board: Board, v: VerdictPayload) -> CourtroomSummary | None:
     """Summarise the tie-break from the final VERDICT's rationale and the transcript."""
     if v.method != "courtroom":
         return None
@@ -229,7 +229,7 @@ def _courtroom_summary(board: Board, v: VerdictPayload) -> CourtroomSummary | No
     )
 
 
-def _limitations(board: Board, run: RunInfo) -> tuple[str, ...]:
+def base_limitations(board: Board, run: RunInfo) -> tuple[str, ...]:
     out: list[str] = []
     counts: Counter[str] = Counter()
     for m in board.query(type=MessageType.ERROR):

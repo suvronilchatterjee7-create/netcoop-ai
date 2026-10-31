@@ -66,6 +66,24 @@ class RunManifest(ProtocolModel):
     seed: int = F("Seed for any randomness.")
 
 
+class ScoreTerm(ProtocolModel):
+    term: str = F(
+        "Score component: 'prior', a signature element, 'analytic stance' or 'evidence quality'."
+    )
+    status: str = F(
+        "Status of the component (satisfied / violated / unknown, support / none, bin)."
+    )
+    contribution: float = F("Contribution to the candidate's log-odds score.", "log-odds")
+
+
+class SimulatedAction(ProtocolModel):
+    action: str = F("Recommended action (same text as in recommended_actions).")
+    expected_effects: tuple[str, ...] = F(
+        "What should change if the diagnosis is right and the action works."
+    )
+    applied: bool = F("Always false: remediation is simulated, never executed.", default=False)
+
+
 class ReportExtensions(ProtocolModel):
     confidence_category: str = F("Confidence category (boundaries in config).")
     evidence_provenance: tuple[EvidenceProvenance, ...] = F(
@@ -78,6 +96,12 @@ class ReportExtensions(ProtocolModel):
     courtroom: CourtroomSummary | None = F("Tie-break summary, if relevant.", default=None)
     missing_evidence: tuple[str, ...] = F(
         "What extra data would resolve an abstention.", default=()
+    )
+    score_breakdown: tuple[ScoreTerm, ...] = F(
+        "Itemised log-odds of the reported (or best) candidate.", default=()
+    )
+    simulated_remediation: tuple[SimulatedAction, ...] = F(
+        "Dry-run effects of the recommended actions.", default=()
     )
     manifest: RunManifest | None = F("Reproducibility manifest.", default=None)
 
