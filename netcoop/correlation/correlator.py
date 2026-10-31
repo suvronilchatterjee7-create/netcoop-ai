@@ -51,7 +51,8 @@ class Correlator:
         produces_types=(T.VERDICT,),
     )
 
-    def __init__(self, model: Model | None = None) -> None:
+    def __init__(self, model: Model | None = None, *, corroboration: bool = True) -> None:
+        self.corroboration = corroboration  # ablation switch, see features.extract
         self.model = model if model is not None else load_model()
         self.min_accept = float(get_value(load_config("correlation_method"), "decision.min_accept"))
         self.min_positives = int(
@@ -119,7 +120,7 @@ class Correlator:
             v = ProvisionalCorrelator().correlate(board, run)
             return v.model_copy(update={"rationale": ("model_not_fitted: run `netcoop fit`",)})
         cat = get_catalogue()
-        cands, ctx = extract(board, cat)
+        cands, ctx = extract(board, cat, corroboration=self.corroboration)
         topo_msgs = board.query(type=T.TOPOLOGY)
         topo = Topo(
             topo_msgs[-1].payload

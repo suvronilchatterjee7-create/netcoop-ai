@@ -6,7 +6,7 @@ Specialised agents analyse different aspects of network health, exchange structu
 messages on a shared case board, reconcile their findings and produce one explainable
 diagnostic report, including an honest `insufficient_evidence` outcome.
 
-> **Status:** Phases 0–7 done (data, protocol, Translator, board + orchestrator, specialist agents, calibrated correlation, courtroom tie-break, reporting). Evaluation harness lands next.
+> **Status:** Phases 0–8 done: data, protocol, Translator, board + orchestrator, specialist agents, calibrated correlation, courtroom tie-break, reporting, evaluation. On 1,080 fresh test runs: 77.2% accuracy, 98.3% precision of claims, 21.5% honest abstentions ([EVALUATION.md](docs/EVALUATION.md)).
 
 ## Architecture (planned)
 
@@ -37,6 +37,7 @@ make profile      # write docs/DATA_PROFILE.md from the generated data
 make calibrate    # derive normal baselines (config/baselines.yaml) from training seeds
 netcoop fit       # fit the correlation model on training seeds; docs/CALIBRATION.md on holdout
 netcoop courtroom-eval   # courtroom ablation on ambiguous + held-out cases
+netcoop eval             # full evaluation on fresh test seeds -> docs/EVALUATION.md (--quick: smoke)
 make test
 netcoop run data/generated/link_congestion/<run> -v      # full pipeline, live message trace
 netcoop replay runs/<incident_id>                         # rebuild + verify the board from the trace

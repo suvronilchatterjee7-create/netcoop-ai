@@ -77,6 +77,9 @@ class Context:
     mean_quality: float = 0.0
     unassessable: list[str] = field(default_factory=list)  # fault types present but not assessable
     not_applicable: list[str] = field(default_factory=list)  # fault types with no possible root
+    blocking: list[str] = field(
+        default_factory=list
+    )  # fatal input/agent errors: part of the data unseen
 
 
 def _order(h: HypothesisSpec) -> list[int]:
@@ -140,7 +143,15 @@ def required_satisfied(c: Candidate, h: HypothesisSpec) -> bool:
     return bool(groups) and all(groups.values())
 
 
-def extract(board: Board, catalogue: Catalogue | None = None) -> tuple[list[Candidate], Context]:
+def extract(
+    board: Board, catalogue: Catalogue | None = None, *, corroboration: bool = True
+) -> tuple[list[Candidate], Context]:
+    """Candidates and context from a board.
+
+    ``corroboration=False`` is an ablation switch (Phase 8): each candidate is judged only on
+    clues authored by its own proposers, and analytic stances are ignored, i.e. no agent's
+    evidence reaches another agent's hypothesis.
+    """
     cat = catalogue or get_catalogue()
     vocab = get_vocabulary()
     topo = index_board(board).topo
@@ -162,6 +173,12 @@ def extract(board: Board, catalogue: Catalogue | None = None) -> tuple[list[Cand
         for lid in topo.links:
             entity_types.setdefault(lid, "link")
     ctx.mean_quality = fmean(qualities) if qualities else 0.0
+    for m in board.query(type=T.ERROR):
+        if m.payload.severity.value == "fatal":
+            src = m.payload.source.source if m.payload.source else m.sender
+            ctx.blocking.append(f"{m.payload.code.value} ({src})")
+    if not qualities:
+        ctx.blocking.append("no usable observations")
 
     clues: dict[str, list[Envelope]] = defaultdict(list)
     author: dict[str, str] = {}
@@ -209,8 +226,19 @@ def extract(board: Board, catalogue: Catalogue | None = None) -> tuple[list[Cand
 
     out = []
     for (hid, _), c in sorted(by_key.items()):
-        evaluate_candidate(c, cat.hypotheses[hid], clues, topo, probes)
-        analytic = [m for mid in c.hypothesis_msg_ids for m in stances.get(mid, [])]
+        own = clues
+        if not corroboration:
+            proposers = set(c.proposers)
+            own = defaultdict(
+                list,
+                {k: [m for m in v if author.get(m.msg_id) in proposers] for k, v in clues.items()},
+            )
+        evaluate_candidate(c, cat.hypotheses[hid], own, topo, probes)
+        analytic = (
+            [m for mid in c.hypothesis_msg_ids for m in stances.get(mid, [])]
+            if corroboration
+            else []
+        )
         if analytic:
             best = max(analytic, key=lambda m: (m.payload.strength, m.type is T.CONTRADICT))
             c.analytic = SUPPORT if best.type is T.SUPPORT else CONTRADICT

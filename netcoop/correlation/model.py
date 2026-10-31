@@ -255,6 +255,19 @@ def decide(
         rationale.append(
             f"best candidate confidence {top.confidence:.2f} < accept {model.accept:.2f}"
         )
+    if ctx.blocking:
+        # Part of the input or of the analysis was lost (unusable file, failed agent): what was
+        # not seen cannot be declared healthy (found by the Phase 8 robustness evaluation).
+        rationale.append("cannot_rule_out: " + "; ".join(dict.fromkeys(ctx.blocking)))
+        missing += [f"usable data / analysis instead of {b}" for b in dict.fromkeys(ctx.blocking)]
+        return Outcome(
+            "insufficient_evidence",
+            top.confidence if top else 0.0,
+            ranked,
+            None,
+            rationale,
+            missing,
+        )
     if ctx.unassessable:
         rationale.append("cannot_rule_out:" + ",".join(ctx.unassessable))
         missing += [

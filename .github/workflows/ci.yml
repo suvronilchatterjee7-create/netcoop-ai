@@ -1,0 +1,29 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install
+        run: python -m pip install -U pip && pip install -e ".[dev]"
+      - name: Lint
+        run: ruff check netcoop tests scripts generator
+      - name: Type-check
+        run: mypy netcoop
+      - name: Schemas and docs are current
+        run: netcoop schemas && git diff --exit-code docs/schemas docs/PROTOCOL_REFERENCE.md
+      - name: Tests with coverage
+        run: pytest --cov=netcoop --cov-report=term --cov-report=xml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage.xml

@@ -6,7 +6,7 @@ else
   BIN := $(VENV)/bin
 endif
 
-.PHONY: setup generate profile schemas calibrate run test eval lint typecheck clean
+.PHONY: setup generate profile schemas calibrate fit run test eval quick-eval lint typecheck clean
 
 setup:
 	$(PY) -m venv $(VENV)
@@ -29,10 +29,16 @@ run:
 	$(BIN)/netcoop run $(INPUT)
 
 test:
-	$(BIN)/python -m pytest
+	$(BIN)/python -m pytest --cov=netcoop --cov-report=term
+
+fit:
+	$(BIN)/netcoop fit
 
 eval:
 	$(BIN)/netcoop eval
+
+quick-eval:
+	$(BIN)/netcoop eval --quick
 
 lint:
 	$(BIN)/ruff check netcoop tests scripts

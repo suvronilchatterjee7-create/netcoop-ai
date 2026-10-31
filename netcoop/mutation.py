@@ -102,7 +102,12 @@ class _Run:
         return out
 
     def ts_field(self, f: _File) -> str:
-        return next(k for k in self.keys(f) if normalise_key(k) in self.mapping.timestamp_fields)
+        k = next(
+            (k for k in self.keys(f) if normalise_key(k) in self.mapping.timestamp_fields), None
+        )
+        if k is None:  # e.g. removed by an earlier mutation when mutations are stacked
+            raise NotApplicable("file has no timestamp field")
+        return k
 
     def id_fields(self, f: _File) -> list[str]:
         ids = set()
@@ -269,7 +274,9 @@ def _unit_change(run: _Run, rng: random.Random) -> Mutation:
 def _timestamp_format(run: _Run, rng: random.Random) -> Mutation:
     f = _pick_file(run, rng)
     k = run.ts_field(f)
-    sample = next(r[k] for r in f.records if k in r)
+    sample = next((r[k] for r in f.records if k in r), None)
+    if sample is None:
+        raise NotApplicable("no timestamp values")
     to_epoch = _num(sample) is None
     for r in f.records:
         if k not in r:

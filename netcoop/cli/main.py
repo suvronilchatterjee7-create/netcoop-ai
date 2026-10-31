@@ -178,9 +178,17 @@ def _cmd_courtroom_eval(args: argparse.Namespace) -> int:
     return 0
 
 
-def _not_yet(phase: str) -> int:
-    print(f"error: this command is implemented in {phase}", file=sys.stderr)
-    return 3
+def _cmd_eval(args: argparse.Namespace) -> int:
+    from netcoop.evaluation.run import REPORT, evaluate_all
+
+    r = evaluate_all(quick=args.quick)
+    m = r["main"]
+    print(
+        f"{r['n_runs']} test runs: accuracy {m['accuracy']:.1%}, precision of claims "
+        f"{m['claim_precision']:.1%} ({m['wrong']} wrong), abstained {m['abstain_rate']:.1%}, "
+        f"macro-F1 {m['macro_f1']:.3f} -> {REPORT}"
+    )
+    return 0
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -245,12 +253,12 @@ def build_parser() -> argparse.ArgumentParser:
     ce.add_argument("--input", type=Path, default=DEFAULT_OUT)
     ce.set_defaults(func=_cmd_courtroom_eval)
 
-    for name, phase in [
-        ("eval", "Phase 8"),
-    ]:
-        sp = sub.add_parser(name, help=f"(coming in {phase})")
-        sp.add_argument("rest", nargs="*")
-        sp.set_defaults(func=lambda _a, ph=phase: _not_yet(ph))
+    ev = sub.add_parser(
+        "eval", help="full evaluation on the fresh test suite -> docs/EVALUATION.md"
+    )
+    ev.add_argument("--quick", action="store_true", help="subsample (smoke test of the harness)")
+    ev.set_defaults(func=_cmd_eval)
+
     return p
 
 

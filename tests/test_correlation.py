@@ -263,3 +263,13 @@ def test_correlator_without_model_abstains(runs: dict[str, Path]) -> None:
     (verdict,) = res.board.query(type=T.VERDICT)
     assert verdict.payload.decision is Decision.INSUFFICIENT_EVIDENCE
     assert "model_not_fitted" in verdict.payload.rationale[0]
+
+
+def test_fatal_errors_block_a_no_fault_claim() -> None:
+    """Found by the Phase 8 robustness evaluation: lost data must never be declared healthy."""
+    m = _model()
+    out = decide(
+        [], Context(n_significant=0, blocking=["MALFORMED_INPUT (telemetry.jsonl)"]), m, CAT, never
+    )
+    assert out.decision == "insufficient_evidence"
+    assert any("telemetry.jsonl" in x for x in out.missing_evidence)

@@ -236,11 +236,39 @@ corroboration and 'stayed normal' evidence.
 (the metric returning to its cited baseline or threshold). Nothing is executed (`applied:
 false`), per the brief's rule against touching campus infrastructure.
 
+## D-042 · 2026-11-01 · Headline metrics on fresh test seeds (500-504)
+Training seeds 0-2 fit the model, and seeds 3-4 were inspected during development (D-025). The
+evaluation therefore generates a third, never-touched suite with the full sweep grid (1,080 runs)
+and reports headline metrics only on it. This closes Q-005.
+
+## D-043 · 2026-11-01 · Fatal errors block 'no fault'
+Found by the Phase 8 robustness curve: with stacked mutations that destroyed the telemetry file
+and the topology, there were no entities left, every fault type became 'not applicable', and
+the system claimed 'no fault'. 10 of 14 wrong claims under mutation were of this kind. Any fatal
+input or agent error (unusable file or table, failed agent), or the absence of any usable
+observation, now blocks `no_fault_detected` and gives insufficient evidence naming the lost
+source. Precision of claims at 2-3 stacked mutations rose from 77-86% to 96%. Training runs have
+no fatal errors, so the fitted thresholds are unaffected.
+
+## D-044 · 2026-11-01 · Two localisation metrics
+The report's `affected_devices` deliberately includes where users feel a fault (probe vantages,
+service names); the generator's truth lists only the faulty elements. Affected-set precision
+(49%) therefore understates localisation, so *root localisation* (claimed root is a true
+location) is reported too: 100% of right-type claims.
+
+## D-045 · 2026-11-01 · Ablations that are reported as measured
+The ablations are published even where they do not flatter the design. Without the connectivity
+agent, outcomes on the test sample are unchanged (its stance adds weight but was never
+decisive). Without the courtroom, accuracy is higher on ordinary data (80% vs 75%) because the
+courtroom defers some correct but un-discriminable interface faults. Its benefit appears only on
+faults the model never saw (32 to 0 wrong claims, COURTROOM_RESULTS.md).
+
 ## Open questions
 - **Q-001** ~~Sweep sizes~~ resolved by D-005.
 - **Q-002** Canonical schema: derive from `docs/DATA_PROFILE.md` (Phase 1). Re-check if the
   organiser generator is later provided.
 - **Q-004** Local-confidence weights (2/1) and connectivity fractions (0.6/0.3) are
   engineering choices; Phase 5 fitting may replace them.
+- **Q-005** ~~Fresh evaluation seeds~~ resolved by D-042.
 - **Q-003** Ask the organisers whether their generator will be released; if so, re-run
   `make generate && make profile` and diff the profile against the current one.

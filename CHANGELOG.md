@@ -2,6 +2,21 @@
 
 ## [Unreleased]
 
+### Phase 8 — Evaluation, robustness and testing
+- `netcoop.evaluation`: parallel harness over configurations; metrics (accuracy, precision of
+  claims, macro-F1, confusion matrix, root and affected-set localisation, abstention
+  precision/recall, calibration); slices by missing rate, noise, intensity and family; a
+  stacked-mutation robustness curve; ablations (no courtroom, no corroboration, no connectivity,
+  single agents); the unseen-fault suite.
+- `netcoop eval` (and `--quick`) generates the fresh test suite (seeds 500-504) and writes
+  docs/EVALUATION.md.
+- Correlator `corroboration` ablation switch; mutator robust to stacked mutations.
+- Fix (D-043): fatal input/agent errors block 'no fault' claims.
+- Acceptance-gate test for every A10 criterion; property-based Translator tests.
+- CI workflow (.github/workflows/ci.yml): ruff, mypy, schema freshness, pytest with coverage
+  (84%). Makefile `fit`, `eval`, `quick-eval`; `test` reports coverage.
+- Decisions D-042 to D-045.
+
 ### Phase 7 — Reporting
 - `netcoop.reporting.reporter.Reporter` (now the default): evidence from the recomputed
   signature, interpretations generated from each clue's evidence model, catalogue actions

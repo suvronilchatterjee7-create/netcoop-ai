@@ -9,3 +9,34 @@ interop:
       the noise / missing-data range, in about two minutes. Runs are picked evenly across each
       family's sorted run list (seeds, intensities, noise, missingness), never hand-picked.
     source: "Engineering choice for C1.6 (no cherry-picking) within the time budget"
+
+test_suite:
+  seeds:
+    value: [500, 501, 502, 503, 504]
+    unit: "rng seed"
+    rationale: >
+      Fresh seeds, never used for calibration, fitting, tuning or any development measurement
+      (training seeds 0-2 fit the model; seeds 3-4 were inspected during development, D-025).
+      The full grid of the main sweep (intensities x noise x missing) is generated for them, so
+      headline metrics come from a clean, untouched test set (closes Q-005).
+    source: "Train/dev/test separation; config/generation.yaml sweep grid"
+  ablation_stride:
+    value: 5
+    unit: "use every n-th test run"
+    rationale: >
+      Ablations repeat the full pipeline once per configuration; every 5th run (216 of 1080)
+      keeps them to minutes. 5 is coprime with the 3-level noise / missing cycles and the
+      4-level intensity cycle of the sorted run names, so every grid level stays represented
+      (a stride of 3 or 6 would silently pick a single missing-data level).
+    source: "Engineering choice; aliasing found in Phase 5 (D-031 context)"
+robustness:
+  runs:
+    value: 48
+    unit: "test runs (every n-th, evenly spread)"
+    rationale: "Runs mutated at each mutation level for the robustness curve: 48 x 4 levels = 192 pipelines."
+    source: "Engineering choice (time budget)"
+  mutation_levels:
+    value: [0, 1, 2, 3]
+    unit: "number of distinct mutations applied in sequence"
+    rationale: "Accuracy vs amount of interoperability damage: none, one, two and three stacked mutation kinds from netcoop/mutation.py."
+    source: "Phase 8 brief (robustness curves vs mutation rate)"
