@@ -40,11 +40,17 @@ make test
 Without `make` (e.g. on Windows): `python -m venv .venv`, activate it, then
 `pip install -e ".[dev]"` and use the `netcoop` command directly.
 
-## Organiser generator
+## Synthetic data
 
-Put the organiser's Colab telemetry generator under `generator/` and add
-`generator/adapter.py` exposing `generate(scenario, seed, intensity, noise, missing_rate, out_dir)`.
-The interface is documented in `netcoop/generation.py`.
+`make generate` builds 1080 labelled runs (6 scenario families × 5 seeds × 4 intensities ×
+3 noise × 3 missing-data levels, ~610 MB, under a minute) in `data/generated/`. Each run has
+`meta.json` with ground truth (root cause, target entity, affected entities, dialect).
+
+The data currently comes from a **provisional stand-in generator** (`generator/synth.py`,
+see `docs/DECISIONS.md` D-004), because the organiser's Colab generator is not available.
+It emits two dialects, a native JSONL one and a legacy CSV one used by `interop_failure`.
+To switch to the organiser's generator, reimplement `generate(...)` in `generator/adapter.py`;
+nothing else changes. Field inventory: `docs/DATA_PROFILE.md`.
 
 ## Configuration rule
 

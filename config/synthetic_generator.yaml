@@ -1,0 +1,93 @@
+description: >
+  Parameters of the provisional stand-in telemetry generator (generator/synth.py),
+  used because the organiser's Colab generator is not available (D-004). These
+  values shape the SIMULATED network only; the diagnosis engine never reads this
+  file and must derive its own thresholds from data or cited references.
+
+time:
+  n_steps: {value: 30, unit: "samples", rationale: "30 one-minute samples = a 30 min incident window; enough for trend and persistence checks.", source: "Engineering choice; typical SNMP/streaming poll windows"}
+  interval_s: {value: 60, unit: "s", rationale: "One-minute polling is a common default for SNMP interface counters.", source: "Common NMS default polling interval (e.g. LibreNMS/Zabbix 1-5 min)"}
+  start_utc: {value: "2026-10-01T09:00:00Z", unit: "ISO-8601 UTC", rationale: "Fixed start so output is byte-for-byte reproducible.", source: "Arbitrary fixed constant (C1.8)"}
+  onset_fraction: {value: 0.4, unit: "fraction of window", rationale: "Fault begins after a healthy prefix so per-run baselines and change points are observable.", source: "Engineering choice"}
+  ramp_steps: {value: 4, unit: "samples", rationale: "Faults ramp over a few minutes rather than stepping, which is more realistic and tests change-point detection.", source: "Engineering choice"}
+
+topology:
+  zones:
+    catalog: [hostel, department, lecture_hall]
+    rationale: "Campus areas named in the problem background."
+    source: "Problem statement A1 (hostel Wi-Fi zones, department Ethernet, lecture halls)"
+  services:
+    catalog: [dns, dhcp]
+    rationale: "Network services whose failure must be distinguishable from transport faults."
+    source: "Problem statement A6 (DNS or DHCP failure)"
+  access_switches_per_zone: {value: [2, 3], unit: "count (min, max)", rationale: "Small but non-trivial fan-out so localisation has to choose among siblings.", source: "Engineering choice"}
+  aps_per_access_switch: {value: [1, 3], unit: "count (min, max)", rationale: "Each access switch serves a few APs.", source: "Engineering choice"}
+  capacity_mbps:
+    service: {value: 10000, unit: "Mbit/s", rationale: "Data-centre server uplinks.", source: "Typical campus DC design (10GbE)"}
+    distribution: {value: 10000, unit: "Mbit/s", rationale: "Core-to-distribution uplinks.", source: "Typical campus design (10GbE)"}
+    access: {value: 1000, unit: "Mbit/s", rationale: "Distribution-to-access uplinks.", source: "Typical campus design (1GbE)"}
+    edge: {value: 1000, unit: "Mbit/s", rationale: "Access switch to AP ports.", source: "Typical 1GbE AP uplinks"}
+
+baseline:
+  ar1_phi: {value: 0.6, unit: "dimensionless", rationale: "Moderate autocorrelation so healthy series wander realistically instead of being white noise.", source: "Engineering choice"}
+  link:
+    latency_ms: {value: [0.8, 0.2], unit: "ms (mean, sd)", rationale: "Sub-millisecond to ~1 ms per wired campus hop.", source: "Typical switched LAN hop latency"}
+    jitter_ms: {value: [0.2, 0.05], unit: "ms (mean, sd)", rationale: "Low jitter on an uncongested LAN.", source: "Typical switched LAN"}
+    loss_pct: {value: [0.02, 0.01], unit: "% (mean, sd)", rationale: "Near-zero loss on healthy wired links.", source: "Typical healthy LAN"}
+    utilization_pct:
+      service: {value: [20, 5], unit: "% (mean, sd)", rationale: "Lightly loaded server uplinks.", source: "Engineering choice"}
+      distribution: {value: [30, 6], unit: "% (mean, sd)", rationale: "Moderate aggregated load.", source: "Engineering choice"}
+      access: {value: [35, 8], unit: "% (mean, sd)", rationale: "Busier but well below congestion.", source: "Engineering choice"}
+      edge: {value: [25, 8], unit: "% (mean, sd)", rationale: "Per-AP load.", source: "Engineering choice"}
+  device:
+    cpu_pct: {value: [22, 5], unit: "% (mean, sd)", rationale: "Healthy control-plane CPU.", source: "Engineering choice"}
+    mem_pct: {value: [45, 4], unit: "% (mean, sd)", rationale: "Stable memory use.", source: "Engineering choice"}
+    queue_drops_rate: {value: 0.5, unit: "drops per interval (Poisson mean)", rationale: "Occasional drops occur even on healthy devices, so 'any drop' is not a fault.", source: "Engineering choice"}
+    if_errors_rate: {value: 0.2, unit: "errors per interval (Poisson mean)", rationale: "Rare background CRC/frame errors.", source: "Engineering choice"}
+  wireless:
+    rssi_dbm: {value: [-55, 3], unit: "dBm (mean, sd)", rationale: "Good coverage is around -50 to -60 dBm.", source: "Common WLAN design guidance (e.g. -67 dBm minimum for voice-grade coverage)"}
+    snr_db: {value: [35, 3], unit: "dB (mean, sd)", rationale: "SNR above ~25 dB is good.", source: "Common WLAN design guidance"}
+    retrans_pct: {value: [4, 1], unit: "% (mean, sd)", rationale: "Some 802.11 retries are normal.", source: "Common WLAN guidance"}
+    loss_pct: {value: [0.3, 0.1], unit: "% (mean, sd)", rationale: "Slightly higher than wired.", source: "Engineering choice"}
+    clients: {value: [12, 4], unit: "count (mean, sd)", rationale: "Associated clients per AP.", source: "Engineering choice"}
+  service:
+    success_pct: {value: [99.5, 0.3], unit: "% (mean, sd)", rationale: "Healthy DNS/DHCP probes nearly always succeed.", source: "Engineering choice"}
+    response_ms: {value: [8, 2], unit: "ms (mean, sd)", rationale: "Campus-local resolver/DHCP server response time.", source: "Engineering choice"}
+
+faults:
+  link_congestion:
+    target_tiers: {catalog: [distribution, access], rationale: "Aggregation uplinks are where congestion occurs.", source: "Problem statement A6"}
+    utilization_pct: {value: 97, unit: "%", rationale: "Saturation level reached at full intensity.", source: "Engineering choice"}
+    latency_add_ms: {value: 25, unit: "ms", rationale: "Queueing delay on a saturated link.", source: "Engineering choice"}
+    jitter_add_ms: {value: 8, unit: "ms", rationale: "Queue-depth variation.", source: "Engineering choice"}
+    loss_add_pct: {value: 2.0, unit: "%", rationale: "Tail drops.", source: "Engineering choice"}
+    queue_drop_multiplier: {value: 200, unit: "x baseline rate", rationale: "Egress queue drops on the upstream device.", source: "Problem statement A6 (queue drops)"}
+    service_response_add_ms: {value: 30, unit: "ms", rationale: "Downstream clients see slower service responses.", source: "Engineering choice"}
+  weak_wifi:
+    rssi_drop_db: {value: 25, unit: "dB", rationale: "Pushes RSSI from ~-55 to ~-80 dBm at full intensity.", source: "Engineering choice"}
+    snr_drop_db: {value: 22, unit: "dB", rationale: "Correlated SNR degradation.", source: "Engineering choice"}
+    retrans_add_pct: {value: 30, unit: "%", rationale: "Retransmissions rise with poor signal.", source: "Problem statement A6 (retransmissions)"}
+    loss_add_pct: {value: 6, unit: "%", rationale: "Wireless frame loss.", source: "Engineering choice"}
+    service_response_add_ms: {value: 15, unit: "ms", rationale: "Clients behind the AP see slower responses.", source: "Engineering choice"}
+  interface_fault:
+    target_tiers: {catalog: [distribution, access, edge], rationale: "Any wired interface can fail.", source: "Problem statement A6"}
+    error_rate_slope: {value: 15, unit: "errors per interval per interval", rationale: "Errors rise linearly after onset ('rising errors').", source: "Problem statement A6"}
+    loss_add_pct: {value: 5, unit: "%", rationale: "Corrupted frames are dropped.", source: "Engineering choice"}
+    flap_probability: {value: 0.25, unit: "probability per interval", rationale: "Link instability at full intensity.", source: "Problem statement A6 (link instability)"}
+  dns_dhcp_failure:
+    failed_success_pct: {value: 35, unit: "%", rationale: "Success rate reached at full intensity.", source: "Engineering choice"}
+    response_add_ms: {value: 400, unit: "ms", rationale: "Timeouts and retries inflate response time.", source: "Engineering choice"}
+
+noise:
+  field_drop_ratio: {value: 0.5, unit: "fraction of missing_rate", rationale: "Besides dropping whole records, drop individual fields at half that rate.", source: "Engineering choice"}
+
+bounds:
+  pct: {value: [0, 100], unit: "%", rationale: "Percentages are physically bounded.", source: "Definition"}
+  rssi_dbm: {value: [-100, -20], unit: "dBm", rationale: "Practical 802.11 receive range.", source: "Common WLAN radio range"}
+  snr_db: {value: [0, 60], unit: "dB", rationale: "Practical SNR range.", source: "Common WLAN radio range"}
+
+interop:
+  underlying_faults:
+    catalog: [normal, link_congestion, weak_wifi, interface_fault, dns_dhcp_failure]
+    rationale: "An interop failure is a data problem layered on top of some real network state, which the system must still diagnose."
+    source: "Problem statement A6 (interoperability failure)"

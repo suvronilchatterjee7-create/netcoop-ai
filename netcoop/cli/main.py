@@ -21,12 +21,16 @@ def _cmd_generate(args: argparse.Namespace) -> int:
 
 
 def _cmd_profile(args: argparse.Namespace) -> int:
-    max_examples = get_value(load_config("profiling"), "max_examples")
-    profile = profile_directory(args.input, max_examples)
+    cfg = load_config("profiling")
+    profile = profile_directory(
+        args.input, get_value(cfg, "max_examples"), get_value(cfg, "max_files_per_group")
+    )
     if not profile:
         print(f"error: no CSV/JSON/JSONL files found under {args.input}", file=sys.stderr)
         return 2
-    args.out.write_text(render_markdown(profile, args.input), encoding="utf-8")
+    notes_path = args.out.with_name(args.out.stem + "_NOTES.md")
+    notes = notes_path.read_text(encoding="utf-8") if notes_path.is_file() else None
+    args.out.write_text(render_markdown(profile, args.input, notes), encoding="utf-8")
     print(f"wrote {args.out} ({len(profile)} file groups)")
     return 0
 

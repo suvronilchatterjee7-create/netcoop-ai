@@ -18,6 +18,7 @@ import hashlib
 import importlib.util
 import itertools
 import json
+import sys
 from collections.abc import Callable
 from pathlib import Path
 from types import ModuleType
@@ -28,6 +29,9 @@ from netcoop.config import get_value, load_config
 REPO_ROOT = Path(__file__).resolve().parent.parent
 ADAPTER_PATH = REPO_ROOT / "generator" / "adapter.py"
 DEFAULT_OUT = REPO_ROOT / "data" / "generated"
+META_FILE = "meta.json"
+GROUND_TRUTH_FILE = "ground_truth.json"
+LABEL_FILES = frozenset({META_FILE, GROUND_TRUTH_FILE})
 
 GenerateFn = Callable[..., list[Path]]
 
@@ -47,6 +51,7 @@ def load_adapter(path: Path = ADAPTER_PATH) -> ModuleType:
     if spec is None or spec.loader is None:
         raise GeneratorUnavailable(f"cannot import adapter at {path}")
     module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     if not callable(getattr(module, "generate", None)):
         raise GeneratorUnavailable(f"{path} does not define generate(...)")
@@ -97,11 +102,17 @@ def run_sweep(
             "missing_rate": missing,
         }
         files = generate_fn(out_dir=run_dir, **params)
+        truth = dict(params)
+        gt_file = run_dir / GROUND_TRUTH_FILE
+        if gt_file.is_file():
+            # Generator-reported labels (root cause, target entity, affected entities)
+            # extend the sweep parameters; sweep parameters win on conflict.
+            truth = {**json.loads(gt_file.read_text(encoding="utf-8")), **params}
         meta = {
             "run_id": run_id,
-            "ground_truth": params,
+            "ground_truth": truth,
             "files": {p.name: _sha256(p) for p in sorted(files)},
         }
-        (run_dir / "meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
+        (run_dir / META_FILE).write_text(json.dumps(meta, indent=2), encoding="utf-8")
         run_dirs.append(run_dir)
     return run_dirs

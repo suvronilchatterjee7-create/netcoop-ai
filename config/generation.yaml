@@ -20,12 +20,13 @@ scenario_families:
 
 sweep:
   seeds:
-    value: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    value: [0, 1, 2, 3, 4]
     unit: "rng seed"
     rationale: >
-      Ten independent seeds per (scenario, intensity, noise, missing) cell give
-      enough repeats to report accuracy with a meaningful spread while keeping
-      the full suite generatable in minutes. Revisit once generator runtime is known.
+      Five independent seeds per (scenario, intensity, noise, missing) cell give
+      1080 runs (180 per family, ~600 MB, ~1 min). Measured: each seed adds ~123 MB,
+      so ten seeds would cost 1.2 GB for little extra spread. Topology and fault
+      target also vary per run, so effective diversity is larger than the seed count.
     source: "Engineering choice for C1.6 (many seeds, no cherry-picking); open question in docs/DECISIONS.md"
   intensities:
     value: [0.25, 0.5, 0.75, 1.0]

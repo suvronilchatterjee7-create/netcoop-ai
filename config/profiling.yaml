@@ -5,3 +5,12 @@ max_examples:
   unit: "distinct values per field"
   rationale: "Enough distinct samples to recognise enums, ID formats and unit styles without bloating the profile."
   source: "Engineering choice; affects documentation only, never diagnosis"
+
+max_files_per_group:
+  value: 120
+  unit: "files per file name"
+  rationale: >
+    Profiling every run would load millions of records; an evenly spaced subset
+    covering all scenario directories gives the same field inventory and
+    representative distributions in seconds.
+  source: "Engineering choice; affects documentation only, never diagnosis"
