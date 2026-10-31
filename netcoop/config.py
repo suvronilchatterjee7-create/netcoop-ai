@@ -65,11 +65,25 @@ def _validate_tree(node: Any, path: str) -> None:
     )
 
 
+_CACHE: dict[tuple[Path, int], dict[str, Any]] = {}
+
+
 def load_config(name: str, config_dir: Path | None = None) -> dict[str, Any]:
-    """Load and validate ``<config_dir>/<name>.yaml``."""
+    """Load and validate ``<config_dir>/<name>.yaml``.
+
+    Results are cached per (path, modification time), so hot paths can call this freely
+    and edits (e.g. by ``netcoop calibrate``) are picked up. Treat the result as read-only.
+    """
     path = (config_dir or CONFIG_DIR) / f"{name}.yaml"
     if not path.is_file():
         raise ConfigError(f"config file not found: {path}")
+    key = (path, path.stat().st_mtime_ns)
+    if key not in _CACHE:
+        _CACHE[key] = _load_uncached(path, name)
+    return _CACHE[key]
+
+
+def _load_uncached(path: Path, name: str) -> dict[str, Any]:
     try:
         data = yaml.safe_load(path.read_text(encoding="utf-8"))
     except yaml.YAMLError as exc:

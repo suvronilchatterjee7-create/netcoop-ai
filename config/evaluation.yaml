@@ -1,0 +1,11 @@
+description: Settings for evaluation harnesses (interop corpus now; diagnosis evaluation in Phase 8).
+
+interop:
+  runs_per_family:
+    value: 3
+    unit: "generated runs per scenario family"
+    rationale: >
+      3 runs x 6 families x 21 mutation kinds = ~380 mutation cases, covering both dialects and
+      the noise / missing-data range, in about two minutes. Runs are picked evenly across each
+      family's sorted run list (seeds, intensities, noise, missingness), never hand-picked.
+    source: "Engineering choice for C1.6 (no cherry-picking) within the time budget"

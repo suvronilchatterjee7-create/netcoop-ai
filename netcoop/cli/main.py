@@ -43,6 +43,52 @@ def _cmd_schemas(_args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_translate(args: argparse.Namespace) -> int:
+    import json
+
+    from netcoop.protocol.messages import dump_message
+    from netcoop.translator.translator import Translator
+
+    result = Translator().translate(args.input, args.incident or args.input.name)
+    print(f"dialects: {result.dialects}")
+    print(f"stats:    {result.stats}")
+    for e in result.errors:
+        field = f" [{e.source.raw_field}]" if e.source and e.source.raw_field else ""
+        src = e.source.source if e.source else "-"
+        print(f"  {e.severity.value:11s} {e.code.value:22s} {src}{field}: {e.message}")
+    if args.out:
+        args.out.parent.mkdir(parents=True, exist_ok=True)
+        with args.out.open("w", encoding="utf-8") as fh:
+            for m in result.messages:
+                fh.write(json.dumps(dump_message(m)) + "\n")
+        print(f"wrote {len(result.messages)} messages to {args.out}")
+    return 0
+
+
+def _cmd_interop_eval(args: argparse.Namespace) -> int:
+    import tempfile
+
+    from netcoop.mutation import render_corpus, run_corpus, select_runs
+    from netcoop.translator.translator import Translator
+
+    n = args.runs_per_family or get_value(load_config("evaluation"), "interop.runs_per_family")
+    runs = select_runs(args.input, int(n))
+    if not runs:
+        print(
+            f"error: no generated runs under {args.input}; run `netcoop generate` first",
+            file=sys.stderr,
+        )
+        return 2
+    with tempfile.TemporaryDirectory() as tmp:
+        rows = run_corpus(runs, Path(tmp), Translator())
+    args.out.write_text(render_corpus(rows), encoding="utf-8")
+    bad = [r for r in rows if r.outcome in ("fail", "crash")]
+    print(
+        f"{len(rows)} mutation cases, {len(runs)} runs: {len(bad)} failures/crashes -> {args.out}"
+    )
+    return 1 if bad else 0
+
+
 def _not_yet(phase: str) -> int:
     print(f"error: this command is implemented in {phase}", file=sys.stderr)
     return 3
@@ -66,6 +112,18 @@ def build_parser() -> argparse.ArgumentParser:
 
     sc = sub.add_parser("schemas", help="export JSON Schemas and the protocol field reference")
     sc.set_defaults(func=_cmd_schemas)
+
+    tr = sub.add_parser("translate", help="run the Translator on a run directory or files")
+    tr.add_argument("input", type=Path)
+    tr.add_argument("--incident", help="incident id (default: input directory name)")
+    tr.add_argument("--out", type=Path, help="write the canonical messages as JSONL")
+    tr.set_defaults(func=_cmd_translate)
+
+    ie = sub.add_parser("interop-eval", help="mutated-corpus robustness check of the Translator")
+    ie.add_argument("--input", type=Path, default=DEFAULT_OUT)
+    ie.add_argument("--runs-per-family", type=int)
+    ie.add_argument("--out", type=Path, default=REPO_ROOT / "docs" / "INTEROP_RESULTS.md")
+    ie.set_defaults(func=_cmd_interop_eval)
 
     for name, phase in [
         ("run", "Phase 3"),

@@ -68,6 +68,37 @@ to the `dns_dhcp_failure` scenario family for evaluation.
 `packet_loss` (links) and `wireless_packet_loss` (APs). The native dialect reuses one field
 name for both; the Translator disambiguates by record kind.
 
+## D-013 · 2026-11-01 · Mapping-certainty levels are ordinal judgements
+The values exact 1.0, normalised 0.95, suffix 0.95, inferred 0.7 and unresolved entity 0.6
+(config/translator.yaml) encode an ordering we can defend (exact > lossless guess > plausibility
+guess > unplaceable). Their exact magnitudes cannot be derived from data yet. **Open:** Phase 8
+sensitivity analysis; Phase 5 may fit them.
+
+## D-014 · 2026-11-01 · Alias-based mapping; dialect detection is for reporting only
+Mapping does not branch on dialect. Every field goes through one alias table, so mixed or
+unseen dialects work whenever their names are covered. Dialect profiles exist only to label
+provenance and to check schema versions. **Alternative rejected:** per-dialect mapping files,
+which fail on any unseen variant (renamed field, partial upgrade).
+
+## D-015 · 2026-11-01 · Robust reference time
+Reference time = median of per-source newest timestamps (not the maximum), and the interval
+is the median sampling interval. A single shifted source then cannot make all others look
+stale, and it gets the `CLOCK_SKEW` flag itself.
+
+## D-016 · 2026-11-01 · Per-sample provenance
+Every point keeps a `SourceRef` (file, line or row, original field name), so any report
+statement can be traced to a line of raw input. Cost: ~2 MB of trace per incident, which is
+acceptable.
+
+## D-017 · 2026-11-01 · Suggestions never applied
+Fuzzy matches for unknown fields appear only as `suggestion` in the `UNKNOWN_FIELD` error
+(Part D Phase 2.2). Applying them would turn a visible data problem into a silent wrong value.
+
+## D-018 · 2026-11-01 · Topology vs telemetry classification
+A table is topology only if it has endpoint columns, no timestamp and no metric fields other
+than capacity. Found by the mutator: without the metric rule, a link table that lost its
+timestamp column was silently read as topology instead of raising `MISSING_FIELD`.
+
 ## Open questions
 - **Q-001** ~~Sweep sizes~~ resolved by D-005.
 - **Q-002** Canonical schema: derive from `docs/DATA_PROFILE.md` (Phase 1). Re-check if the

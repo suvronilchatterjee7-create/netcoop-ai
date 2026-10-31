@@ -994,7 +994,9 @@
         "UNSUPPORTED_REQUEST",
         "AGENT_TIMEOUT",
         "AGENT_FAILURE",
-        "BUDGET_EXCEEDED"
+        "BUDGET_EXCEEDED",
+        "DUPLICATE_SAMPLE",
+        "INAPPLICABLE_METRIC"
       ],
       "title": "ErrorCode",
       "type": "string"

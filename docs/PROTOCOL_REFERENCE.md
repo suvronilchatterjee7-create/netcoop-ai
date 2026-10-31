@@ -123,7 +123,7 @@ Directed query for targeted evidence, routed by capability.
 
 | field | type | required | unit | allowed values / constraints | meaning |
 |---|---|---|---|---|---|
-| `code` | enum | yes |  | `MALFORMED_INPUT`, `MISSING_FIELD`, `TYPE_MISMATCH`, `UNKNOWN_FIELD`, `UNKNOWN_UNIT`, `AMBIGUOUS_UNIT`, `IMPLAUSIBLE_VALUE`, `STALE_DATA`, `CLOCK_SKEW`, `UNKNOWN_ENTITY`, `MISSING_TOPOLOGY`, `INCOMPATIBLE_SCHEMA`, `INCOMPATIBLE_VERSION`, `UNSUPPORTED_MESSAGE_TYPE`, `UNSUPPORTED_REQUEST`, `AGENT_TIMEOUT`, `AGENT_FAILURE`, `BUDGET_EXCEEDED` | Typed error code. |
+| `code` | enum | yes |  | `MALFORMED_INPUT`, `MISSING_FIELD`, `TYPE_MISMATCH`, `UNKNOWN_FIELD`, `UNKNOWN_UNIT`, `AMBIGUOUS_UNIT`, `IMPLAUSIBLE_VALUE`, `STALE_DATA`, `CLOCK_SKEW`, `UNKNOWN_ENTITY`, `MISSING_TOPOLOGY`, `INCOMPATIBLE_SCHEMA`, `INCOMPATIBLE_VERSION`, `UNSUPPORTED_MESSAGE_TYPE`, `UNSUPPORTED_REQUEST`, `AGENT_TIMEOUT`, `AGENT_FAILURE`, `BUDGET_EXCEEDED`, `DUPLICATE_SAMPLE`, `INAPPLICABLE_METRIC` | Typed error code. |
 | `severity` | enum | yes |  | `fatal`, `recoverable`, `warning` | Impact of the error on the run. |
 | `message` | string | yes |  |  | Human-readable description. |
 | `related_msg_id` | string or null | no (default `None`) |  |  | Message the error concerns, if any. |

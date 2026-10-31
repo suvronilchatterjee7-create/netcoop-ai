@@ -1,0 +1,136 @@
+# Declarative mapping from source dialects to the canonical vocabulary (used only by the Translator).
+#
+# Field names are matched after normalisation: lower-case, every run of non-alphanumeric
+# characters replaced by "_", leading/trailing "_" stripped ("Latency-MS" -> "latency_ms").
+# Aliases below are written in normalised form. Sources of the aliases:
+#   - netcoop_synth_v2 / legacy_v1: docs/DATA_PROFILE_NOTES.md (stand-in generator dialects)
+#   - generic: common names in SNMP / NMS exports and monitoring tools (not dialect-specific)
+# Adding a new dialect = adding aliases or a profile here; no code changes.
+version: "1.0"
+
+# Known dialects, for reporting only (mapping is alias-based and does not depend on detection).
+dialect_profiles:
+  netcoop_synth_v2:
+    signature: [schema_version, ts, kind, link_id, device_id, ap_id, vantage_id, latency_ms, utilization_pct, id, tier, zone, parent, a, b, capacity_mbps]
+    schema_versions: ["2.0"]
+  legacy_v1:
+    signature: [schema_ver, time, src, dst, hostname, ap, svc, vantage, latency_us, util_ratio, ok_ratio, parent, child, child_type, uplink_kbps]
+    schema_versions: ["1.0", "1"]
+
+record_fields:
+  timestamp: [ts, time, timestamp, datetime, time_utc, sample_time, collected_at, epoch]
+  schema_version: [schema_version, schema_ver, schemaversion, sv, format_version]
+
+# Fields that are understood but carry no metric (kept in provenance, never reported as unknown).
+context_fields: [kind, record_type, server_id, server, site, zone, tier, vendor]
+
+# How a record identifies its entity, tried in order; the first binding whose fields are present wins.
+entity_bindings:
+  - name: link_by_id
+    id_fields: [link_id, link, link_name, circuit_id]
+    entity_type: link
+  - name: link_by_endpoints
+    endpoint_fields: [[src, dst], [source, destination], [a_end, b_end], [from_device, to_device]]
+    entity_type: link
+  - name: access_point
+    id_fields: [ap_id, ap, ap_name, access_point]
+    entity_type: access_point
+  - name: device
+    id_fields: [device_id, device, hostname, host, node_id, sysname]
+    entity_type: from_topology        # node type from topology; 'device' if unknown
+  - name: service
+    id_fields: [service, svc, service_name, probe_service]
+    entity_type: service
+    observed_from_fields: [vantage_id, vantage, probe_from, probe_host, source_host]
+    value_case: lower                 # service names are case-insensitive ("DNS" == "dns")
+
+# Metric aliases. `unit: null` means "detect from suffix / metadata / plausibility".
+# `scope` restricts an alias to an entity category when the same name means different metrics.
+metrics:
+  latency:
+    aliases: {latency_ms: ms, latency_us: us, latency_s: s, latency: null, delay_ms: ms, delay: null, lat_ms: ms, owd_ms: ms}
+  jitter:
+    aliases: {jitter_ms: ms, jitter_us: us, jitter: null, pdv_ms: ms}
+  packet_loss:
+    scope: link
+    aliases: {loss_pct: percent, loss_ratio: ratio, packet_loss: null, packet_loss_pct: percent, pkt_loss: null, loss: null}
+  utilization:
+    aliases: {utilization_pct: percent, util_ratio: ratio, utilization: null, util_pct: percent, util: null, link_util: null}
+  throughput:
+    aliases: {throughput_mbps: Mbit/s, tput_kbps: kbit/s, throughput: null, tput: null, throughput_bps: bit/s, rate_mbps: Mbit/s}
+  link_capacity:
+    aliases: {capacity_mbps: Mbit/s, capacity: null, bandwidth_mbps: Mbit/s, speed_mbps: Mbit/s, if_speed: null}
+  cpu_utilization:
+    aliases: {cpu_pct: percent, cpu_load: ratio, cpu: null, cpu_util: null, cpu_utilization: null}
+  memory_utilization:
+    aliases: {mem_pct: percent, mem_used_ratio: ratio, memory: null, mem_util: null, memory_utilization: null}
+  egress_queue_drops:
+    aliases: {egress_queue_drops: count, q_drops: count, queue_drops: count, out_discards: count, drops: count}
+  interface_in_errors:
+    aliases: {if_in_errors: count, rx_errs: count, in_errors: count, rx_errors: count, crc_errors: count}
+  interface_out_errors:
+    aliases: {if_out_errors: count, tx_errs: count, out_errors: count, tx_errors: count}
+  device_status:
+    aliases: {status: state, state: state, oper_status: state, if_oper_status: state}
+  rssi:
+    aliases: {rssi_dbm: dBm, signal: dBm, rssi: dBm, signal_dbm: dBm, signal_strength: dBm}
+  snr:
+    aliases: {snr_db: dB, snr: dB}
+  retransmission_rate:
+    aliases: {retrans_pct: percent, retry_ratio: ratio, retries: null, retry_rate: null, retransmissions: null}
+  wireless_packet_loss:
+    scope: device
+    aliases: {loss_pct: percent, loss_ratio: ratio, wifi_loss: null, wlan_loss: null, loss: null}
+  associated_clients:
+    aliases: {clients: count, stations: count, num_clients: count, assoc_clients: count}
+  service_success_rate:
+    aliases: {success_pct: percent, ok_ratio: ratio, success_rate: null, availability: null}
+  service_response_time:
+    aliases: {response_ms: ms, resp_time_s: s, response_time: null, rtt_ms: ms, latency_ms_service: ms}
+
+# Enumerated metric values (after lower-casing).
+enum_values:
+  device_status:
+    up: up
+    ok: up
+    online: up
+    "1": up
+    degraded: degraded
+    warning: degraded
+    warn: degraded
+    down: down
+    offline: down
+    fail: down
+    failed: down
+    "2": down
+
+topology:
+  node_list_keys: [nodes, devices, vertices]
+  edge_list_keys: [links, edges, connections]
+  node_id_fields: [id, node_id, name, hostname, device_id]
+  node_type_fields: [type, node_type, device_type, kind, role]
+  node_parent_fields: [parent, parent_id, upstream]
+  edge_id_fields: [id, link_id, link]
+  # Endpoint pairs; pairs listed in `directed_pairs` imply first = upstream.
+  edge_endpoint_fields: [[a, b], [parent, child], [src, dst], [source, target], [upstream, downstream]]
+  directed_pairs: [[parent, child], [upstream, downstream]]
+  # In edge tables (one row per link), the node-type column describes the second endpoint.
+  edge_row_type_fields: [child_type, downstream_type, target_type]
+  capacity_fields: {capacity_mbps: Mbit/s, uplink_kbps: kbit/s, capacity: null, bandwidth_mbps: Mbit/s, speed_mbps: Mbit/s}
+  node_type_values:
+    router: router
+    rtr: router
+    gateway: router
+    switch: switch
+    sw: switch
+    access_point: access_point
+    ap: access_point
+    wap: access_point
+    server: server
+    srv: server
+    client: client
+    host: client
+    station: client
+  # Identifier for links when the source gives none. Must match how the source's own telemetry
+  # refers to links by endpoint pair; used for both topology edges and endpoint-pair records.
+  link_id_template: "{a}--{b}"

@@ -1,0 +1,103 @@
+description: >
+  Parameters of the Translator / Normalization agent (docs/TRANSLATOR.md). Mapping knowledge
+  (aliases, units, enums) is in data/mappings/canonical.yaml; this file holds only tunables.
+
+mapping_certainty:
+  exact:
+    value: 1.0
+    unit: "ratio (0-1)"
+    rationale: "Field name equals a known alias exactly and the alias declares its unit."
+    source: "Definition (certain mapping)"
+  normalised:
+    value: 0.95
+    unit: "ratio (0-1)"
+    rationale: >
+      Name matched only after case/separator normalisation ('Latency-MS'). Normalisation is
+      almost always benign but loses information (e.g. 'Ms' vs 'MS'), so certainty is slightly
+      below exact. Ordinal judgement; sensitivity is analysed in the Phase 8 robustness study.
+    source: "Engineering judgement (ordinal), see docs/DECISIONS.md D-013"
+  unit_from_suffix:
+    value: 0.95
+    unit: "ratio (0-1)"
+    rationale: "Unit read from the field-name suffix rather than declared by the alias; same reasoning as 'normalised'."
+    source: "Engineering judgement (ordinal), D-013"
+  unit_inferred:
+    value: 0.7
+    unit: "ratio (0-1)"
+    rationale: >
+      Unit chosen by value plausibility because the source gives none. Usually right for
+      ratio-vs-percent, but a genuinely small percentage column would be misread, so this
+      evidence is down-weighted noticeably.
+    source: "Engineering judgement (ordinal), D-013"
+  entity_unresolved:
+    value: 0.6
+    unit: "ratio (0-1)"
+    rationale: >
+      Entity is not in the topology (unknown device / link). The data may be valid but
+      cannot be placed in the network, so it should count for less in localisation.
+    source: "Engineering judgement (ordinal), D-013"
+
+quality:
+  weights:
+    value: {completeness: 1.0, freshness: 1.0, plausibility: 1.0, mapping_certainty: 1.0}
+    unit: "exponents of a weighted geometric mean"
+    rationale: >
+      score = (prod c_i ^ w_i) ^ (1 / sum w_i), a weighted geometric mean. A geometric mean lets any single bad
+      dimension pull the score down (unlike an arithmetic mean, where good freshness could
+      hide implausible values). Equal weights until Phase 5 fitting gives a reason otherwise.
+    source: "Common practice for multiplicative quality indices; docs/SCORING.md §quality"
+
+time:
+  epoch_ms_threshold:
+    value: 100000000000
+    unit: "numeric timestamp magnitude"
+    rationale: >
+      Numeric timestamps above 1e11 are read as epoch milliseconds, below as epoch seconds.
+      1e11 s is the year 5138 and 1e11 ms is 1973, so the boundary cannot misclassify any
+      timestamp between 1973 and 5138.
+    source: "Arithmetic on the Unix epoch"
+  stale_after_intervals:
+    value: 5
+    unit: "sampling intervals"
+    rationale: >
+      A series whose last sample is more than five polling intervals older than the newest
+      data in the input is stale (five consecutive missed polls is a common NMS 'device
+      unreachable / data stale' rule of thumb).
+    source: "Common NMS staleness practice (e.g. LibreNMS/Zabbix 'nodata' triggers over several polls)"
+  freshness_half_life_intervals:
+    value: 5
+    unit: "sampling intervals"
+    rationale: "After becoming stale, freshness halves every five further intervals (smooth decay instead of a cliff)."
+    source: "Engineering choice, D-013"
+  clock_skew_tolerance_intervals:
+    value: 2
+    unit: "sampling intervals"
+    rationale: >
+      A source whose newest timestamp differs from the input-wide newest timestamp by more
+      than two intervals while it still has data is treated as clock-skewed / time-shifted.
+      Two intervals absorbs normal poll jitter.
+    source: "Engineering choice, D-013"
+
+units:
+  ratio_if_column_max_at_most:
+    value: 1.0
+    unit: "dimensionless (column maximum)"
+    rationale: >
+      For a proportion column with no declared unit: if every value is <= 1 it is read as a
+      ratio (0-1), otherwise as percent. A percentage column that never exceeds 1% would be
+      misread, which is why such inferences get 'unit_inferred' certainty and a warning.
+    source: "Plausibility rule, D-013"
+
+reporting:
+  fuzzy_suggestion_cutoff:
+    value: 0.75
+    unit: "difflib similarity ratio (0-1)"
+    rationale: >
+      Unknown fields get a 'did you mean' suggestion when similarity to a known alias is at
+      least 0.75. Suggestions are only reported, never applied.
+    source: "Engineering choice (difflib default is 0.6; stricter to avoid noisy suggestions)"
+  max_unknown_value_examples:
+    value: 3
+    unit: "values per unknown field"
+    rationale: "Unknown fields are preserved by keeping example values in the error context and result."
+    source: "Engineering choice; documentation only"
