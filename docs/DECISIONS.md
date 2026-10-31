@@ -134,7 +134,10 @@ Pooled calibration bands were measured to be too wide at high noise: normal DNS 
 down to about 46% and RSSI to about -86 dBm. The bands alone would miss most faults on clean
 runs. We added (a) cited thresholds with a standard-error gate, and (b) an in-window change
 test that uses the run's own noise and autocorrelation. Thresholds come from training-seed
-sweeps (config rationale). The held-out seeds were used only for the reported measurements.
+sweeps (config rationale). **Leakage note:** the *decision* to add the standard-error gate to
+cited thresholds was prompted by a false-positive count measured on held-out normal runs
+(seeds 3-4). No value was fitted on them, but they are not perfectly clean. **Open (Q-005):**
+Phase 8 should also report on fresh seeds never seen during development.
 
 ## D-026 · 2026-11-01 · AR(1)-corrected standard errors
 Found by test: noise-free normal runs (pure AR(1) baseline) produced spurious CPU changes,
