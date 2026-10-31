@@ -162,6 +162,22 @@ def _cmd_fit(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_courtroom_eval(args: argparse.Namespace) -> int:
+    from netcoop.courtroom.evaluate import REPORT, run_courtroom_eval
+
+    suites = run_courtroom_eval(args.input, REPORT)
+    for name, rows in suites.items():
+        wrong = (
+            sum(r["without"] == "wrong" for r in rows),
+            sum(r["with"] == "wrong" for r in rows),
+        )
+        print(
+            f"{name}: {len(rows)} runs, wrong claims without/with courtroom {wrong[0]}/{wrong[1]}"
+        )
+    print(f"-> {REPORT}")
+    return 0
+
+
 def _not_yet(phase: str) -> int:
     print(f"error: this command is implemented in {phase}", file=sys.stderr)
     return 3
@@ -224,6 +240,10 @@ def build_parser() -> argparse.ArgumentParser:
     ft.add_argument("--input", type=Path, default=DEFAULT_OUT)
     ft.add_argument("--stride", type=int, help="use every n-th run (quick experiments only)")
     ft.set_defaults(func=_cmd_fit)
+
+    ce = sub.add_parser("courtroom-eval", help="ablation: pipeline with vs without the courtroom")
+    ce.add_argument("--input", type=Path, default=DEFAULT_OUT)
+    ce.set_defaults(func=_cmd_courtroom_eval)
 
     for name, phase in [
         ("eval", "Phase 8"),

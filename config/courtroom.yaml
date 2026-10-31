@@ -1,0 +1,56 @@
+description: Courtroom tie-break parameters (docs/COURTROOM.md, docs/SCORING.md section 5).
+
+trigger:
+  min_training_positives:
+    value: 10
+    unit: "true training candidates of a fault type"
+    rationale: >
+      With shrinkage strength k = 20, a fault type with fewer than ~10 positive examples has
+      likelihood ratios and prior dominated by pooled or negative-only data: the learned model
+      then encodes "rarely seen in training", not evidence. A plausible contender of such a
+      type must be adjudicated on its catalogue predictions instead. Measured: hardware_failure
+      (0 positives) lost to interface_fault at confidence 1.0 even on genuine hardware failures.
+    source: "Shrinkage analysis of config/correlation_method.yaml (k = 20); D-034"
+
+rubric:
+  weights:
+    value: {required: 2.0, supporting: 1.0}
+    unit: "points per discriminating observation"
+    rationale: >
+      Same ordering as the specialists' local confidence: a required signature element defines
+      the fault, a supporting one corroborates. Each discriminating observation (an observed
+      symptom only one hypothesis predicts, or a prediction failing where the other side
+      predicts nothing) scores its element weight times its data quality.
+    source: "Consistency with config/specialist.yaml local_confidence.weights; docs/SCORING.md section 5"
+  missing_required:
+    value: 2.0
+    unit: "points"
+    rationale: "A required element with no evidence at all in its scope is charged one required weight: the claim lacks its defining evidence."
+    source: "Rubric design; equal to a required element (docs/SCORING.md section 5)"
+  explained_away:
+    value: 2.0
+    unit: "points"
+    rationale: >
+      If the other hypothesis causally explains this one (catalogue `explains`, root inside its
+      blast radius) and this one has no exclusive evidence of its own, it is explained away and
+      charged one required weight.
+    source: "Causal-precedence rule of the brief (Phase 5/6)"
+
+judge:
+  win_margin:
+    value: 1.75
+    unit: "quality-weighted points"
+    rationale: >
+      A side is 'clearly ahead' with a lead of at least one required discriminating
+      confirmation (weight 2) at the evidence quality of typical correct diagnoses: 2 x 0.873,
+      where 0.873 is the 10th percentile of evidence quality of TRUE candidates on the training
+      seeds (runs/fit/train.json). Points are quality-weighted, so the margin must be too: the
+      first version (an unweighted 2.0) deferred every case with any missing data, even with
+      decisive evidence (measured: 39 of 72 held-out interface faults, D-036). Less than this
+      is a draw and the court defers.
+    source: "Derived from the training-seed evidence-quality distribution (p10 of true candidates)"
+  max_rounds:
+    value: 2
+    unit: "evidence rounds after the opening"
+    rationale: "Discovery requests are answered by specialists in one round; a second covers follow-ups. Bounded so the debate always terminates."
+    source: "Message sequence in docs/PROTOCOL.md section 7"

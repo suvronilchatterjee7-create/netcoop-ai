@@ -211,6 +211,33 @@ class Synth:
                     sm["response_ms"] += r * self.p(f"{f}.response_add_ms")
             server = f"{svc}-srv-01"
             return {"target_entity": server, "affected_entities": [server], "service": svc}
+        if family == "hardware_failure":
+            tiers = self.p(f"{f}.target_tiers")
+            devices = [n.id for n in topo.nodes.values() if n.tier in tiers and n.type != "server"]
+            dev = self._choice(devices)
+            attached = [ln for ln in topo.links if dev in (ln.a, ln.b)]
+            down = self.rng.random(self.T) < r * self.p(f"{f}.down_probability")
+            d = m["devices"][dev]
+            d["status"][down] = "down"
+            d["status"][(r > 0) & ~down] = "degraded"
+            d["in_err_lam"] += r * self.p(f"{f}.error_rate")
+            for ln in attached:
+                lm = m["links"][ln.id]
+                lm["loss_pct"] += r * self.p(f"{f}.loss_add_pct")
+                lm["loss_pct"][down] = 100.0
+                lm["utilization_pct"][down] = 0.0
+            return {"target_entity": dev, "affected_entities": [dev, *(ln.id for ln in attached)]}
+        if family == "device_overload":
+            tiers = self.p(f"{f}.target_tiers")
+            dev = self._choice([n.id for n in topo.nodes.values() if n.tier in tiers])
+            d = m["devices"][dev]
+            d["cpu_pct"] += r * (self.p(f"{f}.cpu_pct") - d["cpu_pct"])
+            d["mem_pct"] += r * self.p(f"{f}.mem_add_pct")
+            d["queue_lam"] *= 1 + r * self.p(f"{f}.queue_drop_multiplier")
+            for ln in topo.links:
+                if dev in (ln.a, ln.b):
+                    m["links"][ln.id]["latency_ms"] += r * self.p(f"{f}.latency_add_ms")
+            return {"target_entity": dev, "affected_entities": [dev]}
         raise ValueError(f"unknown fault family {family!r}")
 
     def _choice(self, items: list[Any]) -> Any:

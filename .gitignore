@@ -11,3 +11,4 @@ runs/
 data/generated/*
 !data/generated/.gitkeep
 .ipynb_checkpoints/
+data/ambiguity/

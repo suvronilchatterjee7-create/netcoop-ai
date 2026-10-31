@@ -78,6 +78,18 @@ faults:
     failed_success_pct: {value: 35, unit: "%", rationale: "Success rate reached at full intensity.", source: "Engineering choice"}
     response_add_ms: {value: 400, unit: "ms", rationale: "Timeouts and retries inflate response time.", source: "Engineering choice"}
 
+  hardware_failure:
+    target_tiers: {catalog: [distribution, access, edge], rationale: "Switches and access points fail as whole devices (core is assumed redundant).", source: "Problem statement A1 (hardware failure)"}
+    down_probability: {value: 0.6, unit: "probability per interval", rationale: "A failing device is down most of the time at full intensity, otherwise degraded.", source: "Engineering choice"}
+    loss_add_pct: {value: 20, unit: "%", rationale: "Every link attached to the failing device loses traffic (100% while down).", source: "Engineering choice"}
+    error_rate: {value: 5, unit: "errors per interval", rationale: "Flat (not rising) error level from failing hardware.", source: "Engineering choice"}
+  device_overload:
+    target_tiers: {catalog: [core, distribution, access, service], rationale: "Routers, switches and servers can be CPU-starved.", source: "Problem statement A1 (device CPU overload)"}
+    cpu_pct: {value: 97, unit: "%", rationale: "CPU level reached at full intensity.", source: "Engineering choice"}
+    mem_add_pct: {value: 30, unit: "%", rationale: "Memory pressure accompanying the overload.", source: "Engineering choice"}
+    queue_drop_multiplier: {value: 50, unit: "x baseline rate", rationale: "An overloaded device drops from its queues.", source: "Engineering choice"}
+    latency_add_ms: {value: 12, unit: "ms", rationale: "Slow forwarding adds delay on attached links.", source: "Engineering choice"}
+
 noise:
   field_drop_ratio: {value: 0.5, unit: "fraction of missing_rate", rationale: "Besides dropping whole records, drop individual fields at half that rate.", source: "Engineering choice"}
 

@@ -2,6 +2,21 @@
 
 ## [Unreleased]
 
+### Phase 6 — Courtroom tie-break
+- `netcoop.courtroom`: prosecutor / defense / judge. Discriminating-evidence briefs on
+  differential scopes (signature semantics, independence, quality weighting), discovery
+  REQUESTs by capability, stance arguments, bounded rounds, and a ruling that confirms,
+  accepts a calibrated contender, or defers.
+- Correlator opens a case on a near tie or on an under-trained, related, overlapping
+  contender; the orchestrator runs the courtroom stage (specialists answer its requests), and
+  the judge's VERDICT follows the correlator's preliminary one.
+- Report `x_netcoop.courtroom` summary (contenders, rounds, outcome, briefs, transcript ids).
+- Generator: hardware_failure and device_overload injection for the ambiguity suite (fresh
+  seeds, outside the main sweep). Vocabulary families for both.
+- Trend tests use the recent window (D-035); correlation model refitted.
+- `netcoop courtroom-eval`: ablation with vs without the courtroom -> docs/COURTROOM_RESULTS.md.
+- Docs: COURTROOM.md, SCORING.md section 5, decisions D-034 to D-038.
+
 ### Phase 5 — Fault correlation
 - `netcoop.agents.signature`: signature assessment shared by specialists and the correlator,
   with observation-level independence.

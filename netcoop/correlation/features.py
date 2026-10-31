@@ -107,15 +107,43 @@ def evaluate_candidate(
     c.quality = fmean(qualities) if qualities else 0.0
 
 
+@dataclass
+class BoardIndex:
+    """What the correlator and the courtroom need from a board, built once."""
+
+    topo: Topo
+    clues: dict[str, list[Envelope]]  # metric -> clues
+    probes: dict[str, set[str]]  # service -> vantages
+
+
+def index_board(board: Board) -> BoardIndex:
+    topo_msgs = board.query(type=T.TOPOLOGY)
+    payload = topo_msgs[-1].payload if topo_msgs else None
+    clues: dict[str, list[Envelope]] = defaultdict(list)
+    for m in board.query(type=T.CLUE):
+        clues[m.payload.metric].append(m)
+    probes: dict[str, set[str]] = defaultdict(set)
+    for m in board.query(type=T.OBSERVATION):
+        if m.payload.observed_from is not None:
+            probes[m.payload.entity.entity_id].add(m.payload.observed_from)
+    return BoardIndex(
+        Topo(payload if isinstance(payload, TopologyPayload) else None), clues, probes
+    )
+
+
+def required_satisfied(c: Candidate, h: HypothesisSpec) -> bool:
+    """Every required group of the signature has a satisfied element."""
+    groups: dict[str, bool] = defaultdict(bool)
+    for e, s in zip(h.signature, c.statuses, strict=True):
+        if e.role == "required":
+            groups[e.group_key] |= s == SATISFIED
+    return bool(groups) and all(groups.values())
+
+
 def extract(board: Board, catalogue: Catalogue | None = None) -> tuple[list[Candidate], Context]:
     cat = catalogue or get_catalogue()
     vocab = get_vocabulary()
-    topo_msgs = board.query(type=T.TOPOLOGY)
-    topo = Topo(
-        topo_msgs[-1].payload
-        if topo_msgs and isinstance(topo_msgs[-1].payload, TopologyPayload)
-        else None
-    )
+    topo = index_board(board).topo
 
     ctx = Context()
     probes: dict[str, set[str]] = defaultdict(set)

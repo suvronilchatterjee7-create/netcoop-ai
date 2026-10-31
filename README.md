@@ -6,7 +6,7 @@ Specialised agents analyse different aspects of network health, exchange structu
 messages on a shared case board, reconcile their findings and produce one explainable
 diagnostic report, including an honest `insufficient_evidence` outcome.
 
-> **Status:** Phases 0–5 done (data, protocol, Translator, board + orchestrator, specialist agents, calibrated correlation). Courtroom tie-break and full reporting land next.
+> **Status:** Phases 0–6 done (data, protocol, Translator, board + orchestrator, specialist agents, calibrated correlation, courtroom tie-break). Full reporting and evaluation land next.
 
 ## Architecture (planned)
 
@@ -36,6 +36,7 @@ make generate     # build the labelled dataset (needs the organiser generator, s
 make profile      # write docs/DATA_PROFILE.md from the generated data
 make calibrate    # derive normal baselines (config/baselines.yaml) from training seeds
 netcoop fit       # fit the correlation model on training seeds; docs/CALIBRATION.md on holdout
+netcoop courtroom-eval   # courtroom ablation on ambiguous + held-out cases
 make test
 netcoop run data/generated/link_congestion/<run> -v      # full pipeline, live message trace
 netcoop replay runs/<incident_id>                         # rebuild + verify the board from the trace
@@ -46,7 +47,7 @@ netcoop schemas                                          # re-export JSON Schema
 
 Docs: [PROTOCOL.md](docs/PROTOCOL.md) (message protocol), [TRANSLATOR.md](docs/TRANSLATOR.md)
 (ingestion and validation), [SCORING.md](docs/SCORING.md) (every formula), [CALIBRATION.md](docs/CALIBRATION.md) (calibration and decision metrics),
-[ORCHESTRATION.md](docs/ORCHESTRATION.md) (board, rounds, trace, replay), [AGENTS.md](docs/AGENTS.md) (agents, catalogue), [DECISIONS.md](docs/DECISIONS.md) (decision log).
+[ORCHESTRATION.md](docs/ORCHESTRATION.md) (board, rounds, trace, replay), [AGENTS.md](docs/AGENTS.md) (agents, catalogue), [COURTROOM.md](docs/COURTROOM.md) (tie-break), [DECISIONS.md](docs/DECISIONS.md) (decision log).
 
 Without `make` (e.g. on Windows): `python -m venv .venv`, activate it, then
 `pip install -e ".[dev]"` and use the `netcoop` command directly.

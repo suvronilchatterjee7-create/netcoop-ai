@@ -25,6 +25,7 @@ from netcoop.protocol.payloads import (
     VerdictPayload,
 )
 from netcoop.protocol.report import (
+    CourtroomSummary,
     EvidenceItem,
     EvidenceProvenance,
     Report,
@@ -194,9 +195,38 @@ class ProvisionalReporter:
                 confidence_category=v.confidence_category,
                 evidence_provenance=tuple(provenance),
                 missing_evidence=v.missing_evidence,
+                courtroom=_courtroom_summary(board, v),
                 manifest=run.manifest,
             ),
         )
+
+
+COURT_SENDERS = ("prosecutor", "defense", "judge")
+
+
+def _courtroom_summary(board: Board, v: VerdictPayload) -> CourtroomSummary | None:
+    """Summarise the tie-break from the final VERDICT's rationale and the transcript."""
+    if v.method != "courtroom":
+        return None
+    contenders = next(
+        (r.split(": ", 1)[1].split(" vs ") for r in v.rationale if r.startswith("contenders: ")), []
+    )
+    ruling = next((r for r in v.rationale if r.startswith("ruling: ")), "")
+    rounds = next((int(r.rsplit("rounds ", 1)[1]) for r in v.rationale if " rounds " in r), 0)
+    transcript = tuple(
+        m.msg_id
+        for m in board.messages()
+        if m.sender in COURT_SENDERS and m.type is not MessageType.CAPABILITY
+    )
+    briefs = [r for r in v.rationale if r.startswith(("prosecutor for", "defense for"))]
+    return CourtroomSummary(
+        invoked=True,
+        contenders=tuple(contenders),
+        rounds=rounds,
+        outcome="resolved" if v.decision is Decision.DIAGNOSED else "deferred",
+        summary=" | ".join([*briefs, ruling.removeprefix("ruling: ")]),
+        transcript_msg_ids=transcript,
+    )
 
 
 def _limitations(board: Board, run: RunInfo) -> tuple[str, ...]:

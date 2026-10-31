@@ -1,0 +1,174 @@
+"""`netcoop courtroom-eval`: ablation of the courtroom on ambiguous and ordinary cases.
+
+Two suites, each run twice through the full pipeline (with and without the courtroom):
+
+* **ambiguity suite** (config/generation.yaml ``ambiguity_suite``, fresh seeds never used in
+  development): interface faults that compete with hardware failure on the same device, and
+  hardware failures / device overloads, fault types the main sweep never injects;
+* **held-out main suite** (seeds from config split): checks the courtroom does not cost
+  correct diagnoses where the correlator was already right.
+
+An outcome is *correct* (right fault at a true location, or no fault on a normal run),
+*wrong* (any other claim) or *abstained* (insufficient evidence). The courtroom's purpose is
+to turn wrong claims into abstentions or correct ones without turning correct ones into wrong.
+"""
+
+from __future__ import annotations
+
+import concurrent.futures as cf
+import itertools
+import json
+from collections import Counter, defaultdict
+from pathlib import Path
+from typing import Any
+
+from netcoop.calibration import seed_split
+from netcoop.config import get_value, load_config
+from netcoop.correlation.fit import split_runs, truth_locations
+from netcoop.generation import DEFAULT_OUT, META_FILE, load_adapter
+from netcoop.protocol.vocabulary import get_vocabulary
+
+REPO = Path(__file__).resolve().parents[2]
+AMBIGUITY_OUT = REPO / "data" / "ambiguity"
+REPORT = REPO / "docs" / "COURTROOM_RESULTS.md"
+
+
+def generate_suite(out: Path = AMBIGUITY_OUT) -> list[Path]:
+    """Generate the ambiguity suite (idempotent: existing runs are reused)."""
+    cfg = load_config("generation")
+    fams = get_value(cfg, "ambiguity_suite.families")
+    seeds = get_value(cfg, "ambiguity_suite.seeds")
+    intens = get_value(cfg, "ambiguity_suite.intensities")
+    noises = get_value(cfg, "ambiguity_suite.noise_levels")
+    adapter = load_adapter()
+    runs = []
+    for fam, seed, inten, noise in itertools.product(fams, seeds, intens, noises):
+        d = out / fam / f"{fam}__s{seed}__i{inten}__n{noise}__m0.0"
+        if not (d / META_FILE).is_file():
+            d.mkdir(parents=True, exist_ok=True)
+            adapter.generate(
+                scenario=fam, seed=seed, intensity=inten, noise=noise, missing_rate=0.0, out_dir=d
+            )
+            gt = json.loads((d / "ground_truth.json").read_text(encoding="utf-8"))
+            gt.update({"seed": seed, "intensity": inten, "noise": noise, "missing_rate": 0.0})
+            (d / META_FILE).write_text(
+                json.dumps({"run_id": d.name, "ground_truth": gt}, indent=2), encoding="utf-8"
+            )
+        runs.append(d)
+    return runs
+
+
+def _outcome(report: Any, gt: dict[str, Any]) -> str:
+    status = report.status.value
+    if status == "insufficient_evidence":
+        return "abstain"
+    if status == "no_fault_detected":
+        return "correct" if gt["root_cause"] == "normal" else "wrong"
+    vocab = get_vocabulary()
+    hyp = report.suspected_root_cause.split(" at ")[0]
+    ok_type = (
+        vocab.hypothesis_types.get(hyp) is not None
+        and vocab.hypothesis_types[hyp].family == gt["root_cause"]
+    )
+    ok_loc = bool(set(report.affected_devices) & truth_locations(gt))
+    return "correct" if ok_type and ok_loc else "wrong"
+
+
+def evaluate_run(run: str) -> dict[str, Any]:
+    from netcoop.orchestrator.orchestrator import Orchestrator
+    from netcoop.protocol.common import MessageType
+
+    path = Path(run)
+    gt = json.loads((path / META_FILE).read_text(encoding="utf-8"))["ground_truth"]
+    out: dict[str, Any] = {
+        "run": path.name,
+        "family": gt["scenario"],
+        "root_cause": gt["root_cause"],
+    }
+    for label, court in (("without", False), ("with", True)):
+        res = Orchestrator(courtroom=court).run(path)
+        out[label] = _outcome(res.report, gt)
+        if court:
+            verdicts = res.board.query(type=MessageType.VERDICT)
+            final = verdicts[-1].payload
+            out["invoked"] = final.method == "courtroom"
+            out["ruling"] = next((r for r in final.rationale if r.startswith("ruling:")), "")
+            out["transcript"] = sum(
+                1
+                for m in res.board.messages()
+                if m.sender in ("prosecutor", "defense", "judge") and m.type.value != "CAPABILITY"
+            )
+    return out
+
+
+def evaluate(runs: list[Path], workers: int) -> list[dict[str, Any]]:
+    with cf.ProcessPoolExecutor(max_workers=workers) as ex:
+        return list(ex.map(evaluate_run, [str(r) for r in runs], chunksize=2))
+
+
+def _ruling_kind(text: str) -> str:
+    if "confirmed" in text:
+        return "confirmed"
+    if "accepted" in text:
+        return "contender accepted"
+    return "deferred" if "deferred" in text else "-"
+
+
+def render(suites: dict[str, list[dict[str, Any]]]) -> str:
+    lines = [
+        "# Courtroom results",
+        "",
+        "Generated by `netcoop courtroom-eval`. Every run goes through the full pipeline twice: "
+        "without and with the courtroom (docs/COURTROOM.md). correct / wrong / abstained as in "
+        "CALIBRATION.md.",
+        "",
+    ]
+    for name, rows in suites.items():
+        lines += [
+            f"## {name}",
+            "",
+            "| family | runs | courtroom invoked | without: correct / wrong / abstain | "
+            "with: correct / wrong / abstain |",
+            "|---|---|---|---|---|",
+        ]
+        fams: dict[str, list[dict[str, Any]]] = defaultdict(list)
+        for r in rows:
+            fams[r["family"]].append(r)
+        for fam, rs in [*sorted(fams.items()), ("**all**", rows)]:
+            w, c = Counter(r["without"] for r in rs), Counter(r["with"] for r in rs)
+            inv = sum(r["invoked"] for r in rs)
+            lines.append(
+                f"| {fam} | {len(rs)} | {inv} | {w['correct']} / {w['wrong']} / {w['abstain']} | "
+                f"{c['correct']} / {c['wrong']} / {c['abstain']} |"
+            )
+        changed = Counter((r["without"], r["with"]) for r in rows if r["without"] != r["with"])
+        lines += [
+            "",
+            "Changed outcomes (without -> with): "
+            + (", ".join(f"{a} -> {b}: {n}" for (a, b), n in sorted(changed.items())) or "none"),
+            "",
+        ]
+        rulings = Counter(_ruling_kind(r["ruling"]) for r in rows if r["invoked"])
+        lines += [
+            "Rulings when invoked: "
+            + (", ".join(f"{k} {v}" for k, v in sorted(rulings.items())) or "-"),
+            "",
+        ]
+    return "\n".join(lines) + "\n"
+
+
+def run_courtroom_eval(
+    main_root: Path = DEFAULT_OUT, report: Path = REPORT
+) -> dict[str, list[dict[str, Any]]]:
+    workers = int(get_value(load_config("correlation_method"), "fitting.workers"))
+    suites = {
+        "Ambiguity suite (fresh seeds, faults the model never saw true)": evaluate(
+            generate_suite(), workers
+        )
+    }
+    _, hold = seed_split()
+    main = split_runs(main_root, set(hold), 1) if main_root.is_dir() else []
+    if main:
+        suites["Held-out main suite"] = evaluate(main, workers)
+    report.write_text(render(suites), encoding="utf-8")
+    return suites

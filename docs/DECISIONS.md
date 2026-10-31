@@ -185,6 +185,39 @@ threshold. **Consequence for Phase 6:** the courtroom has no natural work on thi
 must be exercised on deliberately ambiguous generated cases (e.g. evidence removed by the
 mutator, or competing faults), and its value measured there.
 
+## D-034 · 2026-11-01 · Courtroom trigger includes under-trained contenders
+No natural near ties exist at the fitted operating point (D-033), but the learned model is
+blind to fault types it never saw true. Measured on fresh seeds: genuine hardware failures
+were reported as interface faults at confidence 1.0 in 32 of 40 cases. The courtroom therefore
+also opens when a plausible, related, overlapping contender (or the top candidate) is of a type
+with fewer than `trigger.min_training_positives` true training examples.
+
+## D-035 · 2026-11-01 · 'Rising' is tested on the recent window
+Mann-Kendall over the whole series reads a step (a failed device's error level that jumped
+and stayed flat) as a trend. The catalogue's 'rising' means *still rising now*, which is what
+separates a degrading interface from a dead device. Trends are now tested on the recent
+window like the level tests. The correlation model was refitted (held-out precision
+unchanged at 98.9%).
+
+## D-036 · 2026-11-01 · Win margin on the quality-weighted scale
+The first margin (an unweighted 2.0, i.e. one perfect required element) deferred every case
+with any missing data, because quality-weighted points of a decisive confirmation came to
+about 1.86. Measured: 39 of 72 held-out interface faults deferred. The margin is now 2 × 0.873,
+where 0.873 is the 10th percentile of evidence quality of true training candidates; 16 of 72
+now defer, all lacking the discriminating trend.
+
+## D-037 · 2026-11-01 · The courtroom confirms or defers; it does not overrule into a claim
+A courtroom win for the contender becomes the verdict only if the calibrated model also
+accepts it. The courtroom's rubric is not calibrated, so turning its preference alone into a
+claim would break the 'confidence from a calibrated method' requirement. The honest result
+is insufficient evidence, with both hypotheses and the transcript reported.
+
+## D-038 · 2026-11-01 · Ambiguity suite outside the main sweep
+hardware_failure and device_overload injection was added to the stand-in generator but kept
+out of the main sweep and the fit (config `ambiguity_suite`, fresh seeds 100-109). The suite
+thus measures behaviour on faults the learned model never saw, and the new seeds give a
+clean, never-touched evaluation set (partly addresses Q-005).
+
 ## Open questions
 - **Q-001** ~~Sweep sizes~~ resolved by D-005.
 - **Q-002** Canonical schema: derive from `docs/DATA_PROFILE.md` (Phase 1). Re-check if the

@@ -488,7 +488,7 @@ Directed query for targeted evidence, routed by capability.
 | `interface_fault` | fault | interface_fault | Physical or link-layer fault on an interface: rising errors, loss, instability. |
 | `dns_service_failure` | fault | dns_dhcp_failure | DNS service fails or is slow while transport is healthy. |
 | `dhcp_service_failure` | fault | dns_dhcp_failure | DHCP service fails or is slow while transport is healthy. |
-| `device_overload` | fault | - | Device CPU or memory exhaustion degrades forwarding or control plane. |
-| `hardware_failure` | fault | - | Device is down or failing as a whole (not a single interface). |
+| `device_overload` | fault | device_overload | Device CPU or memory exhaustion degrades forwarding or control plane. |
+| `hardware_failure` | fault | hardware_failure | Device is down or failing as a whole (not a single interface). |
 | `normal` | outcome | normal | No significant deviation from baseline was found. |
 | `insufficient_evidence` | outcome | - | Evidence is too weak, too degraded or too ambiguous to name a root cause. |

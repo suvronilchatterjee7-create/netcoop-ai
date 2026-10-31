@@ -48,7 +48,10 @@ def test_vocabulary_has_first_class_outcomes() -> None:
 
 
 def test_hypothesis_families_match_scenario_families() -> None:
-    families = set(get_value(load_config("generation"), "scenario_families"))
+    gen = load_config("generation")
+    families = set(get_value(gen, "scenario_families")) | set(
+        get_value(gen, "ambiguity_suite.families")
+    )
     mapped = {h.family for h in get_vocabulary().hypothesis_types.values() if h.family}
     assert mapped <= families
     # every non-interop scenario family is covered by at least one hypothesis type

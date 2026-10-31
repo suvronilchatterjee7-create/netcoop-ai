@@ -11,7 +11,9 @@
   continues and the report lists the missing evidence.
 * **Routing:** REQUESTs go to agents whose card can serve the capability. A REQUEST nobody
   can serve gets an ``unsupported`` RESPONSE from the orchestrator.
-* **Closing stages:** correlator -> VERDICT, reporter -> REPORT.
+* **Closing stages:** correlator -> VERDICT; if the correlator opens a case, the courtroom runs
+  (discovery requests answered by specialists, arguments, ruling -> final VERDICT by the judge);
+  reporter -> REPORT from the last VERDICT.
 """
 
 from __future__ import annotations
@@ -28,6 +30,9 @@ from typing import Any
 from netcoop.agents.base import Agent, AgentContext
 from netcoop.board.board import Board, message_metric
 from netcoop.config import config_hash, get_value, load_config
+from netcoop.correlation.features import index_board
+from netcoop.courtroom.courtroom import CARDS as COURT_CARDS
+from netcoop.courtroom.courtroom import DEFENSE, JUDGE, PROSECUTOR, Case, Courtroom
 from netcoop.orchestrator.stages import (
     Correlator,
     ProvisionalReporter,
@@ -112,6 +117,7 @@ class Orchestrator:
         *,
         timeout_s: float | None = None,
         max_rounds: int | None = None,
+        courtroom: bool = True,
     ) -> None:
         cfg = load_config("orchestrator")
         if agents is None:
@@ -128,6 +134,7 @@ class Orchestrator:
             correlator = Correlator()
         self.correlator = correlator
         self.reporter = reporter or ProvisionalReporter()
+        self.courtroom = Courtroom() if courtroom else None
         self.translator = translator or Translator()
         self.max_rounds = max_rounds or int(get_value(cfg, "rounds.max_rounds"))
         self.max_depth = int(get_value(cfg, "board.max_causation_depth"))
@@ -177,6 +184,7 @@ class Orchestrator:
             translator_card(),
             *(a.card for a in self.agents),
             self.correlator.card,
+            *(COURT_CARDS if self.courtroom is not None else ()),
             self.reporter.card,
         ]:
             self._post(
@@ -223,18 +231,24 @@ class Orchestrator:
                     ),
                     r,
                 )
+
+            # ---- closing stages
+            r_final = info.rounds + 1
+            current_round[0] = r_final
+            emit(Event("stage", r_final, {"stage": "correlation"}))
+            verdict_payload = self.correlator.correlate(board, info)
+            verdict = self._msg(
+                MessageType.VERDICT, self.correlator.card.agent_id, incident, verdict_payload, now
+            )
+            self._post(board, verdict, r_final)
+            case = getattr(self.correlator, "case", None)
+            if case is not None and self.courtroom is not None:
+                verdict = self._court(
+                    case, verdict, board, active, cursors, executor, info, now, emit, current_round
+                )
+                r_final = current_round[0]
         finally:
             executor.shutdown(wait=False, cancel_futures=True)
-
-        # ---- closing stages
-        r_final = info.rounds + 1
-        current_round[0] = r_final
-        emit(Event("stage", r_final, {"stage": "correlation"}))
-        verdict_payload = self.correlator.correlate(board, info)
-        verdict = self._msg(
-            MessageType.VERDICT, self.correlator.card.agent_id, incident, verdict_payload, now
-        )
-        self._post(board, verdict, r_final)
         emit(Event("stage", r_final, {"stage": "reporting"}))
         report = self.reporter.report(board, verdict, info)
         report_msg = make_message(
@@ -266,6 +280,51 @@ class Orchestrator:
             )
         emit(Event("done", r_final, {"status": report.status.value}))
         return RunResult(report, board, info, translation, run_dir, manifest_data)
+
+    # ------------------------------------------------------------------ courtroom
+    def _court(
+        self,
+        case: Case,
+        preliminary: Envelope,
+        board: Board,
+        active: list[Agent],
+        cursors: dict[str, int],
+        executor: cf.ThreadPoolExecutor,
+        info: RunInfo,
+        now: datetime,
+        emit: EventHook,
+        current_round: list[int],
+    ) -> Envelope:
+        """Discovery requests, specialist answers, arguments, ruling. Returns the final VERDICT."""
+        assert self.courtroom is not None
+        court, incident = self.courtroom, info.incident_id
+        r = current_round[0]
+        emit(Event("stage", r, {"stage": "courtroom", "reason": case.reason}))
+        since = board.version
+        for side, req in court.discovery(case, index_board(board)):
+            self._post(
+                board,
+                self._msg(MessageType.REQUEST, side, incident, req, now, parent=preliminary),
+                r,
+            )
+        self._route_requests(board, since, active, info, now, r)
+        rounds = 0
+        for _ in range(court.max_rounds):
+            r += 1
+            current_round[0] = r
+            rounds += 1
+            if self._round(r, active, cursors, board, executor, info, now, emit) == 0:
+                break
+        idx = index_board(board)
+        prosecution = court.brief(PROSECUTOR, case.a, case.b, idx)
+        defense = court.brief(DEFENSE, case.b, case.a, idx)
+        for side, mtype, _cand, stance in court.arguments(prosecution, defense):
+            target = board.get(stance.target_msg_id)
+            self._post(board, self._msg(mtype, side, incident, stance, now, parent=target), r)
+        ruling = court.rule(case, prosecution, defense, preliminary.payload, rounds)
+        final = self._msg(MessageType.VERDICT, JUDGE, incident, ruling, now, parent=preliminary)
+        self._post(board, final, r)
+        return final
 
     # ------------------------------------------------------------------ internals
     @staticmethod

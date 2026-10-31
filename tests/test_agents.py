@@ -123,7 +123,8 @@ def test_catalogue_covers_every_fault_type() -> None:
     vocab = get_vocabulary()
     assert set(cat.hypotheses) == set(vocab.fault_types())
     families = {vocab.hypothesis_types[h].family for h in cat.hypotheses} - {None}
-    assert families == set(FAMILIES) - {"normal", "interop_failure"}
+    suite = set(get_value(load_config("generation"), "ambiguity_suite.families"))
+    assert families == (set(FAMILIES) | suite) - {"normal", "interop_failure"}
     for h in cat.hypotheses.values():
         for a in h.actions:
             fields = {f.split("}")[0] for f in a.split("{")[1:]}

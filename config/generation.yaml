@@ -18,6 +18,32 @@ scenario_families:
     once the generator is integrated.
   source: "Problem statement A6 (test scenarios to support)"
 
+ambiguity_suite:
+  families:
+    catalog: [interface_fault, hardware_failure, device_overload]
+    rationale: >
+      Courtroom evaluation suite (docs/COURTROOM.md). interface_fault naturally competes with
+      hardware_failure on the same device; hardware_failure and device_overload are catalogue
+      faults that the main sweep never injects, so the correlator has no positive training
+      examples for them. They are deliberately kept OUT of the main sweep and the fit, so the
+      suite measures behaviour on faults the learned model has never seen.
+    source: "Part D Phase 6 exit criterion (generated ambiguous cases); problem statement A1"
+  seeds:
+    value: [100, 101, 102, 103, 104, 105, 106, 107, 108, 109]
+    unit: "rng seed"
+    rationale: "Fresh seeds never used in development, calibration or fitting (also addresses Q-005)."
+    source: "Engineering choice (disjoint from sweep.seeds)"
+  intensities:
+    value: [0.5, 1.0]
+    unit: "fraction of maximum fault severity"
+    rationale: "Clearly present faults: the suite tests adjudication between explanations, not detection limits."
+    source: "Engineering choice"
+  noise_levels:
+    value: [0.0, 0.1]
+    unit: "fraction (relative noise amplitude)"
+    rationale: "Clean and moderate noise."
+    source: "Engineering choice"
+
 sweep:
   seeds:
     value: [0, 1, 2, 3, 4]

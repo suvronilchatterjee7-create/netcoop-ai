@@ -256,7 +256,9 @@ class Detector:
     def trend(self, obs: ObservationPayload) -> Finding | None:
         if obs.metric not in self.trend_metrics:
             return None
-        ys = [float(p.v) for p in obs.points]
+        # 'rising' means still rising now: the trend is tested on the recent window, so a step
+        # that has levelled off (e.g. a failed device's flat error level) is not a trend
+        ys = self.recent([float(p.v) for p in obs.points])
         if len(ys) < self.trend_min:
             return None
         z, p = mann_kendall(ys)

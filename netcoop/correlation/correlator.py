@@ -15,15 +15,17 @@ from __future__ import annotations
 
 from netcoop.agents.scopes import Topo
 from netcoop.board.board import Board
-from netcoop.catalogue import get_catalogue
+from netcoop.catalogue import Catalogue, get_catalogue
 from netcoop.config import get_value, load_config
-from netcoop.correlation.features import explains, extract
+from netcoop.correlation.features import Candidate, explains, extract, required_satisfied
 from netcoop.correlation.fit import load_model
 from netcoop.correlation.model import Model, Outcome, decide
+from netcoop.courtroom.courtroom import Case
 from netcoop.orchestrator.stages import ProvisionalCorrelator, RunInfo
 from netcoop.protocol.capability import AgentRole, CapabilityCard
 from netcoop.protocol.common import PROTOCOL_VERSION, Decision, MessageType
 from netcoop.protocol.payloads import RankedHypothesis, TopologyPayload, VerdictPayload
+from netcoop.protocol.vocabulary import get_vocabulary
 
 T = MessageType
 METHOD = "naive_bayes_llr+platt"
@@ -52,9 +54,67 @@ class Correlator:
     def __init__(self, model: Model | None = None) -> None:
         self.model = model if model is not None else load_model()
         self.min_accept = float(get_value(load_config("correlation_method"), "decision.min_accept"))
+        self.min_positives = int(
+            get_value(load_config("courtroom"), "trigger.min_training_positives")
+        )
+        self.case: Case | None = None
         self.last: Outcome | None = None
 
+    def _under_trained(self, hypothesis_type: str) -> bool:
+        assert self.model is not None
+        return int(self.model.tables["types"][hypothesis_type]["n_true"]) < self.min_positives
+
+    def _open_case(self, out: Outcome, cat: Catalogue, topo: Topo) -> Case | None:
+        """Near tie, or a plausible competing contender the learned model cannot judge."""
+        assert self.model is not None
+        live = [r for r in out.ranking if r.merged_into is None]
+        if not live or (out.decision != "diagnosed" and not out.near_tie):
+            return None
+        top = live[0]
+        for r in live[1:]:
+            if out.near_tie and r is live[1]:
+                reason = f"near tie between {top.candidate.key} and {r.candidate.key}"
+            elif (
+                self._under_trained(r.candidate.hypothesis_type)
+                or self._under_trained(top.candidate.hypothesis_type)
+            ) and self._contends(top.candidate, r.candidate, cat, topo):
+                weak = (
+                    r.candidate
+                    if self._under_trained(r.candidate.hypothesis_type)
+                    else top.candidate
+                )
+                reason = (
+                    f"contender {r.candidate.key} competes with {top.candidate.key}, "
+                    "and the learned model "
+                    f"has fewer than {self.min_positives} true training examples of "
+                    f"{weak.hypothesis_type}"
+                )
+            else:
+                continue
+            return Case(
+                top.candidate, r.candidate, top.confidence, r.confidence, reason, self.model.accept
+            )
+        return None
+
+    @staticmethod
+    def _contends(a: Candidate, b: Candidate, cat: Catalogue, topo: Topo) -> bool:
+        """b rivals a: catalogue relation, overlapping location, full required signature."""
+        ha, hb = cat.hypotheses[a.hypothesis_type], cat.hypotheses[b.hypothesis_type]
+        related = (
+            b.hypothesis_type in ha.competes_with
+            or a.hypothesis_type in hb.competes_with
+            or b.hypothesis_type in ha.explains
+            or a.hypothesis_type in hb.explains
+        )
+        if not related or not required_satisfied(b, hb):
+            return False
+        vocab = get_vocabulary()
+        ra = topo.blast_radius(a.root, vocab.category_of(a.root_type))
+        rb = topo.blast_radius(b.root, vocab.category_of(b.root_type))
+        return ra.matches(b.root, None) or rb.matches(a.root, None)
+
     def correlate(self, board: Board, run: RunInfo) -> VerdictPayload:
+        self.case = None
         if self.model is None:
             v = ProvisionalCorrelator().correlate(board, run)
             return v.model_copy(update={"rationale": ("model_not_fitted: run `netcoop fit`",)})
@@ -68,6 +128,7 @@ class Correlator:
         )
         out = decide(cands, ctx, self.model, cat, lambda a, b: explains(a, b, cat, topo))
         self.last = out
+        self.case = self._open_case(out, cat, topo)
         high = (
             self.model.normal_accept if out.decision == "no_fault_detected" else self.model.accept
         )

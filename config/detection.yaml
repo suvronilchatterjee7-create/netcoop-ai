@@ -92,7 +92,11 @@ trend:
   min_samples:
     value: 10
     unit: "samples"
-    rationale: "The normal approximation of the Mann-Kendall statistic is adequate from about 10 samples."
+    rationale: >
+      The normal approximation of the Mann-Kendall statistic is adequate from about 10 samples.
+      The test runs on the recent window (window.recent_fraction), because the catalogue's
+      'rising' means still rising now: a step that has levelled off is a level change, not a
+      trend (D-035).
     source: "Hipel & McLeod (1994), Time Series Modelling of Water Resources"
 
 enum_health:

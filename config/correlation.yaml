@@ -6,27 +6,27 @@ model:
   source: fitted by `netcoop fit` on 648 generated runs (all families), training seeds [0, 1, 2], 2026-10-31
   unit: log-likelihood ratios; Platt (a, b); calibrated thresholds
   value:
-    accept: 0.96
+    accept: 0.98
     margin: 0.0
-    normal_accept: 0.6735585063719811
+    normal_accept: 0.6967963386727689
     normal_quality_cutoffs:
-    - 0.8838668650249706
+    - 0.9570571454314388
     - 0.9649026805050472
     normal_table:
-      0,0: 0.7501213003396409
-      0,1: 0.7234971662175974
-      0,2: 0.2308532079274437
-      1,0: 0.7751091703056768
-      1,1: 0.6735585063719811
-      1,2: 0.25541205983461857
-      2,0: 0.816415649229124
-      2,1: 0.6316938634796598
-      2,2: 0.22457891453524637
+      0,0: 0.7581792318634424
+      0,1: 0.7245240761478163
+      0,2: 0.2363261093911249
+      1,0: 0.7763157894736843
+      1,1: 0.6967963386727689
+      1,2: 0.24597207303974225
+      2,0: 0.8174006444683136
+      2,1: 0.6329639889196677
+      2,2: 0.22556390977443613
     platt:
-    - 1.7226082630846182
-    - 0.17219437324486012
+    - 10.379827965099617
+    - -1.2080016393829782
     quality_cutoffs:
-    - 0.900884472242271
+    - 0.9009382491632771
     - 0.9769690579789213
     significant_edges:
     - 0
@@ -34,158 +34,158 @@ model:
     - 3
     tables:
       analytic:
-        contradict: -3.4933126705699613
-        none: -0.5074326934589817
-        support: 2.2333540979198276
+        contradict: -4.180286992022825
+        none: -0.5041340924481119
+        support: 2.239526957026909
       quality:
-        '0': -0.07295479116872995
-        '1': 0.05098555473286753
-        '2': 0.02254761941233421
+        '0': -0.059509172732569095
+        '1': 0.03114154955316093
+        '2': 0.028720478519415088
       types:
         device_overload:
           elements:
-          - satisfied: 0.013098952859866215
-            unknown: 0.8244260732290541
-            violated: -0.3852018421481722
-          - satisfied: 0.31560903358126496
-            unknown: 0.8244260732290541
-            violated: -0.7645706495646258
-          - satisfied: 2.0609906838495013
-            unknown: -0.5389173586330059
-            violated: -5.240851213053405
-          - satisfied: 2.0609906838495013
-            unknown: -0.5389173586330059
-            violated: -5.240851213053405
+          - satisfied: 0.007650856556128795
+            unknown: 0.7982703799248941
+            violated: -0.2811618127638549
+          - satisfied: 0.3129090950248389
+            unknown: 0.7982703799248941
+            violated: -0.6464885770731009
+          - satisfied: 2.066462653727495
+            unknown: -0.5334453887550122
+            violated: -5.2416533950312845
+          - satisfied: 2.066462653727495
+            unknown: -0.5334453887550122
+            violated: -5.2416533950312845
           n_false: 32
           n_true: 0
-          prior_logit: -1.2734194735403417
+          prior_logit: -1.276854087220557
         dhcp_service_failure:
           elements:
-          - satisfied: 0.5168239983259985
-            unknown: -1.4528412117807017
-            violated: -1.4846745103923242
-          - satisfied: 1.1095563386135807
-            unknown: -2.8161846436427616
-            violated: -6.294343066441045
-          - satisfied: -0.0005975016346852417
-            unknown: -2.5662958292972555
-            violated: 0.4105084343712166
-          - satisfied: -0.056538201252229026
-            unknown: -2.5662958292972555
-            violated: 1.7394570280206338
+          - satisfied: 0.5369245520361503
+            unknown: -1.4789969050848617
+            violated: -1.4752652930930603
+          - satisfied: 1.115028308491574
+            unknown: -2.810712673764768
+            violated: -6.29706786376723
+          - satisfied: -0.0008425095986696876
+            unknown: -2.5536374324253317
+            violated: 0.4231668312431401
+          - satisfied: -0.05678320921621349
+            unknown: -2.5536374324253317
+            violated: 1.7521154248925574
           n_false: 0
           n_true: 55
-          prior_logit: 2.0401273662151644
+          prior_logit: 2.036141311169285
         dns_service_failure:
           elements:
-          - satisfied: 0.5308849436027664
-            unknown: -1.5780043547347078
-            violated: -1.60983765334633
-          - satisfied: 1.1097303897633015
-            unknown: -2.9413477865967677
-            violated: -6.419506209395051
-          - satisfied: -0.010281789400147697
-            unknown: -2.6914589722512616
-            violated: 0.8125957948506017
-          - satisfied: -0.010281789400147697
-            unknown: -2.6914589722512616
-            violated: 0.8125957948506017
+          - satisfied: 0.5512899123679286
+            unknown: -1.6041600480388678
+            violated: -1.6004284360470664
+          - satisfied: 1.115202359641295
+            unknown: -2.935875816718774
+            violated: -6.422231006721236
+          - satisfied: -0.010526797364132033
+            unknown: -2.678800575379338
+            violated: 0.8252541917225252
+          - satisfied: -0.010526797364132033
+            unknown: -2.678800575379338
+            violated: 0.8252541917225252
           n_false: 0
           n_true: 65
-          prior_logit: 2.180470258724173
+          prior_logit: 2.176544372098681
         hardware_failure:
           elements:
-          - satisfied: -0.45295968976663653
-            unknown: 1.910134957061256
-            violated: 1.8783016584496333
-          - satisfied: 0.43039188693263797
-            unknown: 0.5467915251991959
-            violated: -4.336237644291914
-          - satisfied: 0.08558928171156985
-            unknown: 0.5467915251991959
-            violated: -2.9313668975990876
+          - satisfied: -0.4645120201563557
+            unknown: 1.883979263757096
+            violated: 1.8877108757488972
+          - satisfied: 0.43075276205194263
+            unknown: 0.5522634950771894
+            violated: -4.336906993960057
+          - satisfied: 0.08584489781846964
+            unknown: 0.5522634950771894
+            violated: -2.934091694925273
           n_false: 134
           n_true: 0
-          prior_logit: -2.5291836617634664
+          prior_logit: -2.532081941763473
         interface_fault:
           elements:
-          - satisfied: 0.015406204602135013
-            unknown: -0.22639555160270716
-            violated: -0.2582288502143296
-          - satisfied: 0.019548276539773427
-            unknown: 0.00807214637149928
-            violated: -0.2582288502143296
-          - satisfied: 0.019548276539773427
-            unknown: -0.22639555160270716
-            violated: 0.004798616721974936
-          - satisfied: 2.9148341472096213
-            unknown: -1.5897389834647673
-            violated: -7.362954232836305
-          - satisfied: 3.0562251966515723
-            unknown: -1.5897389834647673
-            violated: -7.370482499257097
-          - satisfied: -0.00690413222305744
-            unknown: -1.3398501691192608
-            violated: 1.6369540945492111
-          n_false: 120
+          - satisfied: -0.0318419471480684
+            unknown: 0.29027308061846957
+            violated: -0.07518049174737328
+          - satisfied: 0.18760582854022193
+            unknown: -0.07597266410218109
+            violated: 0.050267049658268226
+          - satisfied: 0.04298632748522273
+            unknown: -0.23836660991491052
+            violated: 0.002136485637679242
+          - satisfied: 2.9337675555193945
+            unknown: -1.5700823785948173
+            violated: -7.364040662583641
+          - satisfied: 3.075881801521522
+            unknown: -1.5700823785948173
+            violated: -7.3714552596444145
+          - satisfied: -0.006976627660301401
+            unknown: -1.3130071372553809
+            violated: 1.663797126413091
+          n_false: 122
           n_true: 134
-          prior_logit: 0.12235633090336456
+          prior_logit: 0.10648430944101808
         link_congestion:
           elements:
-          - satisfied: 0.15401551466483474
-            unknown: -1.0386424237037828
-            violated: -1.070475722315405
-          - satisfied: 1.9429714999600127
-            unknown: -2.401985855565843
-            violated: -6.961949448715854
-          - satisfied: 1.9429714999600127
-            unknown: -2.401985855565843
-            violated: -6.961949448715854
-          - satisfied: 1.9429714999600127
-            unknown: -2.401985855565843
-            violated: -6.961949448715854
-          - satisfied: 1.8015804505180621
-            unknown: -2.401985855565843
-            violated: -6.93619695261344
-          - satisfied: 1.2187496763346923
-            unknown: -5.632790251299317
-            violated: -6.70212433076704
-          - satisfied: 0.02631418853359068
-            unknown: -2.1520970412203364
-            violated: -1.9546618466163337
+          - satisfied: 0.1590053918063583
+            unknown: -1.0647981170079426
+            violated: -1.0610665050161414
+          - satisfied: 1.9484434698380062
+            unknown: -2.3965138856878494
+            violated: -6.962873940888849
+          - satisfied: 1.9484434698380062
+            unknown: -2.3965138856878494
+            violated: -6.962873940888849
+          - satisfied: 1.9484434698380062
+            unknown: -2.3965138856878494
+            violated: -6.962873940888849
+          - satisfied: 1.8063292238358786
+            unknown: -2.3965138856878494
+            violated: -6.93714555053837
+          - satisfied: 1.2213982098306297
+            unknown: -5.632574535310151
+            violated: -6.703322958481977
+          - satisfied: 0.026206454582478632
+            unknown: -2.139438644348413
+            violated: -1.952104545730914
           n_false: 26
           n_true: 94
-          prior_logit: 1.1127947369619697
+          prior_logit: 1.1116254340338838
         weak_wifi_signal:
           elements:
-          - satisfied: 0.1290169224655726
-            unknown: -1.3421756438931822
-            violated: 0.09664280769336629
-          - satisfied: 0.4477502826114221
-            unknown: -1.3421756438931822
-            violated: -0.8399546422692952
-          - satisfied: 1.446327591238312
-            unknown: -2.7055190757552423
-            violated: -6.653681127799262
-          - satisfied: 1.446327591238312
-            unknown: -2.7055190757552423
-            violated: -6.653681127799262
-          - satisfied: 1.0273546651607626
-            unknown: -2.7055190757552423
-            violated: -2.710695187233032
-          - satisfied: 0.008654698804869241
-            unknown: -2.455630261409736
-            violated: -0.6638707921816808
+          - satisfied: 0.14247816071879604
+            unknown: -1.368331337197342
+            violated: 0.035257386817856395
+          - satisfied: 0.46197666868565934
+            unknown: -1.368331337197342
+            violated: -0.8697296360383282
+          - satisfied: 1.4517995611163055
+            unknown: -2.700047105877249
+            violated: -6.655384995991339
+          - satisfied: 1.4517995611163055
+            unknown: -2.700047105877249
+            violated: -6.655384995991339
+          - satisfied: 1.031110632901667
+            unknown: -2.700047105877249
+            violated: -2.712677594027719
+          - satisfied: 0.008480655606908366
+            unknown: -2.4429718645378125
+            violated: -0.6512123953097574
           n_false: 8
           n_true: 74
-          prior_logit: 1.6358559878410281
+          prior_logit: 1.633667262153772
 training_summary:
   rationale: Fit diagnostics, for traceability.
   source: fitted by `netcoop fit` on 648 generated runs (all families), training seeds [0, 1, 2], 2026-10-31
   unit: counts and fractions
   value:
-    train_candidates: 742
+    train_candidates: 744
     train_diagnosis_precision: 1.0
-    train_fault_coverage: 0.8049713193116634
+    train_fault_coverage: 0.8068833652007649
     train_runs: 648
     train_true_candidates: 422

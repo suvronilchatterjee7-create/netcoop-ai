@@ -46,7 +46,7 @@ available one) is reported as **negative evidence**.
 | calibrated band | recent median; robust z = (median - mu0)/s0 with s0 = max(1.4826 MAD0, (band - mu0)/2.576) | at least `min_persistence` of recent samples beyond the `band_quantile` band of normal operation for that metric and device type (from `netcoop calibrate`), and the median beyond mu0 | device type | the calibration pool is noisier than the current data, which makes the band wide and costs sensitivity |
 | cited threshold | recent median vs `thresholds.<metric>` (ITU-T G.114, WLAN design guides, ...) | a majority of recent samples beyond it, **and** the median beyond it by more than `threshold_test.min_standard_errors` SE of the median | nothing (absolute) | the threshold suits a different context (e.g. the end-to-end G.114 delay applied per hop) |
 | in-window change | z = (median_recent - median_early) / sqrt(SE_r^2 + SE_e^2), SE = 1.2533 x 1.4826 MAD / sqrt(n) x sqrt((1+rho)/(1-rho)) | z >= `change.min_z` **and** a majority of recent samples beyond the earlier extreme | the current run's own noise level and autocorrelation | the fault began before the window (no "before"), or there is a slow legitimate trend such as a diurnal cycle |
-| trend (counters) | Mann-Kendall z, Theil-Sen slope | p < `trend.alpha`, slope > 0, at least `trend.min_samples` | - | there is strong serial correlation (inflates the false-positive rate) |
+| trend (counters) | Mann-Kendall z, Theil-Sen slope **on the recent window** (D-035) | p < `trend.alpha`, slope > 0, at least `trend.min_samples` | - | there is strong serial correlation (inflates the false-positive rate) |
 | enum state | share of recent samples in a non-healthy state | at least `min_persistence` and above the calibrated normal share | - | - |
 
 - **Persistence** (a majority of recent samples) is what stops single spikes. With a 0.5%
@@ -163,3 +163,23 @@ most permissive values whose claims are at least `decision.target_precision` (90
 
 Calibration quality (Brier, ECE, reliability table) and the decision outcomes on held-out
 seeds are in [CALIBRATION.md](CALIBRATION.md).
+
+## 5. Courtroom rubric (`netcoop/courtroom/`)
+
+The full procedure is in [COURTROOM.md](COURTROOM.md). In summary:
+
+```
+points(side) =  Σ_confirmed  w_role · q   −  Σ_failed  w_role · q      (differential scope only)
+             −  missing_required · [required element without any evidence]
+             −  explained_away   · [other side explains this type here and side has no positive points]
+lead = points(prosecution) − points(defense);  clear win iff |lead| ≥ win_margin
+```
+
+- **Differential scope:** the part of an element's scope where the other hypothesis does not
+  make the same prediction.
+- **Assumes:** catalogue signatures state what each fault predicts *and where*, so the
+  difference between two signatures is what discriminates them.
+- **Fails when:** signatures are incomplete. A fault with an unlisted symptom gets no credit
+  for it, and an unlisted shared symptom may look discriminating.
+- **Why `win_margin` is quality-weighted:** points are multiplied by data quality, so the
+  margin is expressed at the evidence quality of typical correct training diagnoses (D-036).
