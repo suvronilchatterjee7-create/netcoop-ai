@@ -2,6 +2,21 @@
 
 ## [Unreleased]
 
+### Phase 3 — Case board and orchestrator
+- `netcoop.board.Board`: append-only versioned store with idempotency, causal integrity,
+  depth-based loop prevention, per-agent round budget, indexed queries and filtered subscriptions.
+- `netcoop.agents.base` / `registry`: agent plugin interface (`card` + `step`), `AgentContext`
+  (read board, deterministic `post`), self-registration and discovery.
+- `netcoop.orchestrator`: version negotiation, activation by data, concurrent rounds with
+  deterministic commit order, capability-routed REQUEST/RESPONSE (unsupported fallback),
+  timeouts, failure isolation, convergence and round limit, closing correlation/report stages.
+- Tracing: `runs/<incident>/trace.jsonl` (live), `manifest.json`, `report.json`; `replay` with
+  full verification.
+- `netcoop.api.diagnose` / `run_diagnosis` with an event hook; CLI `netcoop run`, `netcoop replay`.
+- Provisional correlator (always abstains) and reporter (schema-valid A7 report).
+- `Envelope` now declares `type` / `payload` for typed generic access.
+- Docs: ORCHESTRATION.md, decisions D-019 to D-023.
+
 ### Phase 2 — Translator
 - `data/mappings/canonical.yaml`: declarative aliases, entity bindings, enum values, topology
   fields and dialect profiles for both generator dialects plus common NMS names.

@@ -89,6 +89,50 @@ def _cmd_interop_eval(args: argparse.Namespace) -> int:
     return 1 if bad else 0
 
 
+def _cmd_run(args: argparse.Namespace) -> int:
+    from netcoop.api import run_diagnosis
+
+    def show(e: object) -> None:
+        from netcoop.orchestrator.orchestrator import Event
+
+        assert isinstance(e, Event)
+        if args.verbose and e.kind == "message":
+            m = e.data["msg"]
+            print(
+                f"  r{e.round} #{e.data['seq']:<5} {m.type.value:11s} "
+                f"{m.sender:>14s} -> {m.recipient:<12s} {m.msg_id}"
+            )
+        elif e.kind in ("round_end", "agent_failed", "stage"):
+            print(f"[{e.kind}] round {e.round} {e.data}")
+
+    result = run_diagnosis(args.input, incident_id=args.incident, out_dir=args.out, on_event=show)
+    r = result.report
+    print(
+        f"status: {r.status.value}  root cause: {r.suspected_root_cause}  "
+        f"confidence: {r.confidence:.2f}"
+    )
+    print(f"messages: {result.board.counts()}")
+    if result.run_dir:
+        print(f"trace, manifest and report in {result.run_dir}")
+    return 0
+
+
+def _cmd_replay(args: argparse.Namespace) -> int:
+    from netcoop.orchestrator.trace import ReplayError, replay
+
+    path = args.trace / "trace.jsonl" if args.trace.is_dir() else args.trace
+    try:
+        board = replay(path)
+    except ReplayError as exc:
+        print(f"error: replay failed: {exc}", file=sys.stderr)
+        return 1
+    print(
+        f"replayed {board.version} messages for {board.incident_id}: {board.counts()} "
+        "(trace verified)"
+    )
+    return 0
+
+
 def _not_yet(phase: str) -> int:
     print(f"error: this command is implemented in {phase}", file=sys.stderr)
     return 3
@@ -125,9 +169,22 @@ def build_parser() -> argparse.ArgumentParser:
     ie.add_argument("--out", type=Path, default=REPO_ROOT / "docs" / "INTEROP_RESULTS.md")
     ie.set_defaults(func=_cmd_interop_eval)
 
+    rn = sub.add_parser("run", help="diagnose a run directory or telemetry files")
+    rn.add_argument("input", type=Path)
+    rn.add_argument("--incident", help="incident id (default: derived from the input hash)")
+    rn.add_argument(
+        "--out", type=Path, default=REPO_ROOT / "runs", help="where runs/<incident>/ is written"
+    )
+    rn.add_argument("-v", "--verbose", action="store_true", help="print every board message")
+    rn.set_defaults(func=_cmd_run)
+
+    rp = sub.add_parser(
+        "replay", help="rebuild and verify a board from runs/<incident>/trace.jsonl"
+    )
+    rp.add_argument("trace", type=Path)
+    rp.set_defaults(func=_cmd_replay)
+
     for name, phase in [
-        ("run", "Phase 3"),
-        ("replay", "Phase 3"),
         ("calibrate", "Phase 4/5"),
         ("eval", "Phase 8"),
     ]:

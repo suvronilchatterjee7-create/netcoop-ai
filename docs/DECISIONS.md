@@ -99,6 +99,30 @@ A table is topology only if it has endpoint columns, no timestamp and no metric 
 than capacity. Found by the mutator: without the metric rule, a link table that lost its
 timestamp column was silently read as topology instead of raising `MISSING_FIELD`.
 
+## D-019 · 2026-11-01 · Concurrent steps, ordered commits
+Agents of a round run in parallel but commit in agent-id order after the round, so traces
+are deterministic regardless of scheduling (C1.8). Cost: an agent cannot see another
+agent's post from the same round. That is acceptable because rounds are cheap and convergence
+is checked.
+
+## D-020 · 2026-11-01 · Logical time for messages
+Message timestamps are the data's reference time, not the wall clock. Wall-clock timing is
+kept only in the manifest's `timing` block, outside the trace hash.
+
+## D-021 · 2026-11-01 · Ingestion exempt from the flood budget
+Found by test: the per-agent round budget also capped the Translator's round-0 posts, which
+would silently drop observations on a large network. Ingestion and replay now post with
+`budgeted=False`. Round-0 rejections are reported too.
+
+## D-022 · 2026-11-01 · No per-message ACKs on the board
+The board's accept/duplicate/reject result is returned to the poster directly, and rejections
+are aggregated into ERRORs. Posting an ACK for each of ~500 messages would double the trace
+for no information. ACK messages remain available for external agents and transports.
+
+## D-023 · 2026-11-01 · Provisional correlator abstains
+Until the documented scoring method exists (Phase 5), the pipeline's only honest verdict is
+`insufficient_evidence`. A ranking by proposer confidence is included for transparency only.
+
 ## Open questions
 - **Q-001** ~~Sweep sizes~~ resolved by D-005.
 - **Q-002** Canonical schema: derive from `docs/DATA_PROFILE.md` (Phase 1). Re-check if the

@@ -1,0 +1,43 @@
+description: Case board and orchestrator limits (docs/ORCHESTRATION.md).
+
+rounds:
+  max_rounds:
+    value: 8
+    unit: "collaboration rounds"
+    rationale: >
+      The longest designed exchange is observation -> clue/hypothesis -> request -> response
+      (+ clue) -> support/contradict -> courtroom request -> response, about 5 rounds after
+      ingestion. 8 leaves headroom while bounding runaway agents; reaching the limit is
+      reported as BUDGET_EXCEEDED.
+    source: "Derived from the message sequence in docs/PROTOCOL.md section 7"
+board:
+  max_causation_depth:
+    value: 10
+    unit: "causation hops from a root message"
+    rationale: >
+      The designed chain observation(0) -> clue(1) -> hypothesis(2) -> request(3) -> clue(4)
+      -> response(5) -> support(6) -> verdict(7) -> report(8) needs 8 hops; deeper chains can
+      only come from agents reacting to each other's reactions, i.e. loops.
+    source: "Derived from the message sequence in docs/PROTOCOL.md section 7"
+  per_agent_round_budget:
+    value: 2000
+    unit: "accepted posts per agent per round"
+    rationale: >
+      A specialist posts at most one clue per (entity, metric) plus a few hypotheses; the
+      stand-in campus has <= ~60 entities x <= 6 metrics per agent (~360). 2000 is well above
+      legitimate use and stops a looping agent from flooding the board.
+    source: "Derived from docs/DATA_PROFILE.md entity and metric counts"
+agents:
+  timeout_s:
+    value: 30
+    unit: "s per agent per round"
+    rationale: >
+      Specialists are linear in the number of samples (~20k per incident, sub-second);
+      30 s only triggers for a hung agent. The agent's output for that round is discarded and
+      AGENT_TIMEOUT is reported.
+    source: "Engineering choice; measured Translator throughput ~0.7 s per incident"
+  max_workers:
+    value: 4
+    unit: "threads"
+    rationale: "Independent agents of a round run concurrently; output is committed in agent-id order, so results do not depend on scheduling."
+    source: "Engineering choice"

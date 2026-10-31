@@ -21,6 +21,8 @@ Fields common to every message; `type` and `payload` are added per message type.
 | `recipient` | string | no (default `'board'`) |  |  | agent_id of the recipient, or 'board' for a shared post. |
 | `timestamp` | datetime (ISO-8601, tz) | yes |  |  | Creation time, ISO-8601 UTC (excluded from msg_id). |
 | `adaptations` | list[string] | no (default `()`) |  |  | Version conversions applied, e.g. '1.0->2.0', and any lossy fields. |
+| `type` | enum | yes |  | `OBSERVATION`, `TOPOLOGY`, `CLUE`, `HYPOTHESIS`, `SUPPORT`, `CONTRADICT`, `REQUEST`, `RESPONSE`, `ERROR`, `ACK`, `CAPABILITY`, `VERDICT`, `REPORT` | Message type; fixes the payload model. |
+| `payload` | Any | yes |  |  | Type-specific payload. |
 
 ### ObservationPayload
 

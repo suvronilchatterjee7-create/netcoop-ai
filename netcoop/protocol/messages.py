@@ -62,6 +62,10 @@ class Envelope(ProtocolModel):
     adaptations: tuple[str, ...] = F(
         "Version conversions applied, e.g. '1.0->2.0', and any lossy fields.", default=()
     )
+    # Narrowed by every concrete message class; declared here so code holding a generic
+    # Envelope can read them.
+    type: MessageType = F("Message type; fixes the payload model.")
+    payload: Any = F("Type-specific payload.")
 
     @field_validator("schema_version")
     @classmethod

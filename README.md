@@ -6,7 +6,7 @@ Specialised agents analyse different aspects of network health, exchange structu
 messages on a shared case board, reconcile their findings and produce one explainable
 diagnostic report, including an honest `insufficient_evidence` outcome.
 
-> **Status:** Phases 0–2 done (data, protocol, Translator). Board, agents and correlation land next.
+> **Status:** Phases 0–3 done (data, protocol, Translator, board + orchestrator). Specialist agents and correlation land next.
 
 ## Architecture (planned)
 
@@ -35,6 +35,8 @@ make setup        # create .venv and install netcoop with dev tools
 make generate     # build the labelled dataset (needs the organiser generator, see below)
 make profile      # write docs/DATA_PROFILE.md from the generated data
 make test
+netcoop run data/generated/link_congestion/<run> -v      # full pipeline, live message trace
+netcoop replay runs/<incident_id>                         # rebuild + verify the board from the trace
 netcoop translate data/generated/interop_failure/<run>   # canonicalise one run, list typed errors
 netcoop interop-eval                                     # mutated-corpus check -> docs/INTEROP_RESULTS.md
 netcoop schemas                                          # re-export JSON Schemas + protocol reference
@@ -42,7 +44,7 @@ netcoop schemas                                          # re-export JSON Schema
 
 Docs: [PROTOCOL.md](docs/PROTOCOL.md) (message protocol), [TRANSLATOR.md](docs/TRANSLATOR.md)
 (ingestion and validation), [SCORING.md](docs/SCORING.md) (every formula),
-[DECISIONS.md](docs/DECISIONS.md) (decision log).
+[ORCHESTRATION.md](docs/ORCHESTRATION.md) (board, rounds, trace, replay), [DECISIONS.md](docs/DECISIONS.md) (decision log).
 
 Without `make` (e.g. on Windows): `python -m venv .venv`, activate it, then
 `pip install -e ".[dev]"` and use the `netcoop` command directly.
