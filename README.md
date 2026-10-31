@@ -6,7 +6,7 @@ Specialised agents analyse different aspects of network health, exchange structu
 messages on a shared case board, reconcile their findings and produce one explainable
 diagnostic report, including an honest `insufficient_evidence` outcome.
 
-> **Status:** Phases 0–9 done: data, protocol, Translator, board + orchestrator, specialist agents, calibrated correlation, courtroom tie-break, reporting, evaluation, MCP + extensions + pause/resume + human review. On 1,080 fresh test runs: 77.2% accuracy, 98.3% precision of claims, 21.5% honest abstentions ([EVALUATION.md](docs/EVALUATION.md)).
+> **Status:** Phases 0–9 done: data, protocol, Translator, board + orchestrator, specialist agents, calibrated correlation, courtroom tie-break, reporting, evaluation, MCP + extensions + pause/resume + human review. On 1,080 fresh test runs: 77.2% accuracy, 98.6% precision of claims, 21.7% honest abstentions ([EVALUATION.md](docs/EVALUATION.md)).
 
 ## Architecture (planned)
 
