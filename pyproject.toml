@@ -36,7 +36,7 @@ netcoop = "netcoop.cli.main:main"
 include = ["netcoop*"]
 
 [tool.setuptools.package-data]
-"netcoop.web" = ["static/*"]
+"netcoop.web" = ["static/*", "static/fonts/*"]
 
 [tool.ruff]
 line-length = 100

@@ -190,7 +190,7 @@ A restrained paper palette: ink on white inside a single deep-blue frame, one re
 
 **Character:** A scholarly serif carries the report's argument; a civic, plain sans runs the instrument around it. The serif uses old-style proportional numerals so figures sit inside sentences; the sans uses tabular numerals so data lines up.
 
-**Open item (not a decision):** both families currently load from Google Fonts, falling back to Georgia and Segoe UI. Self-hosting the woff2 files is pending the user's approval; until then, render checks without network show the fallbacks.
+**Font files:** both families are self-hosted as latin-subset variable woff2 files in `netcoop/web/static/fonts/` (SIL OFL 1.1, licence texts beside them), declared with `@font-face` at the top of `app.css`, so the page renders in its own type with no network. Glyphs outside the latin subset, notably the → arrow, fall back to Georgia / Segoe UI.
 
 ### Hierarchy
 - **Headline** (600, 1.875rem, 1.2, -0.01em): the root-cause statement and page titles; max 30ch, balanced wrap. Drops to 1.375rem under 760px.

@@ -30,6 +30,8 @@ from urllib.parse import parse_qs, urlparse
 from netcoop.config import get_value, load_config
 from netcoop.demo import evaluation_headline
 
+mimetypes.add_type("font/woff2", ".woff2")  # not in every platform's registry (e.g. Windows)
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 STATIC = Path(__file__).resolve().parent / "static"
 INCIDENT_RE = re.compile(r"^[A-Za-z0-9_.-]+$")

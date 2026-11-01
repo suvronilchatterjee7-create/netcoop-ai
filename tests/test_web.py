@@ -51,9 +51,16 @@ def test_binds_to_loopback() -> None:
 
 
 def test_page_and_static(base: str) -> None:
-    assert b"NetCoop AI" in _get(base, "/")
+    page = _get(base, "/")
+    assert b"NetCoop AI" in page
     assert b"renderFigure" in _get(base, "/static/app.js")
     assert _status(base, "/static/../server.py") == 404
+    # Self-hosted fonts: the page works offline and calls no external host.
+    css = _get(base, "/static/app.css")
+    assert b"googleapis" not in page + css and b"gstatic" not in page + css
+    with urllib.request.urlopen(base + "/static/fonts/public-sans-latin-var.woff2") as r:
+        assert r.headers["Content-Type"] == "font/woff2"
+        assert r.read(4) == b"wOF2"
 
 
 def test_inputs_and_evaluation(base: str) -> None:

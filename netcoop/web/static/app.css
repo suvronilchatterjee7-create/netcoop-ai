@@ -1,4 +1,19 @@
 /* NetCoop dashboard: Journal of Record. Tokens first; components below. */
+
+/* Self-hosted fonts (SIL OFL 1.1, licences in static/fonts/): the page needs no network. */
+@font-face {
+  font-family: "Source Serif 4"; font-style: normal; font-weight: 400 600; font-display: swap;
+  src: url("fonts/source-serif-4-latin-var.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Source Serif 4"; font-style: italic; font-weight: 400; font-display: swap;
+  src: url("fonts/source-serif-4-latin-italic.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Public Sans"; font-style: normal; font-weight: 400 700; font-display: swap;
+  src: url("fonts/public-sans-latin-var.woff2") format("woff2");
+}
+
 :root {
   --page: #ffffff;
   --rail: #f4f6fa;

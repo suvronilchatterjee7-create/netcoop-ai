@@ -463,9 +463,7 @@
         "value": "760px"
       }
     ],
-    "openItems": [
-      "Fonts load from Google Fonts with Georgia / Segoe UI fallbacks; self-hosting woff2 is pending the user's approval."
-    ]
+    "openItems": []
   },
   "components": [
     {
