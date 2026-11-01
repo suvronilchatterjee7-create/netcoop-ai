@@ -25,3 +25,6 @@ venv/
 .impeccable/mocks/
 .impeccable/review/
 .claude/
+
+# rendered demo video (large; share separately)
+video/
