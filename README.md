@@ -9,6 +9,10 @@ the raw telemetry, the affected devices and the recommended actions. When the ev
 not justify a claim, the report says `insufficient_evidence` and names the data that would
 settle it.
 
+![The NetCoop dashboard showing a link-congestion diagnosis. On the left are the sample runs; in the centre is the report, with red citation numbers after each claim; on the right, Fig. 1 shows the agents' message exchange, with the message cited by the hovered number highlighted.](docs/images/dashboard_report.jpg)
+
+<sub>The local dashboard (`netcoop serve`) after a live diagnosis. Each red number in the report cites the agent message that proves the claim. Hovering one lights that message up in Fig. 1, on the right.</sub>
+
 On **1,080 fresh test runs** never used for development:
 
 | metric | value |
@@ -155,6 +159,11 @@ The numbers below come from the link-congestion sample
 6. **Trace.** Every message is in `trace.jsonl`, and `netcoop replay` verifies it. The same
    input and config always give a byte-identical trace.
 
+<p align="center">
+  <img src="docs/images/fig1_live_diagnosis.jpg" width="430" alt="Fig. 1 for the link-congestion run: one lane per agent and rounds left to right. Performance posts hypothesis 2 and requests 3 to 5; infrastructure, wireless and connectivity answer and support in round 2; the correlator's verdict is point 12 and the report is point 13. Below the figure: 406 observations, 457 clues, 11 capability cards.">
+</p>
+<p align="center"><sub>This workflow, live: the dashboard's Fig. 1 for the link-congestion sample. Each numbered point is a board message, and each line joins a message to the one that caused it.</sub></p>
+
 ### Orchestration
 
 The orchestrator never names an agent. Agents are plugins with capability cards. The
@@ -239,6 +248,13 @@ Every formula is in [SCORING.md](docs/SCORING.md).
 4. **Courtroom:** opens on a near tie or an under-trained overlapping contender. The rubric
    scores only discriminating evidence, weighted by quality, and the judge may confirm,
    accept or defer ([COURTROOM.md](docs/COURTROOM.md), [COURTROOM_RESULTS.md](docs/COURTROOM_RESULTS.md)).
+
+What these decisions look like in the dashboard:
+
+| Honest abstention | Courtroom: resolved | Courtroom: deferred |
+|---|---|---|
+| <img src="docs/images/abstention.jpg" width="300" alt="Report titled 'Not enough evidence to name a cause' for a faint link congestion; it recommends collecting more complete or less noisy telemetry."> | <img src="docs/images/courtroom_resolved.jpg" width="300" alt="Courtroom tie-break: interface fault versus hardware failure. The prosecutor scores +2.00 confirmed, the defense +0.00 with no discriminating evidence; the interface fault is confirmed, resolved after 1 round."> | <img src="docs/images/courtroom_deferred.jpg" width="300" alt="Courtroom tie-break on a hardware failure: evidence favours hardware failure, but the calibrated model gives it 0.00, below 0.98, because it was never trained on it, so the ruling is deferred."> |
+| A faint fault: no candidate reaches the calibrated bar, so NetCoop abstains and names the data that would settle it. | Two overlapping explanations: only discriminating evidence counts, and the interface fault is confirmed. | A fault type never seen in training: the evidence leans toward it, but the judge defers instead of guessing. |
 
 ### Error handling
 
