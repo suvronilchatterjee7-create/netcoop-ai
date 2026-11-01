@@ -2,8 +2,9 @@
 
 - **Live repository:** https://github.com/suvronilchatterjee7-create/netcoop-ai. The whole
   repository is the source deliverable.
-- **Snapshot:** [`netcoop-ai-source.zip`](netcoop-ai-source.zip) is the complete source at commit
-  `8644b74`, made with `git archive`. Unzip it and follow the setup below.
+- **Snapshot:** [`netcoop-ai-source.zip`](netcoop-ai-source.zip) is the complete source, made
+  with `git archive`. It covers everything in the repository except this `deliverables/` folder.
+  Unzip it and follow the setup below.
 
 ## What's inside
 

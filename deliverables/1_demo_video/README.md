@@ -31,4 +31,3 @@ way on screen.
 ## Also here
 
 - [DEMO_SCRIPT.md](DEMO_SCRIPT.md): the scene-by-scene script for recording the demo by hand.
-- [VIDEO_PROMPT.md](VIDEO_PROMPT.md): the full production brief, including the narration text.

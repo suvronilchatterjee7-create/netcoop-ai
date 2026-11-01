@@ -5,13 +5,13 @@ Bhubaneswar. This folder gathers every deliverable in one place.
 
 | # | deliverable | where | contents |
 |---|---|---|---|
-| 1 | **Demo video** (3–5 min) | [`1_demo_video/`](1_demo_video/) | 4 min 25 s screen recording: end-to-end diagnosis, inter-agent communication, final report; plus the script and narration |
+| 1 | **Demo video** (3–5 min) | [`1_demo_video/`](1_demo_video/) | 4 min 25 s screen recording: end-to-end diagnosis, inter-agent communication, final report; plus the demo script |
 | 2 | **Source code repository** | [`2_source_code/`](2_source_code/) | complete source snapshot (zip), dependencies, setup and test instructions; live repo on GitHub |
 | 3 | **Architecture documentation** | [`3_architecture_documentation/`](3_architecture_documentation/) | [ARCHITECTURE.md](3_architecture_documentation/ARCHITECTURE.md) plus protocol, orchestration, agents, scoring, courtroom, Translator, reporting and JSON Schemas |
 | 4 | **Sample data and test cases** | [`4_sample_data_and_test_cases/`](4_sample_data_and_test_cases/) | normal operation plus 8 fault scenarios, example reports, the 246-test suite and its real output |
 | 5 | **Working prototype** | [`5_working_prototype/`](5_working_prototype/) | how to run the CLI and the dashboard, and screenshots of the complete workflow |
 | 6 | Evaluation results | [`6_evaluation_results/`](6_evaluation_results/) | accuracy, precision, robustness, ablations, calibration |
-| 7 | Presentation | [`7_presentation/`](7_presentation/) | 6-slide deck, [PPTX](7_presentation/NetCoop_AI_slides.pptx) and [PDF](7_presentation/NetCoop_AI_slides.pdf), plus the prompt it was built from |
+| 7 | Presentation | [`7_presentation/`](7_presentation/) | 6-slide deck, [PPTX](7_presentation/NetCoop_AI_slides.pptx) and [PDF](7_presentation/NetCoop_AI_slides.pdf) |
 
 ## Requirement checklist
 
