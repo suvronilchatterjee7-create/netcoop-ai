@@ -8,7 +8,8 @@ exit code 0 means every scene still behaves as scripted (`tests/test_samples.py`
 
 - Use a terminal at least 160 columns wide with a large font.
 - Run `netcoop demo` once beforehand, so the first scene is not slowed by imports.
-- Have `runs/demo/inc-31fb4b6e2e27/report.md` open in an editor tab for scene 1.
+- Have scene 1's `report.md` open in an editor tab: the rehearsal run prints its path
+  ("full report: runs/demo/inc-…/report.md").
 - Have `docs/EVALUATION.md` open in an editor tab for scene 6.
 
 | time | on screen | say |

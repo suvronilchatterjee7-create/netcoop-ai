@@ -52,7 +52,9 @@ def generate_suite(out: Path = AMBIGUITY_OUT) -> list[Path]:
             gt = json.loads((d / "ground_truth.json").read_text(encoding="utf-8"))
             gt.update({"seed": seed, "intensity": inten, "noise": noise, "missing_rate": 0.0})
             (d / META_FILE).write_text(
-                json.dumps({"run_id": d.name, "ground_truth": gt}, indent=2), encoding="utf-8"
+                json.dumps({"run_id": d.name, "ground_truth": gt}, indent=2),
+                encoding="utf-8",
+                newline="\n",
             )
         runs.append(d)
     return runs

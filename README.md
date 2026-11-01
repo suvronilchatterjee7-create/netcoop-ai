@@ -31,7 +31,7 @@ Details, slices, ablations and robustness curves: [docs/EVALUATION.md](docs/EVAL
 | **Orchestration and conflict resolution (15%)** | Shared case board with capability routing, concurrent rounds with deterministic commits, failure isolation, and a courtroom tie-break that argues only from discriminating evidence. | [ORCHESTRATION.md](docs/ORCHESTRATION.md), [COURTROOM.md](docs/COURTROOM.md), [COURTROOM_RESULTS.md](docs/COURTROOM_RESULTS.md) (wrong claims 32 → 0 on ambiguous cases), demo scenes 1, 4, 5 |
 | **Robustness (15%)** | Typed errors, data-quality scores, and abstention instead of guessing. A fatal input error can never yield "no fault". | Robustness tables in [EVALUATION.md](docs/EVALUATION.md) (precision ≥ 95.7% with 3 stacked interop mutations), demo scene 3 |
 | **Innovation and extensibility (10%)** | Agents and faults defined as data, an MCP server and external-agent bridge, pause/resume with identical traces, and human review recorded in the trace. | [EXTENDING.md](docs/EXTENDING.md), [examples/extension/](examples/extension/) |
-| **Code, docs and demo (5%)** | CI (ruff, mypy strict, schema freshness, pytest), 238 tests at 84% coverage, a self-checking demo, and a decision log. | [.github/workflows/ci.yml](.github/workflows/ci.yml), [DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md), [DECISIONS.md](docs/DECISIONS.md), [RUBRIC_MAP.md](docs/RUBRIC_MAP.md) |
+| **Code, docs and demo (5%)** | CI (ruff, mypy strict, schema freshness, pytest), 246 tests at 84% coverage, a self-checking demo, and a decision log. | [.github/workflows/ci.yml](.github/workflows/ci.yml), [DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md), [DECISIONS.md](docs/DECISIONS.md), [RUBRIC_MAP.md](docs/RUBRIC_MAP.md) |
 
 ## Deliverables
 
@@ -88,6 +88,10 @@ This writes `runs/<incident>/` with `report.json`, `report.md`, `trace.jsonl` an
 `manifest.json`. `netcoop replay runs/<incident>` rebuilds the board from the trace and
 verifies it. With `make`, `make setup` creates the venv and `make demo` plays the demo.
 
+Dependencies are declared in [pyproject.toml](pyproject.toml). The core needs pydantic,
+PyYAML, networkx, NumPy, pandas and Pint. The `dev` extra adds the MCP SDK and the
+test and lint tools.
+
 ## Architecture
 
 ```mermaid
@@ -107,13 +111,56 @@ flowchart TD
     O -.->|ACK| H[Human review]
 ```
 
-The orchestrator never names an agent. Agents are plugins with capability cards. The
-orchestrator negotiates protocol versions, activates agents whose metrics exist in the data,
-delivers each agent the messages its card asks for, routes REQUESTs by capability, runs
-agents concurrently but commits their posts in a fixed order, isolates failures and timeouts,
-and stops on convergence or at the round limit ([ORCHESTRATION.md](docs/ORCHESTRATION.md)).
+### Overall workflow: telemetry → agents → diagnosis → report
 
-### Agents
+The numbers below come from the link-congestion sample
+(`data/samples/link_congestion__s500__i1.0__n0.0__m0.0`).
+
+1. **Ingest.** The Translator reads the raw files, whatever their format, field names or
+   units. It maps them to canonical metrics, scores data quality and posts
+   - a TOPOLOGY message (25 devices and services, 24 links)
+   - 406 OBSERVATIONs
+   - typed ERRORs for anything it could not read
+2. **Analyse (round 1).**
+   - Each specialist compares its metrics with calibrated baselines and posts CLUEs,
+     including the "checked, normal" ones: 457 here.
+   - A specialist whose evidence fits a fault in the catalogue posts a HYPOTHESIS. Here,
+     performance proposes link congestion on one link.
+3. **Collaborate (rounds 2+).**
+   - The proposer REQUESTs the evidence it cannot observe itself, and the agent that can
+     observe it RESPONDs.
+   - The other agents post SUPPORT or CONTRADICT stances. Connectivity checks whether the
+     symptoms sit inside the link's blast radius.
+   - The run ends when a round produces nothing new, or at the round limit.
+4. **Correlate.** The correlator scores every candidate from all the evidence on the board.
+   - It produces calibrated log-odds, merging symptoms into their cause.
+   - It claims a cause only above the calibrated operating point, and abstains otherwise.
+   - A near tie between two explanations goes to the courtroom.
+5. **Report.** The reporter publishes one report: `report.json` (schema-valid) and
+   `report.md`. It holds
+   - the root cause and the affected devices
+   - the evidence, each item traced to the observations it came from
+   - recommended actions and alternatives
+   - limitations
+6. **Trace.** Every message is in `trace.jsonl`, and `netcoop replay` verifies it. The same
+   input and config always give a byte-identical trace.
+
+### Orchestration
+
+The orchestrator never names an agent. Agents are plugins with capability cards. The
+orchestrator:
+
+- negotiates protocol versions
+- activates agents whose metrics exist in the data
+- delivers each agent the messages its card asks for
+- routes REQUESTs by capability
+- runs agents concurrently but commits their posts in a fixed order
+- isolates failures and timeouts
+- stops on convergence or at the round limit
+
+See [ORCHESTRATION.md](docs/ORCHESTRATION.md).
+
+### Agent responsibilities
 
 | agent | looks at | proposes |
 |---|---|---|
@@ -130,18 +177,31 @@ The three metric specialists and all seven faults are **data**
 ([config/catalogue/](config/catalogue/), [AGENTS.md](docs/AGENTS.md)). The faults an agent
 may propose are derived from what it can observe, never listed by hand.
 
-### Protocol
+### Communication and interfaces
 
-The message protocol is in [PROTOCOL.md](docs/PROTOCOL.md), with the generated field
+Agents never call each other. They communicate only through typed messages on the shared case
+board. The message protocol is in [PROTOCOL.md](docs/PROTOCOL.md), with the generated field
 reference in [PROTOCOL_REFERENCE.md](docs/PROTOCOL_REFERENCE.md) and JSON Schemas in
 [docs/schemas/](docs/schemas/).
 
-- **Messages:** 13 typed message types in a versioned envelope.
+- **Messages:** 13 typed message types in a versioned envelope:
+  - CAPABILITY, TOPOLOGY, OBSERVATION, CLUE
+  - HYPOTHESIS, REQUEST, RESPONSE, SUPPORT, CONTRADICT
+  - VERDICT, REPORT, ERROR, ACK
 - **Ids:** content-hash ids make re-posting idempotent.
 - **Causation:** every message carries a causation chain, which allows loop control.
 - **Vocabulary:** metrics, units, entity types and hypotheses come from a controlled
   vocabulary.
 - **Versions:** a protocol 1.0 "lite" profile has adapters to and from 2.0.
+
+External interfaces:
+
+| interface | entry point |
+|---|---|
+| command line | `netcoop` (`run`, `demo`, `serve`, `replay`, `translate`, `eval`, …) |
+| Python API | `netcoop.api.diagnose(path)` returns the report; `run_diagnosis(...)` also returns the board and trace |
+| local dashboard and HTTP API | `netcoop serve` ([WEB.md](docs/WEB.md)) |
+| MCP server for other AI agents | `netcoop mcp` ([EXTENDING.md](docs/EXTENDING.md)) |
 
 ### Interoperability
 
@@ -153,7 +213,7 @@ layers and provenance. The Translator never raises on input.
 A 22-kind mutation corpus checks every case for exact recovery, a flagged ambiguity or the
 expected typed error ([TRANSLATOR.md](docs/TRANSLATOR.md), [INTEROP_RESULTS.md](docs/INTEROP_RESULTS.md)).
 
-### Scoring and decisions
+### Evidence correlation and decisions
 
 Every formula is in [SCORING.md](docs/SCORING.md).
 
@@ -179,6 +239,43 @@ Every formula is in [SCORING.md](docs/SCORING.md).
 | floods and loops | stopped by board budgets and causation depth |
 
 A fatal problem never produces a false "no fault".
+
+## Sample data and test cases
+
+**Sample inputs.** Nine labelled runs ship in [data/samples/](data/samples/README.md). They
+come from fresh seeds never used for training.
+
+| input | ground truth | NetCoop outcome |
+|---|---|---|
+| normal network operation | normal | no fault detected |
+| link congestion (strong, then faint) | link_congestion | diagnosed; the faint one abstains |
+| interface fault | interface_fault | diagnosed after a courtroom tie-break |
+| DNS / DHCP failure | dns_dhcp_failure | diagnosed |
+| weak Wi-Fi | weak_wifi | diagnosed |
+| legacy CSV export | dns_dhcp_failure | diagnosed through the legacy dialect |
+| device overload | device_overload | diagnosed |
+| hardware failure (never seen in training) | hardware_failure | abstains; the courtroom defers |
+
+Each folder holds the raw telemetry and the topology, and `meta.json` holds the ground truth.
+`make generate` builds the full 1,080-run labelled dataset.
+
+**Test cases.** Run the tests with:
+
+```bash
+pytest
+```
+
+`make test` runs the same tests with coverage. The tests in [tests/](tests/) cover:
+
+- the protocol, the Translator (including property-based tests), the board and orchestrator,
+  the agents, correlation, the courtroom and reporting
+- an acceptance gate for every hackathon requirement
+- the committed samples: each must regenerate byte for byte, and each demo scene must give its
+  expected outcome
+- the dashboard server, including its file-access limits
+
+CI runs lint, strict type checks, a schema freshness check and the tests on every push
+([.github/workflows/ci.yml](.github/workflows/ci.yml)).
 
 ## Configuration and calibration
 

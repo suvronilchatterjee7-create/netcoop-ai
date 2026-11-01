@@ -1,0 +1,3 @@
+# Sample runs stay byte-identical to the generator output (LF on every OS);
+# tests/test_samples.py regenerates them and compares bytes, so Git must not convert line endings.
+data/samples/** -text

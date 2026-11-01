@@ -378,9 +378,10 @@ def write_native(out_dir: Path, topo: Topology, rows: list[dict[str, Any]]) -> l
             indent=2,
         ),
         encoding="utf-8",
+        newline="\n",  # LF on every OS, so a seed gives the same bytes everywhere
     )
     te = out_dir / "telemetry.jsonl"
-    with te.open("w", encoding="utf-8") as fh:
+    with te.open("w", encoding="utf-8", newline="\n") as fh:
         for row in rows:
             fh.write(
                 json.dumps({"schema_version": "2.0", **{k: _round(v) for k, v in row.items()}})
@@ -448,7 +449,7 @@ def write_legacy(out_dir: Path, topo: Topology, rows: list[dict[str, Any]]) -> l
     paths: list[Path] = []
     tp = out_dir / "topology_edges.csv"
     with tp.open("w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh)
+        w = csv.writer(fh, lineterminator="\n")
         w.writerow(["parent", "child", "child_type", "uplink_kbps"])
         for ln in topo.links:
             w.writerow(
@@ -463,7 +464,7 @@ def write_legacy(out_dir: Path, topo: Topology, rows: list[dict[str, Any]]) -> l
     for name, recs in sorted(tables.items()):
         p = out_dir / name
         with p.open("w", newline="", encoding="utf-8") as fh:
-            w = csv.DictWriter(fh, fieldnames=["schema_ver", *recs[0].keys()])
+            w = csv.DictWriter(fh, fieldnames=["schema_ver", *recs[0].keys()], lineterminator="\n")
             w.writeheader()
             for rec in recs:
                 w.writerow(
@@ -514,5 +515,5 @@ def generate(
         **truth,
     }
     gp = out_dir / "ground_truth.json"
-    gp.write_text(json.dumps(gt, indent=2), encoding="utf-8")
+    gp.write_text(json.dumps(gt, indent=2), encoding="utf-8", newline="\n")
     return [*files, gp]

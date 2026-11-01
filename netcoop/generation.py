@@ -113,6 +113,6 @@ def run_sweep(
             "ground_truth": truth,
             "files": {p.name: _sha256(p) for p in sorted(files)},
         }
-        (run_dir / META_FILE).write_text(json.dumps(meta, indent=2), encoding="utf-8")
+        (run_dir / META_FILE).write_text(json.dumps(meta, indent=2), encoding="utf-8", newline="\n")
         run_dirs.append(run_dir)
     return run_dirs
