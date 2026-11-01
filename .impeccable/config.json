@@ -38,6 +38,33 @@
         ],
         "createdAt": "2026-10-31T23:55:03.438Z",
         "reason": "Claude: throwaway decision-round sketch in .impeccable/mocks, not shipped; the built dashboard is checked separately"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/assigned.html"
+        ],
+        "createdAt": "2026-11-01T03:00:41.462Z",
+        "reason": "Claude: throwaway decision-round sketch (alternate directions, git-ignored), not part of the shipped dashboard"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/model-pick.html"
+        ],
+        "createdAt": "2026-11-01T03:00:42.217Z",
+        "reason": "Claude: throwaway decision-round sketch (alternate directions, git-ignored), not part of the shipped dashboard"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/challenger-splitflap.html"
+        ],
+        "createdAt": "2026-11-01T03:00:43.010Z",
+        "reason": "Claude: throwaway decision-round sketch (alternate directions, git-ignored), not part of the shipped dashboard"
       }
     ]
   }
