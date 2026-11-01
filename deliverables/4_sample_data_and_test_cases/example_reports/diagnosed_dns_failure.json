@@ -1,0 +1,258 @@
+{
+  "incident_id": "inc-cc9c4f34c27d",
+  "status": "diagnosed",
+  "suspected_root_cause": "dhcp_service_failure at dhcp: DHCP fails or is slow while the transport network is healthy.",
+  "confidence": 1.0,
+  "affected_devices": [
+    "dhcp",
+    "lecture_hall-acc-02",
+    "hostel-acc-03-ap-01",
+    "hostel-acc-03-ap-03",
+    "lecture_hall-acc-01-ap-03",
+    "department-acc-03-ap-01",
+    "department-acc-01-ap-02"
+  ],
+  "supporting_evidence": [
+    {
+      "metric": "service_success_rate",
+      "value": 33.244,
+      "interpretation": "service_success_rate on dhcp (probed from lecture_hall-acc-02): recent median 33.2 percent is below the normal-operation baseline of 99.5 percent by 3.17 robust standard deviations, abnormal in 100% of recent samples; data quality 1.00 [baselines.service_success_rate.service]"
+    },
+    {
+      "metric": "service_response_time",
+      "value": 410.359,
+      "interpretation": "service_response_time on dhcp (probed from hostel-acc-03-ap-01): recent median 410 ms is above the normal-operation baseline of 7.89 ms by 50 robust standard deviations, abnormal in 100% of recent samples; data quality 1.00 [baselines.service_response_time.service]"
+    },
+    {
+      "metric": "packet_loss",
+      "value": 0.015,
+      "interpretation": "packet_loss on department-acc-03--department-acc-03-ap-01 stayed normal: recent median 0.015 percent vs normal-operation baseline 0.02 percent, as dhcp_service_failure predicts; data quality 1.00 [baselines.packet_loss.link]"
+    },
+    {
+      "metric": "latency",
+      "value": 0.646,
+      "interpretation": "latency on department-acc-01--department-acc-01-ap-01 stayed normal: recent median 0.646 ms vs normal-operation baseline 0.792 ms, as dhcp_service_failure predicts; data quality 1.00 [baselines.latency.link]"
+    },
+    {
+      "metric": "service_success_rate",
+      "value": 33.279,
+      "interpretation": "service_success_rate on dhcp (probed from hostel-acc-03-ap-03): recent median 33.3 percent is below the normal-operation baseline of 99.5 percent by 3.17 robust standard deviations, abnormal in 100% of recent samples; data quality 1.00 [baselines.service_success_rate.service]"
+    },
+    {
+      "metric": "service_response_time",
+      "value": 417.81,
+      "interpretation": "service_response_time on dhcp (probed from lecture_hall-acc-01-ap-03): recent median 418 ms is above the normal-operation baseline of 7.89 ms by 50 robust standard deviations, abnormal in 100% of recent samples; data quality 1.00 [baselines.service_response_time.service]"
+    },
+    {
+      "metric": "service_success_rate",
+      "value": 33.475,
+      "interpretation": "service_success_rate on dhcp (probed from department-acc-03-ap-01): recent median 33.5 percent is below the normal-operation baseline of 99.5 percent by 3.16 robust standard deviations, abnormal in 100% of recent samples; data quality 1.00 [baselines.service_success_rate.service]"
+    },
+    {
+      "metric": "service_response_time",
+      "value": 400.6,
+      "interpretation": "service_response_time on dhcp (probed from department-acc-01-ap-02): recent median 401 ms is above the normal-operation baseline of 7.89 ms by 50 robust standard deviations, abnormal in 100% of recent samples; data quality 1.00 [baselines.service_response_time.service]"
+    }
+  ],
+  "alternative_causes": [],
+  "recommended_actions": [
+    "Check the DHCP server process, scope utilisation (address pool exhaustion) and relay configuration.",
+    "Fail over to the standby DHCP server; verify helper/relay addresses on the access layer."
+  ],
+  "evidence_sources": [
+    "wireless_service",
+    "performance",
+    "correlator",
+    "connectivity"
+  ],
+  "limitations": [],
+  "x_netcoop": {
+    "confidence_category": "high",
+    "evidence_provenance": [
+      {
+        "evidence_index": 0,
+        "clue_id": "clue-dbb1177ed0d7443e",
+        "agent": "wireless_service",
+        "entity_id": "dhcp",
+        "unit": "percent",
+        "reference_value": 99.496,
+        "config_key": "baselines.service_success_rate.service",
+        "observation_ids": [
+          "observation-6023f0c7f7df89cb"
+        ]
+      },
+      {
+        "evidence_index": 1,
+        "clue_id": "clue-03299b5b360f50ff",
+        "agent": "wireless_service",
+        "entity_id": "dhcp",
+        "unit": "ms",
+        "reference_value": 7.888,
+        "config_key": "baselines.service_response_time.service",
+        "observation_ids": [
+          "observation-2ec59139004c8d70"
+        ]
+      },
+      {
+        "evidence_index": 2,
+        "clue_id": "clue-1bae8a862c301ed0",
+        "agent": "performance",
+        "entity_id": "department-acc-03--department-acc-03-ap-01",
+        "unit": "percent",
+        "reference_value": 0.02,
+        "config_key": "baselines.packet_loss.link",
+        "observation_ids": [
+          "observation-6ea0fc2a390af092"
+        ]
+      },
+      {
+        "evidence_index": 3,
+        "clue_id": "clue-4cfe670ea499daa1",
+        "agent": "performance",
+        "entity_id": "department-acc-01--department-acc-01-ap-01",
+        "unit": "ms",
+        "reference_value": 0.792,
+        "config_key": "baselines.latency.link",
+        "observation_ids": [
+          "observation-df05ab62e9963502"
+        ]
+      },
+      {
+        "evidence_index": 4,
+        "clue_id": "clue-4314d4522fd85afe",
+        "agent": "wireless_service",
+        "entity_id": "dhcp",
+        "unit": "percent",
+        "reference_value": 99.496,
+        "config_key": "baselines.service_success_rate.service",
+        "observation_ids": [
+          "observation-8055ad2a37e4bf73"
+        ]
+      },
+      {
+        "evidence_index": 5,
+        "clue_id": "clue-1a46772c97f277e0",
+        "agent": "wireless_service",
+        "entity_id": "dhcp",
+        "unit": "ms",
+        "reference_value": 7.888,
+        "config_key": "baselines.service_response_time.service",
+        "observation_ids": [
+          "observation-0bc1117ac3567ebb"
+        ]
+      },
+      {
+        "evidence_index": 6,
+        "clue_id": "clue-be01a9e5faa9c36d",
+        "agent": "wireless_service",
+        "entity_id": "dhcp",
+        "unit": "percent",
+        "reference_value": 99.496,
+        "config_key": "baselines.service_success_rate.service",
+        "observation_ids": [
+          "observation-df7c335974cd5686"
+        ]
+      },
+      {
+        "evidence_index": 7,
+        "clue_id": "clue-1dad8da19ae01778",
+        "agent": "wireless_service",
+        "entity_id": "dhcp",
+        "unit": "ms",
+        "reference_value": 7.888,
+        "config_key": "baselines.service_response_time.service",
+        "observation_ids": [
+          "observation-579f842a0e7802c3"
+        ]
+      }
+    ],
+    "alternatives_scored": [],
+    "data_quality": {
+      "overall": 1.0,
+      "per_entity": {
+        "department-acc-01-ap-02": 1.0,
+        "department-acc-03-ap-01": 1.0,
+        "dhcp": 1.0,
+        "hostel-acc-03-ap-01": 1.0,
+        "hostel-acc-03-ap-03": 1.0,
+        "lecture_hall-acc-01-ap-03": 1.0,
+        "lecture_hall-acc-02": 1.0
+      },
+      "issues": {}
+    },
+    "courtroom": null,
+    "missing_evidence": [],
+    "score_breakdown": [
+      {
+        "term": "prior (dhcp_service_failure)",
+        "status": "55 true / 0 false training candidates",
+        "contribution": 2.0361
+      },
+      {
+        "term": "service_success_rate deviates below @ probes_of_root (required)",
+        "status": "satisfied",
+        "contribution": 0.5369
+      },
+      {
+        "term": "service_response_time deviates above @ probes_of_root (supporting)",
+        "status": "satisfied",
+        "contribution": 1.115
+      },
+      {
+        "term": "packet_loss normal above @ probe_paths (supporting)",
+        "status": "satisfied",
+        "contribution": -0.0008
+      },
+      {
+        "term": "latency normal above @ probe_paths (supporting)",
+        "status": "satisfied",
+        "contribution": -0.0568
+      },
+      {
+        "term": "analytic stance (topology)",
+        "status": "support",
+        "contribution": 2.2395
+      },
+      {
+        "term": "evidence quality",
+        "status": "bin 2 (quality 1.00)",
+        "contribution": 0.0287
+      }
+    ],
+    "simulated_remediation": [
+      {
+        "action": "Check the DHCP server process, scope utilisation (address pool exhaustion) and relay configuration.",
+        "expected_effects": [
+          "service_success_rate on dhcp (from lecture_hall-acc-02) returns from 33.2 to about 99.5 percent (baseline)",
+          "service_response_time on dhcp (from hostel-acc-03-ap-01) returns from 410 to about 7.89 ms (baseline)",
+          "service_success_rate on dhcp (from hostel-acc-03-ap-03) returns from 33.3 to about 99.5 percent (baseline)",
+          "service_response_time on dhcp (from lecture_hall-acc-01-ap-03) returns from 418 to about 7.89 ms (baseline)",
+          "service_success_rate on dhcp (from department-acc-03-ap-01) returns from 33.5 to about 99.5 percent (baseline)",
+          "service_response_time on dhcp (from department-acc-01-ap-02) returns from 401 to about 7.89 ms (baseline)"
+        ],
+        "applied": false
+      },
+      {
+        "action": "Fail over to the standby DHCP server; verify helper/relay addresses on the access layer.",
+        "expected_effects": [
+          "service_success_rate on dhcp (from lecture_hall-acc-02) returns from 33.2 to about 99.5 percent (baseline)",
+          "service_response_time on dhcp (from hostel-acc-03-ap-01) returns from 410 to about 7.89 ms (baseline)",
+          "service_success_rate on dhcp (from hostel-acc-03-ap-03) returns from 33.3 to about 99.5 percent (baseline)",
+          "service_response_time on dhcp (from lecture_hall-acc-01-ap-03) returns from 418 to about 7.89 ms (baseline)",
+          "service_success_rate on dhcp (from department-acc-03-ap-01) returns from 33.5 to about 99.5 percent (baseline)",
+          "service_response_time on dhcp (from department-acc-01-ap-02) returns from 401 to about 7.89 ms (baseline)"
+        ],
+        "applied": false
+      }
+    ],
+    "manifest": {
+      "incident_id": "inc-cc9c4f34c27d",
+      "input_hash": "cc9c4f34c27d03d10c799f937b1fe713c5b02b5c3f03cbc7117e585acfd4d5bf",
+      "config_hash": "010e1f4c337a6a3d2d40a3d16c41daee7386d91a5653fa67bfa141383568da4a",
+      "code_version": "0.1.0+5b6f1f6",
+      "protocol_version": "2.0",
+      "vocabulary_version": "1.0",
+      "seed": 20261031
+    }
+  }
+}

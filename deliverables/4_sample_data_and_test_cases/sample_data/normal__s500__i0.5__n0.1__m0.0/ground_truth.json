@@ -1,0 +1,8 @@
+{
+  "scenario": "normal",
+  "root_cause": "normal",
+  "dialect": "netcoop_synth_v2",
+  "onset_ts": "2026-10-01T09:12:00Z",
+  "target_entity": null,
+  "affected_entities": []
+}

@@ -1,0 +1,12 @@
+{
+  "scenario": "link_congestion",
+  "root_cause": "link_congestion",
+  "dialect": "netcoop_synth_v2",
+  "onset_ts": "2026-10-01T09:12:00Z",
+  "target_entity": "lecture_hall-dist-01--lecture_hall-acc-02",
+  "affected_entities": [
+    "lecture_hall-dist-01--lecture_hall-acc-02",
+    "lecture_hall-dist-01",
+    "lecture_hall-acc-02"
+  ]
+}

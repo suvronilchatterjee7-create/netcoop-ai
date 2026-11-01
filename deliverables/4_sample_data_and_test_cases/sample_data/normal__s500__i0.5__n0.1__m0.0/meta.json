@@ -1,0 +1,20 @@
+{
+  "run_id": "normal__s500__i0.5__n0.1__m0.0",
+  "ground_truth": {
+    "scenario": "normal",
+    "root_cause": "normal",
+    "dialect": "netcoop_synth_v2",
+    "onset_ts": "2026-10-01T09:12:00Z",
+    "target_entity": null,
+    "affected_entities": [],
+    "seed": 500,
+    "intensity": 0.5,
+    "noise": 0.1,
+    "missing_rate": 0.0
+  },
+  "files": {
+    "ground_truth.json": "9e623963d58317f996f69d9b1f871c6eaf6358a8f9d6af97847550e2b96bfb7d",
+    "telemetry.jsonl": "ba61845862833c361d9e788db4d585b9d7ddd49844e62fe800f79544df5a6f2a",
+    "topology.json": "24322125e898e5076aa5f18b1c6d55f3be21190a997a52c23865f18e0a933d21"
+  }
+}

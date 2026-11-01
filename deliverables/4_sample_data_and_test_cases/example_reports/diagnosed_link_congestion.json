@@ -1,0 +1,288 @@
+{
+  "incident_id": "inc-3735f38ffa49",
+  "status": "diagnosed",
+  "suspected_root_cause": "link_congestion at lecture_hall-dist-01--lecture_hall-acc-02: Traffic on a link exceeds what it can forward without queueing and loss.",
+  "confidence": 1.0,
+  "affected_devices": [
+    "lecture_hall-dist-01--lecture_hall-acc-02",
+    "lecture_hall-dist-01",
+    "dhcp",
+    "dns",
+    "lecture_hall-acc-02-ap-01",
+    "lecture_hall-acc-02"
+  ],
+  "supporting_evidence": [
+    {
+      "metric": "utilization",
+      "value": 91.462,
+      "interpretation": "utilization on lecture_hall-dist-01--lecture_hall-acc-02: recent median 91.5 percent is above the normal-operation baseline of 27.4 percent by 5.29 robust standard deviations, abnormal in 91% of recent samples; data quality 0.93 [baselines.utilization.link]"
+    },
+    {
+      "metric": "packet_loss",
+      "value": 1.8685,
+      "interpretation": "packet_loss on lecture_hall-dist-01--lecture_hall-acc-02: recent median 1.87 percent is above the normal-operation baseline of 0.02 percent by 50 robust standard deviations, abnormal in 100% of recent samples; data quality 0.94 [baselines.packet_loss.link]"
+    },
+    {
+      "metric": "jitter",
+      "value": 8.211,
+      "interpretation": "jitter on lecture_hall-dist-01--lecture_hall-acc-02: recent median 8.21 ms is above the normal-operation baseline of 0.197 ms by 50 robust standard deviations, abnormal in 100% of recent samples; data quality 0.96 [baselines.jitter.link]"
+    },
+    {
+      "metric": "latency",
+      "value": 26.7805,
+      "interpretation": "latency on lecture_hall-dist-01--lecture_hall-acc-02: recent median 26.8 ms is above the normal-operation baseline of 0.792 ms by 50 robust standard deviations, abnormal in 100% of recent samples; data quality 0.95 [baselines.latency.link]"
+    },
+    {
+      "metric": "egress_queue_drops",
+      "value": 97.0,
+      "interpretation": "egress_queue_drops on lecture_hall-dist-01: recent median 97 count is above the normal-operation baseline of 0 count by 50 robust standard deviations, abnormal in 100% of recent samples; data quality 0.96 [baselines.egress_queue_drops.switch]"
+    },
+    {
+      "metric": "service_response_time",
+      "value": 38.406,
+      "interpretation": "service_response_time on dhcp (probed from lecture_hall-acc-02-ap-01): recent median 38.4 ms is above the normal-operation baseline of 7.89 ms by 11 robust standard deviations, abnormal in 100% of recent samples; data quality 0.94 [baselines.service_response_time.service]"
+    },
+    {
+      "metric": "interface_in_errors",
+      "value": 0.0,
+      "interpretation": "interface_in_errors on lecture_hall-dist-01 stayed normal: recent median 0 count vs normal-operation baseline 0 count, as link_congestion predicts; data quality 0.96 [baselines.interface_in_errors.switch]"
+    },
+    {
+      "metric": "service_response_time",
+      "value": 38.401,
+      "interpretation": "service_response_time on dns (probed from lecture_hall-acc-02): recent median 38.4 ms is above the normal-operation baseline of 7.89 ms by 11 robust standard deviations, abnormal in 100% of recent samples; data quality 0.99 [baselines.service_response_time.service]"
+    }
+  ],
+  "alternative_causes": [],
+  "recommended_actions": [
+    "Identify the top traffic sources on lecture_hall-dist-01--lecture_hall-acc-02 and rate-limit or reschedule bulk transfers.",
+    "Apply or review QoS so interactive traffic is prioritised on lecture_hall-dist-01--lecture_hall-acc-02.",
+    "If sustained, plan a capacity upgrade or add a parallel uplink for lecture_hall-dist-01--lecture_hall-acc-02."
+  ],
+  "evidence_sources": [
+    "performance",
+    "infrastructure",
+    "wireless_service",
+    "correlator",
+    "connectivity"
+  ],
+  "limitations": [],
+  "x_netcoop": {
+    "confidence_category": "high",
+    "evidence_provenance": [
+      {
+        "evidence_index": 0,
+        "clue_id": "clue-09538f403248939b",
+        "agent": "performance",
+        "entity_id": "lecture_hall-dist-01--lecture_hall-acc-02",
+        "unit": "percent",
+        "reference_value": 27.364,
+        "config_key": "baselines.utilization.link",
+        "observation_ids": [
+          "observation-e9da7b42974b7201"
+        ]
+      },
+      {
+        "evidence_index": 1,
+        "clue_id": "clue-0b990b15cfa730b4",
+        "agent": "performance",
+        "entity_id": "lecture_hall-dist-01--lecture_hall-acc-02",
+        "unit": "percent",
+        "reference_value": 0.02,
+        "config_key": "baselines.packet_loss.link",
+        "observation_ids": [
+          "observation-98c86728de969a2f"
+        ]
+      },
+      {
+        "evidence_index": 2,
+        "clue_id": "clue-74a1cf5ea0aa3c57",
+        "agent": "performance",
+        "entity_id": "lecture_hall-dist-01--lecture_hall-acc-02",
+        "unit": "ms",
+        "reference_value": 0.197,
+        "config_key": "baselines.jitter.link",
+        "observation_ids": [
+          "observation-2aec9c7032d5e770"
+        ]
+      },
+      {
+        "evidence_index": 3,
+        "clue_id": "clue-803f97c9448a5021",
+        "agent": "performance",
+        "entity_id": "lecture_hall-dist-01--lecture_hall-acc-02",
+        "unit": "ms",
+        "reference_value": 0.792,
+        "config_key": "baselines.latency.link",
+        "observation_ids": [
+          "observation-8868674199d511c8"
+        ]
+      },
+      {
+        "evidence_index": 4,
+        "clue_id": "clue-ea70676a49d820c7",
+        "agent": "infrastructure",
+        "entity_id": "lecture_hall-dist-01",
+        "unit": "count",
+        "reference_value": 0.0,
+        "config_key": "baselines.egress_queue_drops.switch",
+        "observation_ids": [
+          "observation-b9884a9ffbbbeedf"
+        ]
+      },
+      {
+        "evidence_index": 5,
+        "clue_id": "clue-456fb859b79b061f",
+        "agent": "wireless_service",
+        "entity_id": "dhcp",
+        "unit": "ms",
+        "reference_value": 7.888,
+        "config_key": "baselines.service_response_time.service",
+        "observation_ids": [
+          "observation-632240e42be78499"
+        ]
+      },
+      {
+        "evidence_index": 6,
+        "clue_id": "clue-a962a076b7fc63b3",
+        "agent": "infrastructure",
+        "entity_id": "lecture_hall-dist-01",
+        "unit": "count",
+        "reference_value": 0.0,
+        "config_key": "baselines.interface_in_errors.switch",
+        "observation_ids": [
+          "observation-eba237dd068bf4a5"
+        ]
+      },
+      {
+        "evidence_index": 7,
+        "clue_id": "clue-df22752d0055409c",
+        "agent": "wireless_service",
+        "entity_id": "dns",
+        "unit": "ms",
+        "reference_value": 7.888,
+        "config_key": "baselines.service_response_time.service",
+        "observation_ids": [
+          "observation-c4f8495126811890"
+        ]
+      }
+    ],
+    "alternatives_scored": [],
+    "data_quality": {
+      "overall": 0.961828,
+      "per_entity": {
+        "dhcp": 0.960274,
+        "dns": 0.962826,
+        "lecture_hall-acc-02": 0.970952,
+        "lecture_hall-acc-02-ap-01": 0.960852,
+        "lecture_hall-dist-01": 0.96782,
+        "lecture_hall-dist-01--lecture_hall-acc-02": 0.94161
+      },
+      "issues": {}
+    },
+    "courtroom": null,
+    "missing_evidence": [],
+    "score_breakdown": [
+      {
+        "term": "prior (link_congestion)",
+        "status": "94 true / 26 false training candidates",
+        "contribution": 1.1116
+      },
+      {
+        "term": "utilization deviates above @ root (required)",
+        "status": "satisfied",
+        "contribution": 0.159
+      },
+      {
+        "term": "egress_queue_drops deviates above @ root_upstream (supporting)",
+        "status": "satisfied",
+        "contribution": 1.9484
+      },
+      {
+        "term": "latency deviates above @ root (supporting)",
+        "status": "satisfied",
+        "contribution": 1.9484
+      },
+      {
+        "term": "jitter deviates above @ root (supporting)",
+        "status": "satisfied",
+        "contribution": 1.9484
+      },
+      {
+        "term": "packet_loss deviates above @ root (supporting)",
+        "status": "satisfied",
+        "contribution": 1.8063
+      },
+      {
+        "term": "service_response_time deviates above @ probes_downstream (supporting)",
+        "status": "satisfied",
+        "contribution": 1.2214
+      },
+      {
+        "term": "interface_in_errors normal above @ root_endpoints (supporting)",
+        "status": "satisfied",
+        "contribution": 0.0262
+      },
+      {
+        "term": "analytic stance (topology)",
+        "status": "support",
+        "contribution": 2.2395
+      },
+      {
+        "term": "evidence quality",
+        "status": "bin 1 (quality 0.95)",
+        "contribution": 0.0311
+      }
+    ],
+    "simulated_remediation": [
+      {
+        "action": "Identify the top traffic sources on lecture_hall-dist-01--lecture_hall-acc-02 and rate-limit or reschedule bulk transfers.",
+        "expected_effects": [
+          "utilization on lecture_hall-dist-01--lecture_hall-acc-02 returns from 91.5 to about 27.4 percent (baseline)",
+          "packet_loss on lecture_hall-dist-01--lecture_hall-acc-02 returns from 1.87 to about 0.02 percent (baseline)",
+          "jitter on lecture_hall-dist-01--lecture_hall-acc-02 returns from 8.21 to about 0.197 ms (baseline)",
+          "latency on lecture_hall-dist-01--lecture_hall-acc-02 returns from 26.8 to about 0.792 ms (baseline)",
+          "egress_queue_drops on lecture_hall-dist-01 returns from 97 to about 0 count (baseline)",
+          "service_response_time on dhcp (from lecture_hall-acc-02-ap-01) returns from 38.4 to about 7.89 ms (baseline)",
+          "service_response_time on dns (from lecture_hall-acc-02) returns from 38.4 to about 7.89 ms (baseline)"
+        ],
+        "applied": false
+      },
+      {
+        "action": "Apply or review QoS so interactive traffic is prioritised on lecture_hall-dist-01--lecture_hall-acc-02.",
+        "expected_effects": [
+          "utilization on lecture_hall-dist-01--lecture_hall-acc-02 returns from 91.5 to about 27.4 percent (baseline)",
+          "packet_loss on lecture_hall-dist-01--lecture_hall-acc-02 returns from 1.87 to about 0.02 percent (baseline)",
+          "jitter on lecture_hall-dist-01--lecture_hall-acc-02 returns from 8.21 to about 0.197 ms (baseline)",
+          "latency on lecture_hall-dist-01--lecture_hall-acc-02 returns from 26.8 to about 0.792 ms (baseline)",
+          "egress_queue_drops on lecture_hall-dist-01 returns from 97 to about 0 count (baseline)",
+          "service_response_time on dhcp (from lecture_hall-acc-02-ap-01) returns from 38.4 to about 7.89 ms (baseline)",
+          "service_response_time on dns (from lecture_hall-acc-02) returns from 38.4 to about 7.89 ms (baseline)"
+        ],
+        "applied": false
+      },
+      {
+        "action": "If sustained, plan a capacity upgrade or add a parallel uplink for lecture_hall-dist-01--lecture_hall-acc-02.",
+        "expected_effects": [
+          "utilization on lecture_hall-dist-01--lecture_hall-acc-02 returns from 91.5 to about 27.4 percent (baseline)",
+          "packet_loss on lecture_hall-dist-01--lecture_hall-acc-02 returns from 1.87 to about 0.02 percent (baseline)",
+          "jitter on lecture_hall-dist-01--lecture_hall-acc-02 returns from 8.21 to about 0.197 ms (baseline)",
+          "latency on lecture_hall-dist-01--lecture_hall-acc-02 returns from 26.8 to about 0.792 ms (baseline)",
+          "egress_queue_drops on lecture_hall-dist-01 returns from 97 to about 0 count (baseline)",
+          "service_response_time on dhcp (from lecture_hall-acc-02-ap-01) returns from 38.4 to about 7.89 ms (baseline)",
+          "service_response_time on dns (from lecture_hall-acc-02) returns from 38.4 to about 7.89 ms (baseline)"
+        ],
+        "applied": false
+      }
+    ],
+    "manifest": {
+      "incident_id": "inc-3735f38ffa49",
+      "input_hash": "3735f38ffa49fb2896eb47230819b3c934373978ae3af58f8142c43b423561ed",
+      "config_hash": "010e1f4c337a6a3d2d40a3d16c41daee7386d91a5653fa67bfa141383568da4a",
+      "code_version": "0.1.0+5b6f1f6",
+      "protocol_version": "2.0",
+      "vocabulary_version": "1.0",
+      "seed": 20261031
+    }
+  }
+}

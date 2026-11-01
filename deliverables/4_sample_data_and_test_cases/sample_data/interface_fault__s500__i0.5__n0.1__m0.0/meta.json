@@ -1,0 +1,23 @@
+{
+  "run_id": "interface_fault__s500__i0.5__n0.1__m0.0",
+  "ground_truth": {
+    "scenario": "interface_fault",
+    "root_cause": "interface_fault",
+    "dialect": "netcoop_synth_v2",
+    "onset_ts": "2026-10-01T09:12:00Z",
+    "target_entity": "hostel-acc-01--hostel-acc-01-ap-01",
+    "affected_entities": [
+      "hostel-acc-01--hostel-acc-01-ap-01",
+      "hostel-acc-01-ap-01"
+    ],
+    "seed": 500,
+    "intensity": 0.5,
+    "noise": 0.1,
+    "missing_rate": 0.0
+  },
+  "files": {
+    "ground_truth.json": "ab2717a47a89ae1d895dbf0e5051302c318509f5ee2c8ff223d8bf2597496c7f",
+    "telemetry.jsonl": "ba2a6b2bbb308ad8f34ad62a93c0dcb115cdf90e30908063a292468dd92009e8",
+    "topology.json": "36f5925bbd1dd54c6a6b885ddf2c6b239b4b55f89b4173baf4c479cd7d2f2ace"
+  }
+}

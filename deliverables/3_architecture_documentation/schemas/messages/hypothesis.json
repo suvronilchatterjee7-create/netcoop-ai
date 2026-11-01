@@ -1,0 +1,217 @@
+{
+  "$defs": {
+    "EntityRef": {
+      "additionalProperties": false,
+      "properties": {
+        "entity_id": {
+          "description": "Identifier of the entity exactly as it appears in the input data.",
+          "minLength": 1,
+          "title": "Entity Id",
+          "type": "string"
+        },
+        "entity_type": {
+          "description": "Entity type from the controlled vocabulary (entity_types.yaml).",
+          "title": "Entity Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entity_id",
+        "entity_type"
+      ],
+      "title": "EntityRef",
+      "type": "object"
+    },
+    "EntityRole": {
+      "enum": [
+        "root",
+        "symptom",
+        "context"
+      ],
+      "title": "EntityRole",
+      "type": "string"
+    },
+    "HypothesisEntity": {
+      "additionalProperties": false,
+      "properties": {
+        "entity": {
+          "$ref": "#/$defs/EntityRef",
+          "description": "Entity involved in the hypothesis."
+        },
+        "role": {
+          "$ref": "#/$defs/EntityRole",
+          "description": "Role of the entity in the hypothesis."
+        }
+      },
+      "required": [
+        "entity",
+        "role"
+      ],
+      "title": "HypothesisEntity",
+      "type": "object"
+    },
+    "HypothesisPayload": {
+      "additionalProperties": false,
+      "description": "A suspect: a candidate root cause with its supporting and contradicting evidence.",
+      "properties": {
+        "confidence_method": {
+          "description": "Key of the documented method that produced local_confidence.",
+          "title": "Confidence Method",
+          "type": "string"
+        },
+        "contradicting_clue_ids": {
+          "default": [],
+          "description": "msg_ids of CLUEs that contradict it.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Contradicting Clue Ids",
+          "type": "array"
+        },
+        "entities": {
+          "description": "Affected entities with roles.",
+          "items": {
+            "$ref": "#/$defs/HypothesisEntity"
+          },
+          "title": "Entities",
+          "type": "array"
+        },
+        "hypothesis_type": {
+          "description": "Hypothesis type (hypothesis_types.yaml), a fault or 'normal'.",
+          "title": "Hypothesis Type",
+          "type": "string"
+        },
+        "local_confidence": {
+          "description": "Proposer's own confidence, before correlation.",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Local Confidence",
+          "type": "number",
+          "x-unit": "ratio"
+        },
+        "supporting_clue_ids": {
+          "default": [],
+          "description": "msg_ids of CLUEs that support it.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Supporting Clue Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "hypothesis_type",
+        "entities",
+        "local_confidence",
+        "confidence_method"
+      ],
+      "title": "HypothesisPayload",
+      "type": "object"
+    }
+  },
+  "$id": "netcoop/2.0/messages/hypothesis.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "A candidate root cause.",
+  "properties": {
+    "adaptations": {
+      "default": [],
+      "description": "Version conversions applied, e.g. '1.0->2.0', and any lossy fields.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Adaptations",
+      "type": "array"
+    },
+    "causation_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "msg_id of the message that caused this one (null = root).",
+      "title": "Causation Id"
+    },
+    "correlation_id": {
+      "description": "Incident id shared by every message of one diagnosis run.",
+      "minLength": 1,
+      "title": "Correlation Id",
+      "type": "string"
+    },
+    "depth": {
+      "default": 0,
+      "description": "Causation depth: 0 for roots, parent depth + 1 otherwise.",
+      "minimum": 0,
+      "title": "Depth",
+      "type": "integer"
+    },
+    "msg_id": {
+      "description": "Unique message id; content hash when built by make_message.",
+      "minLength": 1,
+      "title": "Msg Id",
+      "type": "string"
+    },
+    "payload": {
+      "$ref": "#/$defs/HypothesisPayload",
+      "description": "Candidate root cause."
+    },
+    "protocol": {
+      "const": "netcoop",
+      "default": "netcoop",
+      "description": "Protocol name; always 'netcoop'.",
+      "title": "Protocol",
+      "type": "string"
+    },
+    "protocol_version": {
+      "const": "2.0",
+      "default": "2.0",
+      "description": "Wire-format version of this message.",
+      "title": "Protocol Version",
+      "type": "string"
+    },
+    "recipient": {
+      "default": "board",
+      "description": "agent_id of the recipient, or 'board' for a shared post.",
+      "title": "Recipient",
+      "type": "string"
+    },
+    "schema_version": {
+      "description": "Controlled-vocabulary version the payload's terms refer to.",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sender": {
+      "description": "agent_id of the sender.",
+      "minLength": 1,
+      "title": "Sender",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "Creation time, ISO-8601 UTC (excluded from msg_id).",
+      "format": "date-time",
+      "title": "Timestamp",
+      "type": "string"
+    },
+    "type": {
+      "const": "HYPOTHESIS",
+      "default": "HYPOTHESIS",
+      "description": "Message type.",
+      "title": "Type",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "msg_id",
+    "correlation_id",
+    "sender",
+    "timestamp",
+    "payload"
+  ],
+  "title": "HypothesisMessage",
+  "type": "object"
+}

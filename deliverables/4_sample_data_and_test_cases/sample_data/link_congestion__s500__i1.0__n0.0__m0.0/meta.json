@@ -1,0 +1,24 @@
+{
+  "run_id": "link_congestion__s500__i1.0__n0.0__m0.0",
+  "ground_truth": {
+    "scenario": "link_congestion",
+    "root_cause": "link_congestion",
+    "dialect": "netcoop_synth_v2",
+    "onset_ts": "2026-10-01T09:12:00Z",
+    "target_entity": "department-dist-01--department-acc-02",
+    "affected_entities": [
+      "department-dist-01--department-acc-02",
+      "department-dist-01",
+      "department-acc-02"
+    ],
+    "seed": 500,
+    "intensity": 1.0,
+    "noise": 0.0,
+    "missing_rate": 0.0
+  },
+  "files": {
+    "ground_truth.json": "213a2266273c6c230e58236268108293c7896c7776b264158359d1abba794e40",
+    "telemetry.jsonl": "764a7fa804379e8ede6f78178eec2f4042a2d56bc3a87ed0e148ac8c64fbea9a",
+    "topology.json": "1dccbb5fcd56485d8d99963d34e2cee64e6d61ff074aa409dae056e9ca87fc56"
+  }
+}

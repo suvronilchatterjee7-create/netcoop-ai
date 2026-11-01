@@ -35,6 +35,16 @@ Details, slices, ablations and robustness curves: [docs/EVALUATION.md](docs/EVAL
 
 ## Deliverables
 
+**Everything to be delivered, in one place: [deliverables/](deliverables/README.md).** It holds:
+- the demo video
+- a source snapshot
+- the architecture documentation
+- the sample data and test cases
+- a guide to running the prototype, with screenshots
+- the evaluation results
+
+The demo video is [deliverables/1_demo_video/NetCoop_AI_demo_video.mp4](deliverables/1_demo_video/NetCoop_AI_demo_video.mp4) (4 min 25 s).
+
 | deliverable | where |
 |---|---|
 | Source code (agents, protocol, Translator, orchestrator, correlation, courtroom, reporting) | [netcoop/](netcoop/) |

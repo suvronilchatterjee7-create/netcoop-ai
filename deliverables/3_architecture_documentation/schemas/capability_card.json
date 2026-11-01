@@ -1,0 +1,138 @@
+{
+  "$defs": {
+    "AgentRole": {
+      "enum": [
+        "translator",
+        "specialist",
+        "correlator",
+        "adjudicator",
+        "reporter",
+        "external"
+      ],
+      "title": "AgentRole",
+      "type": "string"
+    },
+    "MessageType": {
+      "enum": [
+        "OBSERVATION",
+        "TOPOLOGY",
+        "CLUE",
+        "HYPOTHESIS",
+        "SUPPORT",
+        "CONTRADICT",
+        "REQUEST",
+        "RESPONSE",
+        "ERROR",
+        "ACK",
+        "CAPABILITY",
+        "VERDICT",
+        "REPORT"
+      ],
+      "title": "MessageType",
+      "type": "string"
+    }
+  },
+  "$id": "netcoop/2.0/capability_card.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "activation_metrics": {
+      "default": [],
+      "description": "Agent runs only if at least one of these metrics is observed (empty = always).",
+      "items": {
+        "type": "string"
+      },
+      "title": "Activation Metrics",
+      "type": "array"
+    },
+    "agent_id": {
+      "description": "Unique agent identifier; used as `sender`/`recipient`.",
+      "pattern": "^[a-z][a-z0-9_.-]*$",
+      "title": "Agent Id",
+      "type": "string"
+    },
+    "consumes_metrics": {
+      "default": [],
+      "description": "Canonical metrics it analyses ('*' = all).",
+      "items": {
+        "type": "string"
+      },
+      "title": "Consumes Metrics",
+      "type": "array"
+    },
+    "consumes_types": {
+      "description": "Message types the agent wants delivered.",
+      "items": {
+        "$ref": "#/$defs/MessageType"
+      },
+      "title": "Consumes Types",
+      "type": "array"
+    },
+    "description": {
+      "description": "What the agent is responsible for.",
+      "title": "Description",
+      "type": "string"
+    },
+    "hypothesis_types": {
+      "default": [],
+      "description": "Hypothesis types it may propose.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Hypothesis Types",
+      "type": "array"
+    },
+    "optional": {
+      "default": false,
+      "description": "If true, absence or inactivity does not lower confidence.",
+      "title": "Optional",
+      "type": "boolean"
+    },
+    "produces_types": {
+      "description": "Message types the agent may emit.",
+      "items": {
+        "$ref": "#/$defs/MessageType"
+      },
+      "title": "Produces Types",
+      "type": "array"
+    },
+    "protocol_versions": {
+      "description": "Protocol versions the agent can speak.",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Protocol Versions",
+      "type": "array"
+    },
+    "role": {
+      "$ref": "#/$defs/AgentRole",
+      "description": "Kind of agent."
+    },
+    "serves": {
+      "default": [],
+      "description": "REQUEST capabilities it answers: 'metric:<name>', 'analysis:<name>', or 'metric:*' (any metric in consumes_metrics).",
+      "items": {
+        "type": "string"
+      },
+      "title": "Serves",
+      "type": "array"
+    },
+    "version": {
+      "description": "Agent implementation version (semver).",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "agent_id",
+    "version",
+    "role",
+    "description",
+    "protocol_versions",
+    "consumes_types",
+    "produces_types"
+  ],
+  "title": "CapabilityCard",
+  "type": "object"
+}

@@ -1,0 +1,233 @@
+{
+  "incident_id": "inc-1a0677de2579",
+  "status": "insufficient_evidence",
+  "suspected_root_cause": "insufficient evidence to name a root cause; best explanations: interface_fault at core-rtr-01--hostel-dist-01 or hardware_failure at hostel-dist-01",
+  "confidence": 0.0,
+  "affected_devices": [
+    "core-rtr-01--hostel-dist-01",
+    "hostel-dist-01"
+  ],
+  "supporting_evidence": [
+    {
+      "metric": "device_status",
+      "value": 1.0,
+      "interpretation": "device_status on hostel-dist-01 was in an abnormal state in 100% of recent samples; data quality 0.96 [baselines.device_status.switch]"
+    },
+    {
+      "metric": "packet_loss",
+      "value": 97.351,
+      "interpretation": "packet_loss on hostel-dist-01--hostel-acc-02: recent median 97.4 percent is above the normal-operation baseline of 0.02 percent by 50 robust standard deviations, abnormal in 100% of recent samples; data quality 0.96 [baselines.packet_loss.link]"
+    },
+    {
+      "metric": "packet_loss",
+      "value": 98.511,
+      "interpretation": "packet_loss on core-rtr-01--hostel-dist-01: recent median 98.5 percent is above the normal-operation baseline of 0.02 percent by 50 robust standard deviations, abnormal in 100% of recent samples; data quality 0.96 [baselines.packet_loss.link]"
+    },
+    {
+      "metric": "interface_in_errors",
+      "value": 4.0,
+      "interpretation": "interface_in_errors on hostel-dist-01: recent median 4 count is above the normal-operation baseline of 0 count by 5.15 robust standard deviations, abnormal in 83% of recent samples; data quality 0.94 [baselines.interface_in_errors.switch]"
+    },
+    {
+      "metric": "utilization",
+      "value": 0.0,
+      "interpretation": "utilization on core-rtr-01--hostel-dist-01 stayed normal: recent median 0 percent vs normal-operation baseline 27.4 percent, as interface_fault predicts; data quality 0.98 [baselines.utilization.link]"
+    },
+    {
+      "metric": "packet_loss",
+      "value": 100.0,
+      "interpretation": "packet_loss on hostel-dist-01--hostel-acc-01: recent median 100 percent is above the normal-operation baseline of 0.02 percent by 50 robust standard deviations, abnormal in 100% of recent samples; data quality 0.96 [baselines.packet_loss.link]"
+    }
+  ],
+  "alternative_causes": [
+    "interface_fault at core-rtr-01--hostel-dist-01",
+    "hardware_failure at hostel-dist-01"
+  ],
+  "recommended_actions": [
+    "Collect: evidence that discriminates interface_fault@core-rtr-01--hostel-dist-01 from hardware_failure@hostel-dist-01",
+    "If interface_fault at core-rtr-01--hostel-dist-01 is confirmed: Check cabling, transceivers and port counters on both ends of core-rtr-01--hostel-dist-01 (core-rtr-01 / hostel-dist-01).",
+    "If hardware_failure at hostel-dist-01 is confirmed: Check power, environment and hardware logs of hostel-dist-01; run vendor diagnostics."
+  ],
+  "evidence_sources": [
+    "infrastructure",
+    "performance",
+    "correlator",
+    "prosecutor",
+    "defense",
+    "judge"
+  ],
+  "limitations": [
+    "courtroom deferred: evidence favours hardware_failure@hostel-dist-01, but the calibrated model gives it 0.03 < 0.98 (never trained on it): deferred"
+  ],
+  "x_netcoop": {
+    "confidence_category": "none",
+    "evidence_provenance": [
+      {
+        "evidence_index": 0,
+        "clue_id": "clue-53e0edede3418cbc",
+        "agent": "infrastructure",
+        "entity_id": "hostel-dist-01",
+        "unit": "ratio",
+        "reference_value": 0.0,
+        "config_key": "baselines.device_status.switch",
+        "observation_ids": [
+          "observation-3b13743d5e590d9b"
+        ]
+      },
+      {
+        "evidence_index": 1,
+        "clue_id": "clue-1f682dff03ec150f",
+        "agent": "performance",
+        "entity_id": "hostel-dist-01--hostel-acc-02",
+        "unit": "percent",
+        "reference_value": 0.02,
+        "config_key": "baselines.packet_loss.link",
+        "observation_ids": [
+          "observation-fffb4091c2e2b1b4"
+        ]
+      },
+      {
+        "evidence_index": 2,
+        "clue_id": "clue-e086a38f15a11e4e",
+        "agent": "performance",
+        "entity_id": "core-rtr-01--hostel-dist-01",
+        "unit": "percent",
+        "reference_value": 0.02,
+        "config_key": "baselines.packet_loss.link",
+        "observation_ids": [
+          "observation-6ef3d57baffb723b"
+        ]
+      },
+      {
+        "evidence_index": 3,
+        "clue_id": "clue-654dc8bdcc8fab18",
+        "agent": "infrastructure",
+        "entity_id": "hostel-dist-01",
+        "unit": "count",
+        "reference_value": 0.0,
+        "config_key": "baselines.interface_in_errors.switch",
+        "observation_ids": [
+          "observation-7a50c463edc87d8e"
+        ]
+      },
+      {
+        "evidence_index": 4,
+        "clue_id": "clue-bb12f9ab636facf6",
+        "agent": "performance",
+        "entity_id": "core-rtr-01--hostel-dist-01",
+        "unit": "percent",
+        "reference_value": 27.364,
+        "config_key": "baselines.utilization.link",
+        "observation_ids": [
+          "observation-d8da925ce17905a5"
+        ]
+      },
+      {
+        "evidence_index": 5,
+        "clue_id": "clue-9fa61c2db14a29e1",
+        "agent": "performance",
+        "entity_id": "hostel-dist-01--hostel-acc-01",
+        "unit": "percent",
+        "reference_value": 0.02,
+        "config_key": "baselines.packet_loss.link",
+        "observation_ids": [
+          "observation-3fe58195b39bfba5"
+        ]
+      }
+    ],
+    "alternatives_scored": [
+      {
+        "cause": "interface_fault at core-rtr-01--hostel-dist-01",
+        "score": 8.230809,
+        "confidence": 1.0
+      },
+      {
+        "cause": "hardware_failure at hostel-dist-01",
+        "score": -0.209328,
+        "confidence": 0.032901
+      }
+    ],
+    "data_quality": {
+      "overall": 0.961373,
+      "per_entity": {
+        "core-rtr-01--hostel-dist-01": 0.972074,
+        "hostel-dist-01": 0.950442
+      },
+      "issues": {}
+    },
+    "courtroom": {
+      "invoked": true,
+      "contenders": [
+        "interface_fault@core-rtr-01--hostel-dist-01",
+        "hardware_failure@hostel-dist-01"
+      ],
+      "rounds": 1,
+      "outcome": "deferred",
+      "summary": "prosecutor for interface_fault@core-rtr-01--hostel-dist-01: -2.00 (explained_away -2.00) | defense for hardware_failure@hostel-dist-01: +0.96 (confirmed +0.96) | evidence favours hardware_failure@hostel-dist-01, but the calibrated model gives it 0.03 < 0.98 (never trained on it): deferred",
+      "transcript_msg_ids": [
+        "support-2d8c5da3fb3f4e99",
+        "verdict-076da8764ece228f"
+      ]
+    },
+    "missing_evidence": [
+      "evidence that discriminates interface_fault@core-rtr-01--hostel-dist-01 from hardware_failure@hostel-dist-01"
+    ],
+    "score_breakdown": [
+      {
+        "term": "prior (interface_fault)",
+        "status": "134 true / 122 false training candidates",
+        "contribution": 0.1065
+      },
+      {
+        "term": "interface_in_errors deviates rising @ root_endpoints (required)",
+        "status": "violated",
+        "contribution": -0.0752
+      },
+      {
+        "term": "interface_in_errors deviates above @ root_endpoints (required)",
+        "status": "unknown",
+        "contribution": -0.076
+      },
+      {
+        "term": "interface_out_errors deviates above @ root_endpoints (required)",
+        "status": "violated",
+        "contribution": 0.0021
+      },
+      {
+        "term": "packet_loss deviates above @ root (supporting)",
+        "status": "satisfied",
+        "contribution": 2.9338
+      },
+      {
+        "term": "device_status deviates changed @ root_downstream (supporting)",
+        "status": "satisfied",
+        "contribution": 3.0759
+      },
+      {
+        "term": "utilization normal above @ root (supporting)",
+        "status": "satisfied",
+        "contribution": -0.007
+      },
+      {
+        "term": "analytic stance (topology)",
+        "status": "support",
+        "contribution": 2.2395
+      },
+      {
+        "term": "evidence quality",
+        "status": "bin 1 (quality 0.96)",
+        "contribution": 0.0311
+      }
+    ],
+    "simulated_remediation": [],
+    "manifest": {
+      "incident_id": "inc-1a0677de2579",
+      "input_hash": "1a0677de25791821562da3cd1e4ce9351e35780c8de2bc36e5e3996df73ab98c",
+      "config_hash": "010e1f4c337a6a3d2d40a3d16c41daee7386d91a5653fa67bfa141383568da4a",
+      "code_version": "0.1.0+5b6f1f6",
+      "protocol_version": "2.0",
+      "vocabulary_version": "1.0",
+      "seed": 20261031
+    }
+  }
+}
