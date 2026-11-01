@@ -4,3 +4,5 @@ data/samples/** -text
 deliverables/4_sample_data_and_test_cases/sample_data/** -text
 *.mp4 binary
 *.zip binary
+*.pptx binary
+*.pdf binary
