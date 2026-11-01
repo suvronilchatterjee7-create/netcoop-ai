@@ -28,3 +28,6 @@ venv/
 
 # rendered demo video (large; share separately)
 video/
+
+# Office lock files (a deck or document open in PowerPoint/Word)
+~$*

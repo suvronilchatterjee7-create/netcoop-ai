@@ -135,7 +135,8 @@ leads to the message that proves it. Do the same on every slide:
     report, or honestly say there isn't enough evidence."
   - a quiet contents list in mono:
     `§1 Problem · §2 How it works · §3 Agents in action · §4 The report · §5 Robustness · §6 Results`
-  - team rows: `[Team member names]`, `[roles]`. Use initials in ink circles, no photos.
+  - the team: a small mono label "Team" above the name **Havoc** in serif, next to an ink circle
+    with the initial "H". No member names and no photos.
 - **Right 44%:** a solid journal-blue panel holding a **line drawing**:
   - a small campus network as a topology: a core switch, two distribution switches, access
     switches, Wi-Fi access points, and DNS / DHCP servers, drawn as rounded hairline nodes in
@@ -286,6 +287,6 @@ leads to the message that proves it. Do the same on every slide:
 - [ ] No text is under 22 px, and nothing overflows its box.
 - [ ] Screenshots are cropped, never stretched, and framed consistently.
 - [ ] The running head, page number and references strip are on all six slides.
-- [ ] There are no stock photos, emoji, logos or invented team details (use the placeholders).
+- [ ] There are no stock photos, emoji or logos, and no team details beyond the team name, Havoc.
 
 **Deliver:** 6 slides, 16:9, as PPTX and PDF.
