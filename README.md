@@ -43,6 +43,7 @@ Details, slices, ablations and robustness curves: [docs/EVALUATION.md](docs/EVAL
 | Message traces | `runs/<incident>/trace.jsonl`, replayable with `netcoop replay` |
 | Evaluation results | [docs/EVALUATION.md](docs/EVALUATION.md), [docs/CALIBRATION.md](docs/CALIBRATION.md) |
 | Labelled sample data | [data/samples/](data/samples/README.md) |
+| Local dashboard | `netcoop serve`, [docs/WEB.md](docs/WEB.md) |
 | Demo and video script | `netcoop demo`, [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) |
 | Design decisions | [docs/DECISIONS.md](docs/DECISIONS.md) |
 
@@ -61,6 +62,15 @@ Activate the venv (`source .venv/bin/activate`, or `.venv\Scripts\activate` on W
 ```bash
 pip install -e ".[dev]"
 ```
+
+```bash
+netcoop serve
+```
+
+`netcoop serve` opens the **local dashboard** at http://127.0.0.1:8765/ ([docs/WEB.md](docs/WEB.md)):
+pick a sample, press Diagnose, and watch Fig. 1 fill in as the agents post messages. The
+report reads like a research paper: every red citation number links a claim to the board
+message that proves it. It needs no extra installs and only listens on your own machine.
 
 ```bash
 netcoop demo
@@ -236,14 +246,14 @@ nothing else changes.
   radius includes downstream devices that the ground truth does not list.
 - **Staleness is relative** to the newest data in the input. A timed-out Python thread cannot
   be killed: its output is discarded, but its thread keeps running.
-- There is **no UI** yet. The trace is written live, so a dashboard can tail `trace.jsonl`.
+- The dashboard is **local and single-user**: no accounts, loopback only, and it can diagnose only run folders under `data/`.
 
 ## Future work
 
 - Refit on the organiser's or real NMS data.
 - Add active probing agents that answer REQUESTs with new measurements.
 - Have the system propose mapping aliases for unrecognised dialects, gated by the validator.
-- Add a live dashboard over the trace.
+- Let the dashboard upload an export instead of reading run folders from `data/`.
 - Execute approved remediations behind the existing human-review ACKs.
 
 ## Repository layout
@@ -257,6 +267,7 @@ nothing else changes.
 | `netcoop/correlation`, `netcoop/courtroom` | scoring, calibration, decision policy, tie-break |
 | `netcoop/reporting` | report.json / report.md |
 | `netcoop/evaluation`, `netcoop/mutation.py` | evaluation harness, interop mutator |
+| `netcoop/web` | local dashboard: stdlib server and one static page |
 | `netcoop/demo.py`, `netcoop/mcp_server.py`, `netcoop/cli` | demo, MCP server, `netcoop` command |
 | `config/` | justified parameters, catalogue, fitted model |
 | `data/` | vocabulary, mappings, samples (generated data is git-ignored) |

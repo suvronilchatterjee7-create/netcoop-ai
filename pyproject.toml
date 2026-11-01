@@ -35,6 +35,9 @@ netcoop = "netcoop.cli.main:main"
 [tool.setuptools.packages.find]
 include = ["netcoop*"]
 
+[tool.setuptools.package-data]
+"netcoop.web" = ["static/*"]
+
 [tool.ruff]
 line-length = 100
 target-version = "py311"

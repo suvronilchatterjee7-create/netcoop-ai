@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+### Local dashboard
+- `netcoop serve`: a local web dashboard with no new dependencies. A standard-library server
+  (`netcoop/web/server.py`) and one static page (`netcoop/web/static/`).
+  - Pick a run folder and diagnose it live: messages stream as Server-Sent Events, and Fig. 1
+    plots them as one lane per agent.
+  - The report is laid out like a paper: each claim cites the board message that proves it,
+    with references, courtroom ruling, data quality and score breakdown.
+  - Also lists past runs and the evaluation headline.
+- Loopback only; inputs restricted to the roots in `config/web.yaml`.
+- `tests/test_web.py`; docs/WEB.md; PRODUCT.md (design product record); decision D-051.
+
 ### Phase 10 — Documentation and demo
 - `netcoop demo` (`--step`, `--scene N`): six scripted scenes from `config/demo.yaml`.
   - collaboration trace and replay

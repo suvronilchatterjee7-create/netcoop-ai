@@ -298,6 +298,16 @@ reads its scenes from `config/demo.yaml`; each scene states its expected status,
 command exits non-zero when an outcome changes, so a refit cannot silently break the video
 script.
 
+## D-051 · 2026-11-01 · Local dashboard on the standard library
+The dashboard (`netcoop serve`) uses Python's `http.server` and one plain HTML/CSS/JS page, so
+it runs right after `pip install -e .` with no build step or new dependency (the user's choice).
+Diagnoses stream to the page as Server-Sent Events from the orchestrator's existing event hook;
+the page paces the decision chain (`replay.step_ms`) so a viewer can follow it, while
+observations and clues are only counted. The server binds to 127.0.0.1 and resolves inputs only
+inside the configured data roots, because it has no authentication. The visual direction,
+"Journal of Record" (claims cite the messages that prove them), was chosen by the user from a
+design round; the contract is in `.impeccable/surfaces/`.
+
 ## Open questions
 - **Q-001** ~~Sweep sizes~~ resolved by D-005.
 - **Q-002** Canonical schema: derive from `docs/DATA_PROFILE.md` (Phase 1). Re-check if the

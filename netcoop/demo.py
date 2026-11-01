@@ -108,18 +108,31 @@ def _replay(run_dir: Path | None, write: Write) -> None:
     write(f"  replayed {board.version} messages from {_rel(run_dir)}/trace.jsonl: trace verified")
 
 
-def _metrics(write: Write) -> None:
+def evaluation_headline() -> list[tuple[str, str]]:
+    """(metric, value) rows of the Headline table in docs/EVALUATION.md, header excluded."""
     if not EVALUATION_MD.is_file():
-        write("  docs/EVALUATION.md missing: run `netcoop eval`")
-        return
+        return []
     lines = EVALUATION_MD.read_text(encoding="utf-8").splitlines()
-    start = next(i for i, ln in enumerate(lines) if ln.startswith("## Headline"))
+    start = next((i for i, ln in enumerate(lines) if ln.startswith("## Headline")), None)
+    if start is None:
+        return []
+    rows = []
     for ln in lines[start + 1 :]:
         if ln.startswith("## "):
             break
         if ln.startswith("|") and not ln.startswith("|---"):
             cells = [c.strip().replace("**", "") for c in ln.strip("|").split("|")]
-            write(f"  {cells[0]:<74s} {cells[1]}")
+            rows.append((cells[0], cells[1]))
+    return rows[1:]
+
+
+def _metrics(write: Write) -> None:
+    rows = evaluation_headline()
+    if not rows:
+        write("  docs/EVALUATION.md missing: run `netcoop eval`")
+        return
+    for metric, value in rows:
+        write(f"  {metric:<74s} {value}")
 
 
 def run_demo(

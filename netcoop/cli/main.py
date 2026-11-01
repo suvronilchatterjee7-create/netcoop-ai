@@ -213,6 +213,26 @@ def _cmd_demo(args: argparse.Namespace) -> int:
     return 1 if bad else 0
 
 
+def _cmd_serve(args: argparse.Namespace) -> int:
+    import webbrowser
+
+    from netcoop.web.server import make_server
+
+    server = make_server(port=args.port)
+    host, port = str(server.server_address[0]), int(server.server_address[1])
+    url = f"http://{host}:{port}/"
+    print(f"NetCoop dashboard on {url}  (Ctrl+C to stop)")
+    if not args.no_browser:
+        webbrowser.open(url)
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        server.server_close()
+    return 0
+
+
 def _cmd_calibrate(args: argparse.Namespace) -> int:
     from netcoop.calibration import BASELINES, calibrate, seed_split
 
@@ -318,6 +338,11 @@ def build_parser() -> argparse.ArgumentParser:
     dm.add_argument("--scene", type=int, action="append", help="play only this scene (repeatable)")
     dm.add_argument("--step", action="store_true", help="wait for Enter between scenes")
     dm.set_defaults(func=_cmd_demo)
+
+    sv = sub.add_parser("serve", help="local web dashboard (docs/WEB.md)")
+    sv.add_argument("--port", type=int, help="port (default: config/web.yaml server.port)")
+    sv.add_argument("--no-browser", action="store_true", help="do not open a browser tab")
+    sv.set_defaults(func=_cmd_serve)
 
     mc = sub.add_parser("mcp", help="serve NetCoop as an MCP server over stdio")
     mc.set_defaults(func=_cmd_mcp)

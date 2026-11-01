@@ -1,0 +1,56 @@
+description: Local web dashboard (`netcoop serve`, docs/WEB.md).
+
+server:
+  host:
+    value: "127.0.0.1"
+    unit: "IPv4 address"
+    rationale: >
+      Loopback only. The dashboard runs diagnoses and reads files on this machine and has no
+      authentication, so it must not be reachable from the network.
+    source: "Local-only constraint (PRODUCT.md, Capabilities and Constraints)"
+  port:
+    value: 8765
+    unit: "TCP port"
+    rationale: >
+      An unprivileged port outside the common development defaults (3000, 5000, 8000, 8080),
+      so it rarely collides with another local server. Overridable with --port.
+    source: "IANA registered/dynamic ranges; common dev-server defaults"
+
+inputs:
+  roots:
+    value: ["data/samples", "data/test", "data/ambiguity", "data/generated"]
+    unit: "repository-relative directories"
+    rationale: >
+      Where labelled run folders live. Samples are committed; the others exist after
+      `netcoop generate`, `netcoop eval` or `netcoop courtroom-eval`. Only folders under these
+      roots can be diagnosed from the dashboard, so a request can never point at arbitrary
+      paths on disk.
+    source: "data/samples/README.md; netcoop.generation; netcoop.evaluation"
+  max_listed:
+    value: 60
+    unit: "run folders per collection"
+    rationale: >
+      The full sweep has 180 folders per family; listing every one makes the picker unusable.
+      Samples (9) are always listed in full; the larger collections show the first folders and
+      accept any folder name typed in the filter.
+    source: "Picker usability; sweep size in config/generation.yaml"
+
+runs:
+  dir:
+    value: "runs/web"
+    unit: "repository-relative directory"
+    rationale: >
+      Dashboard diagnoses write their trace, manifest and reports here, separate from CLI
+      runs and the demo, so the list of past dashboard runs is not mixed with evaluation output.
+    source: "docs/ORCHESTRATION.md (runs/<incident>/ layout)"
+
+replay:
+  step_ms:
+    value: 140
+    unit: "milliseconds per decision-chain message"
+    rationale: >
+      A diagnosis finishes in about two seconds, too fast to follow. The page plays the
+      decision chain (hypotheses, requests, stances, verdict) at this pace so a viewer can
+      read each step; 13-20 messages take 2-3 seconds. Observations and clues are counted, not
+      paced. Set to 0 to show results immediately.
+    source: "Message counts of the sample runs; reading pace on a screen recording"

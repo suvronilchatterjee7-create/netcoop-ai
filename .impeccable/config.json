@@ -1,0 +1,44 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "skipped-heading",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/assigned.html"
+        ],
+        "createdAt": "2026-10-31T23:55:01.118Z",
+        "reason": "Claude: throwaway decision-round sketch in .impeccable/mocks, not shipped; the built dashboard is checked separately"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/assigned.html"
+        ],
+        "createdAt": "2026-10-31T23:55:01.879Z",
+        "reason": "Claude: throwaway decision-round sketch in .impeccable/mocks, not shipped; the built dashboard is checked separately"
+      },
+      {
+        "rule": "skipped-heading",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/model-pick.html"
+        ],
+        "createdAt": "2026-10-31T23:55:02.684Z",
+        "reason": "Claude: throwaway decision-round sketch in .impeccable/mocks, not shipped; the built dashboard is checked separately"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/challenger-splitflap.html"
+        ],
+        "createdAt": "2026-10-31T23:55:03.438Z",
+        "reason": "Claude: throwaway decision-round sketch in .impeccable/mocks, not shipped; the built dashboard is checked separately"
+      }
+    ]
+  }
+}

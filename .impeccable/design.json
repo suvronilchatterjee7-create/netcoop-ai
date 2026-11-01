@@ -1,0 +1,590 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-01T02:59:44+00:00",
+  "title": "Design System: NetCoop AI",
+  "extensions": {
+    "colorMeta": {
+      "page": {
+        "role": "neutral",
+        "displayName": "Page White",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "oklch(15% 0.000 90)",
+          "oklch(26% 0.000 90)",
+          "oklch(37% 0.000 90)",
+          "oklch(48% 0.000 90)",
+          "oklch(59% 0.000 90)",
+          "oklch(70% 0.000 90)",
+          "oklch(82% 0.000 90)",
+          "oklch(95% 0.000 90)"
+        ]
+      },
+      "rail": {
+        "role": "neutral",
+        "displayName": "Rail Tint",
+        "canonical": "#f4f6fa",
+        "tonalRamp": [
+          "oklch(15% 0.003 265)",
+          "oklch(26% 0.004 265)",
+          "oklch(37% 0.004 265)",
+          "oklch(48% 0.005 265)",
+          "oklch(59% 0.005 265)",
+          "oklch(70% 0.005 265)",
+          "oklch(82% 0.004 265)",
+          "oklch(95% 0.003 265)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#16181d",
+        "tonalRamp": [
+          "oklch(15% 0.005 268)",
+          "oklch(26% 0.006 268)",
+          "oklch(37% 0.008 268)",
+          "oklch(48% 0.009 268)",
+          "oklch(59% 0.010 268)",
+          "oklch(70% 0.008 268)",
+          "oklch(82% 0.007 268)",
+          "oklch(95% 0.005 268)"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Secondary Ink",
+        "canonical": "#4a5160",
+        "tonalRamp": [
+          "oklch(15% 0.013 266)",
+          "oklch(26% 0.016 266)",
+          "oklch(37% 0.020 266)",
+          "oklch(48% 0.024 266)",
+          "oklch(59% 0.025 266)",
+          "oklch(70% 0.021 266)",
+          "oklch(82% 0.017 266)",
+          "oklch(95% 0.013 266)"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "canonical": "#6a7180",
+        "tonalRamp": [
+          "oklch(15% 0.012 266)",
+          "oklch(26% 0.015 266)",
+          "oklch(37% 0.019 266)",
+          "oklch(48% 0.023 266)",
+          "oklch(59% 0.024 266)",
+          "oklch(70% 0.020 266)",
+          "oklch(82% 0.016 266)",
+          "oklch(95% 0.012 266)"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Rule",
+        "canonical": "#dfe3ea",
+        "tonalRamp": [
+          "oklch(15% 0.005 262)",
+          "oklch(26% 0.007 262)",
+          "oklch(37% 0.008 262)",
+          "oklch(48% 0.009 262)",
+          "oklch(59% 0.010 262)",
+          "oklch(70% 0.008 262)",
+          "oklch(82% 0.007 262)",
+          "oklch(95% 0.005 262)"
+        ]
+      },
+      "rule-2": {
+        "role": "neutral",
+        "displayName": "Faint Rule",
+        "canonical": "#eef0f4",
+        "tonalRamp": [
+          "oklch(15% 0.003 265)",
+          "oklch(26% 0.004 265)",
+          "oklch(37% 0.004 265)",
+          "oklch(48% 0.005 265)",
+          "oklch(59% 0.005 265)",
+          "oklch(70% 0.005 265)",
+          "oklch(82% 0.004 265)",
+          "oklch(95% 0.003 265)"
+        ]
+      },
+      "shell": {
+        "role": "primary",
+        "displayName": "Journal Blue",
+        "canonical": "#1f3a7a",
+        "tonalRamp": [
+          "oklch(15% 0.055 264)",
+          "oklch(26% 0.071 264)",
+          "oklch(37% 0.087 264)",
+          "oklch(48% 0.104 264)",
+          "oklch(59% 0.108 264)",
+          "oklch(70% 0.092 264)",
+          "oklch(82% 0.074 264)",
+          "oklch(95% 0.055 264)"
+        ]
+      },
+      "shell-2": {
+        "role": "primary",
+        "displayName": "Journal Blue Lift",
+        "canonical": "#2c4c96",
+        "tonalRamp": [
+          "oklch(15% 0.061 264)",
+          "oklch(26% 0.079 264)",
+          "oklch(37% 0.097 264)",
+          "oklch(48% 0.116 264)",
+          "oklch(59% 0.121 264)",
+          "oklch(70% 0.102 264)",
+          "oklch(82% 0.083 264)",
+          "oklch(95% 0.061 264)"
+        ]
+      },
+      "shell-ink": {
+        "role": "primary",
+        "displayName": "Masthead Ink",
+        "canonical": "#c9d5f2",
+        "tonalRamp": [
+          "oklch(15% 0.020 268)",
+          "oklch(26% 0.026 268)",
+          "oklch(37% 0.032 268)",
+          "oklch(48% 0.038 268)",
+          "oklch(59% 0.040 268)",
+          "oklch(70% 0.034 268)",
+          "oklch(82% 0.027 268)",
+          "oklch(95% 0.020 268)"
+        ]
+      },
+      "cite": {
+        "role": "secondary",
+        "displayName": "Citation Red",
+        "canonical": "#c8361b",
+        "tonalRamp": [
+          "oklch(15% 0.090 33)",
+          "oklch(26% 0.116 33)",
+          "oklch(37% 0.143 33)",
+          "oklch(48% 0.170 33)",
+          "oklch(59% 0.177 33)",
+          "oklch(70% 0.150 33)",
+          "oklch(82% 0.121 33)",
+          "oklch(95% 0.090 33)"
+        ]
+      },
+      "cite-wash": {
+        "role": "secondary",
+        "displayName": "Citation Wash",
+        "canonical": "#fcebe6",
+        "tonalRamp": [
+          "oklch(15% 0.009 37)",
+          "oklch(26% 0.012 37)",
+          "oklch(37% 0.015 37)",
+          "oklch(48% 0.018 37)",
+          "oklch(59% 0.019 37)",
+          "oklch(70% 0.016 37)",
+          "oklch(82% 0.013 37)",
+          "oklch(95% 0.009 37)"
+        ]
+      },
+      "ok": {
+        "role": "tertiary",
+        "displayName": "Ledger Green",
+        "canonical": "#0f6b4f",
+        "tonalRamp": [
+          "oklch(15% 0.044 166)",
+          "oklch(26% 0.058 166)",
+          "oklch(37% 0.071 166)",
+          "oklch(48% 0.084 166)",
+          "oklch(59% 0.088 166)",
+          "oklch(70% 0.075 166)",
+          "oklch(82% 0.060 166)",
+          "oklch(95% 0.044 166)"
+        ]
+      },
+      "ok-wash": {
+        "role": "tertiary",
+        "displayName": "Ledger Green Wash",
+        "canonical": "#e4f3ec",
+        "tonalRamp": [
+          "oklch(15% 0.009 166)",
+          "oklch(26% 0.011 166)",
+          "oklch(37% 0.014 166)",
+          "oklch(48% 0.017 166)",
+          "oklch(59% 0.017 166)",
+          "oklch(70% 0.015 166)",
+          "oklch(82% 0.012 166)",
+          "oklch(95% 0.009 166)"
+        ]
+      },
+      "hold": {
+        "role": "tertiary",
+        "displayName": "Amber Hold",
+        "canonical": "#8a5300",
+        "tonalRamp": [
+          "oklch(15% 0.052 67)",
+          "oklch(26% 0.068 67)",
+          "oklch(37% 0.084 67)",
+          "oklch(48% 0.099 67)",
+          "oklch(59% 0.104 67)",
+          "oklch(70% 0.088 67)",
+          "oklch(82% 0.071 67)",
+          "oklch(95% 0.052 67)"
+        ]
+      },
+      "hold-wash": {
+        "role": "tertiary",
+        "displayName": "Amber Hold Wash",
+        "canonical": "#fbf0dc",
+        "tonalRamp": [
+          "oklch(15% 0.014 83)",
+          "oklch(26% 0.018 83)",
+          "oklch(37% 0.022 83)",
+          "oklch(48% 0.026 83)",
+          "oklch(59% 0.027 83)",
+          "oklch(70% 0.023 83)",
+          "oklch(82% 0.019 83)",
+          "oklch(95% 0.014 83)"
+        ]
+      },
+      "calm": {
+        "role": "tertiary",
+        "displayName": "Calm Blue",
+        "canonical": "#1f3a7a",
+        "tonalRamp": [
+          "oklch(15% 0.055 264)",
+          "oklch(26% 0.071 264)",
+          "oklch(37% 0.087 264)",
+          "oklch(48% 0.104 264)",
+          "oklch(59% 0.108 264)",
+          "oklch(70% 0.092 264)",
+          "oklch(82% 0.074 264)",
+          "oklch(95% 0.055 264)"
+        ]
+      },
+      "calm-wash": {
+        "role": "tertiary",
+        "displayName": "Calm Blue Wash",
+        "canonical": "#e8edf8",
+        "tonalRamp": [
+          "oklch(15% 0.008 266)",
+          "oklch(26% 0.010 266)",
+          "oklch(37% 0.012 266)",
+          "oklch(48% 0.014 266)",
+          "oklch(59% 0.015 266)",
+          "oklch(70% 0.013 266)",
+          "oklch(82% 0.010 266)",
+          "oklch(95% 0.008 266)"
+        ]
+      },
+      "bad": {
+        "role": "tertiary",
+        "displayName": "Fault Crimson",
+        "canonical": "#a3123a",
+        "tonalRamp": [
+          "oklch(15% 0.084 14)",
+          "oklch(26% 0.109 14)",
+          "oklch(37% 0.134 14)",
+          "oklch(48% 0.159 14)",
+          "oklch(59% 0.166 14)",
+          "oklch(70% 0.141 14)",
+          "oklch(82% 0.113 14)",
+          "oklch(95% 0.084 14)"
+        ]
+      },
+      "bad-wash": {
+        "role": "tertiary",
+        "displayName": "Fault Crimson Wash",
+        "canonical": "#fbe7ec",
+        "tonalRamp": [
+          "oklch(15% 0.011 1)",
+          "oklch(26% 0.014 1)",
+          "oklch(37% 0.017 1)",
+          "oklch(48% 0.021 1)",
+          "oklch(59% 0.022 1)",
+          "oklch(70% 0.018 1)",
+          "oklch(82% 0.015 1)",
+          "oklch(95% 0.011 1)"
+        ]
+      },
+      "agent-performance": {
+        "role": "tertiary",
+        "displayName": "Performance Teal",
+        "canonical": "#0f766e",
+        "tonalRamp": [
+          "oklch(15% 0.041 186)",
+          "oklch(26% 0.054 186)",
+          "oklch(37% 0.066 186)",
+          "oklch(48% 0.078 186)",
+          "oklch(59% 0.082 186)",
+          "oklch(70% 0.069 186)",
+          "oklch(82% 0.056 186)",
+          "oklch(95% 0.041 186)"
+        ]
+      },
+      "agent-infrastructure": {
+        "role": "tertiary",
+        "displayName": "Infrastructure Ochre",
+        "canonical": "#9a5b0b",
+        "tonalRamp": [
+          "oklch(15% 0.056 64)",
+          "oklch(26% 0.073 64)",
+          "oklch(37% 0.089 64)",
+          "oklch(48% 0.106 64)",
+          "oklch(59% 0.110 64)",
+          "oklch(70% 0.094 64)",
+          "oklch(82% 0.076 64)",
+          "oklch(95% 0.056 64)"
+        ]
+      },
+      "agent-wireless-service": {
+        "role": "tertiary",
+        "displayName": "Wireless Violet",
+        "canonical": "#6d3fc0",
+        "tonalRamp": [
+          "oklch(15% 0.092 295)",
+          "oklch(26% 0.119 295)",
+          "oklch(37% 0.146 295)",
+          "oklch(48% 0.173 295)",
+          "oklch(59% 0.181 295)",
+          "oklch(70% 0.154 295)",
+          "oklch(82% 0.124 295)",
+          "oklch(95% 0.092 295)"
+        ]
+      },
+      "agent-connectivity": {
+        "role": "tertiary",
+        "displayName": "Connectivity Blue",
+        "canonical": "#0b65a3",
+        "tonalRamp": [
+          "oklch(15% 0.060 247)",
+          "oklch(26% 0.078 247)",
+          "oklch(37% 0.095 247)",
+          "oklch(48% 0.113 247)",
+          "oklch(59% 0.118 247)",
+          "oklch(70% 0.100 247)",
+          "oklch(82% 0.081 247)",
+          "oklch(95% 0.060 247)"
+        ]
+      },
+      "agent-courtroom": {
+        "role": "tertiary",
+        "displayName": "Courtroom Crimson",
+        "canonical": "#a3123a",
+        "tonalRamp": [
+          "oklch(15% 0.084 14)",
+          "oklch(26% 0.109 14)",
+          "oklch(37% 0.134 14)",
+          "oklch(48% 0.159 14)",
+          "oklch(59% 0.166 14)",
+          "oklch(70% 0.141 14)",
+          "oklch(82% 0.113 14)",
+          "oklch(95% 0.084 14)"
+        ]
+      },
+      "agent-reporter": {
+        "role": "tertiary",
+        "displayName": "Reporter Slate",
+        "canonical": "#3b4252",
+        "tonalRamp": [
+          "oklch(15% 0.014 266)",
+          "oklch(26% 0.018 266)",
+          "oklch(37% 0.022 266)",
+          "oklch(48% 0.026 266)",
+          "oklch(59% 0.027 266)",
+          "oklch(70% 0.023 266)",
+          "oklch(82% 0.019 266)",
+          "oklch(95% 0.014 266)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Root-cause statement and page titles; max 30ch."
+      },
+      "abstract": {
+        "displayName": "Abstract",
+        "purpose": "Opening report paragraph carrying citations; max 66ch."
+      },
+      "prose": {
+        "displayName": "Prose",
+        "purpose": "Evidence, actions, ledes, empty-state copy."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "UI default, tabular numerals."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Rail item names, metadata, status pills, table cells."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Uppercase section heads on a hairline rule."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "Run folder names, message ids, device chips, code."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "ease",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "The single house ease for all state transitions."
+      },
+      {
+        "name": "state-fast",
+        "value": "150ms",
+        "purpose": "Button, tab and rail hover and selection."
+      },
+      {
+        "name": "state-cite",
+        "value": "200ms",
+        "purpose": "Citation lighting: halo, edge, reference row."
+      },
+      {
+        "name": "point-enter",
+        "value": "380ms pop (scale 0.4 to 1, fade in)",
+        "purpose": "New Fig. 1 points arriving during a live run."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "1ms",
+        "purpose": "All animation and transition durations under prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "figure-below",
+        "value": "1180px"
+      },
+      {
+        "name": "single-column",
+        "value": "760px"
+      }
+    ],
+    "openItems": [
+      "Fonts load from Google Fonts with Georgia / Segoe UI fallbacks; self-hosting woff2 is pending the user's approval."
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Diagnose action in the report header; journal-blue fill with play icon.",
+      "html": "<button class=\"ds-btn\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path d=\"M4.5 2.8v10.4L13 8z\" fill=\"currentColor\"/></svg>Diagnose</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 16px;border-radius:4px;cursor:pointer;border:1px solid var(--shell,#1f3a7a);background:var(--shell,#1f3a7a);color:#fff;font:600 0.9375rem/1 'Public Sans','Segoe UI',system-ui,sans-serif;transition:background 150ms cubic-bezier(0.16,1,0.3,1),transform 150ms cubic-bezier(0.16,1,0.3,1)}.ds-btn:hover{background:var(--shell-2,#2c4c96)}.ds-btn:active{transform:translateY(1px)}.ds-btn:focus-visible{outline:2px solid var(--focus,#2c4c96);outline-offset:2px}.ds-btn:disabled{background:#9aa6c0;border-color:#9aa6c0;cursor:progress}"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Diagnose again, once a report is on the page.",
+      "html": "<button class=\"ds-btn-ghost\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path d=\"M4.5 2.8v10.4L13 8z\" fill=\"currentColor\"/></svg>Diagnose again</button>",
+      "css": ".ds-btn-ghost{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 16px;border-radius:4px;cursor:pointer;border:1px solid var(--shell,#1f3a7a);background:var(--page,#fff);color:var(--shell,#1f3a7a);font:600 0.9375rem/1 'Public Sans','Segoe UI',system-ui,sans-serif;transition:background 150ms cubic-bezier(0.16,1,0.3,1)}.ds-btn-ghost:hover{background:var(--calm-wash,#e8edf8)}.ds-btn-ghost:active{transform:translateY(1px)}.ds-btn-ghost:focus-visible{outline:2px solid var(--focus,#2c4c96);outline-offset:2px}"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Rail field with caption label above.",
+      "html": "<label class=\"ds-field\"><span>Filter by name</span><input type=\"search\" placeholder=\"e.g. weak_wifi__s500\"></label>",
+      "css": ".ds-field{display:block;font:400 0.75rem/1.5 'Public Sans','Segoe UI',system-ui,sans-serif;color:var(--ink-2,#4a5160)}.ds-field span{display:block;margin:0 0 4px 4px}.ds-field input{width:100%;height:34px;padding:0 8px;background:var(--page,#fff);border:1px solid #c7cdd8;border-radius:4px;font:400 0.8125rem 'Public Sans','Segoe UI',system-ui,sans-serif;color:var(--ink,#16181d)}.ds-field input::placeholder{color:#626979}.ds-field input:focus-visible{outline:2px solid var(--focus,#2c4c96);outline-offset:2px}"
+    },
+    {
+      "name": "Top Bar",
+      "kind": "nav",
+      "refersTo": "top-bar",
+      "description": "Journal-blue masthead with wordmark and underlined tabs.",
+      "html": "<header class=\"ds-bar\"><span class=\"ds-mark\">NetCoop <span>AI</span></span><nav class=\"ds-tabs\"><button aria-selected=\"true\">Diagnose</button><button aria-selected=\"false\">Past runs</button><button aria-selected=\"false\">Evaluation</button></nav></header>",
+      "css": ".ds-bar{display:flex;align-items:center;gap:32px;height:56px;padding:0 24px;background:var(--shell,#1f3a7a);color:#fff;font:400 0.9375rem 'Public Sans','Segoe UI',system-ui,sans-serif}.ds-mark{font-weight:700;font-size:1.0625rem;letter-spacing:0.01em}.ds-mark span{color:var(--shell-ink,#c9d5f2);font-weight:500}.ds-tabs{display:flex;gap:4px;align-self:stretch}.ds-tabs button{border:0;background:none;color:var(--shell-ink,#c9d5f2);cursor:pointer;padding:0 12px;font:500 0.9375rem 'Public Sans','Segoe UI',system-ui,sans-serif;position:relative;transition:color 150ms cubic-bezier(0.16,1,0.3,1)}.ds-tabs button:hover,.ds-tabs button[aria-selected=true]{color:#fff}.ds-tabs button[aria-selected=true]::after{content:'';position:absolute;left:12px;right:12px;bottom:0;height:3px;background:#fff}.ds-tabs button:focus-visible{outline:2px solid #fff;outline-offset:-4px}"
+    },
+    {
+      "name": "Status Pills",
+      "kind": "chip",
+      "refersTo": "status-diagnosed",
+      "description": "Outcome pairs: text colour on its own wash.",
+      "html": "<span class=\"ds-status ok\">Diagnosed</span> <span class=\"ds-status hold\">Insufficient evidence</span> <span class=\"ds-status calm\">No fault detected</span> <span class=\"ds-status bad\">Failed</span>",
+      "css": ".ds-status{font:600 0.8125rem 'Public Sans','Segoe UI',system-ui,sans-serif;padding:2px 8px;border-radius:3px}.ds-status.ok{background:var(--ok-wash,#e4f3ec);color:var(--ok,#0f6b4f)}.ds-status.hold{background:var(--hold-wash,#fbf0dc);color:var(--hold,#8a5300)}.ds-status.calm{background:var(--calm-wash,#e8edf8);color:var(--calm,#1f3a7a)}.ds-status.bad{background:var(--bad-wash,#fbe7ec);color:var(--bad,#a3123a)}"
+    },
+    {
+      "name": "Cited Abstract",
+      "kind": "custom",
+      "refersTo": "citation",
+      "description": "Signature: serif claim with red superscript citations that light their figure point and reference.",
+      "html": "<p class=\"ds-abstract\">Packet loss rose to 2.44 percent<button class=\"ds-cite\">17</button>. Proposed by infrastructure<button class=\"ds-cite\">2</button><span class=\"ds-sep\">,</span><button class=\"ds-cite\">5</button>.</p>",
+      "css": ".ds-abstract{font:400 1.1875rem/1.6 'Source Serif 4','Iowan Old Style',Georgia,serif;font-variant-numeric:oldstyle-nums proportional-nums;color:var(--ink,#16181d);max-width:66ch;margin:0}.ds-cite,.ds-sep{font:700 0.62em/1 'Public Sans','Segoe UI',system-ui,sans-serif;vertical-align:super;color:var(--cite,#c8361b)}.ds-cite{border:0;background:none;padding:0 1px;cursor:pointer}.ds-cite:hover,.ds-cite:focus-visible{text-decoration:underline;text-underline-offset:2px}.ds-cite:focus-visible{outline:2px solid var(--focus,#2c4c96);outline-offset:2px}"
+    },
+    {
+      "name": "Fig. 1 Point",
+      "kind": "custom",
+      "refersTo": "citation",
+      "description": "Signature: numbered message point in an agent lane; red halo when cited.",
+      "html": "<svg class=\"ds-fig\" width=\"120\" height=\"48\" viewBox=\"0 0 120 48\"><text class=\"ds-lane\" x=\"4\" y=\"14\">infrastructure</text><g class=\"ds-pt\"><circle class=\"ds-halo\" cx=\"30\" cy=\"32\" r=\"15\"/><circle cx=\"30\" cy=\"32\" r=\"12\" fill=\"#9a5b0b\"/><text x=\"30\" y=\"36\" text-anchor=\"middle\">2</text></g><g class=\"ds-pt lit\"><circle class=\"ds-halo\" cx=\"62\" cy=\"32\" r=\"15\"/><circle cx=\"62\" cy=\"32\" r=\"12\" fill=\"#9a5b0b\"/><text x=\"62\" y=\"36\" text-anchor=\"middle\">5</text></g></svg>",
+      "css": ".ds-lane{font:600 13px 'Public Sans','Segoe UI',system-ui,sans-serif;fill:var(--ink-2,#4a5160)}.ds-pt{cursor:pointer}.ds-pt circle{stroke:#fff;stroke-width:2}.ds-pt text{font:700 12px 'Public Sans','Segoe UI',system-ui,sans-serif;fill:#fff;pointer-events:none}.ds-pt .ds-halo{fill:none;stroke:var(--cite,#c8361b);stroke-width:0;transition:stroke-width 200ms cubic-bezier(0.16,1,0.3,1)}.ds-pt:hover .ds-halo,.ds-pt.lit .ds-halo{stroke-width:3}"
+    },
+    {
+      "name": "Journal Table",
+      "kind": "custom",
+      "refersTo": "",
+      "description": "Results table with heavy ink rules top and bottom; no card.",
+      "html": "<table class=\"ds-table\"><caption><b>Table 1.</b> Headline results</caption><tr><th>Metric</th><th>Value</th></tr><tr><td>Claim precision</td><td class=\"v\">98.6%</td></tr><tr><td>Test runs</td><td class=\"v\">1,080</td></tr></table>",
+      "css": ".ds-table{border-collapse:collapse;font:400 0.8125rem/1.5 'Public Sans','Segoe UI',system-ui,sans-serif;font-variant-numeric:tabular-nums;border-top:2px solid var(--ink,#16181d);border-bottom:2px solid var(--ink,#16181d);color:var(--ink,#16181d)}.ds-table caption{text-align:left;color:var(--ink-2,#4a5160);padding-bottom:8px;caption-side:top}.ds-table th{text-align:left;font-weight:600;color:var(--ink-2,#4a5160);padding:8px 12px;border-bottom:1px solid var(--ink,#16181d)}.ds-table td{padding:12px;border-bottom:1px solid var(--rule-2,#eef0f4)}.ds-table td.v{font-weight:600}.ds-table tr:hover td{background:var(--rail,#f4f6fa)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Journal of Record",
+    "overview": "The dashboard reads as a published research paper about one incident. A white journal page carries a serif headline naming the root cause, an abstract whose claims carry red superscript citations, then numbered evidence, actions, alternatives and the courtroom ruling. Beside it, Fig. 1 plots the agents as swimlanes over rounds, and every numbered point in the figure is the message a citation refers to. A journal-blue shell (top bar, tinted rail) frames the page the way a journal's masthead frames an article.\n\nDensity is that of a paper, not a console: one incident at a time, measured line lengths (66ch), section heads separated by hairline rules rather than boxes. Depth is flat. Structure comes from rules, column dividers and type contrast between the serif voice of the report and the sans voice of the instrument (labels, data, controls).\n\nThe signature is the citation link: a superscript in the prose, a point in the figure and an entry in the references list are one object. Hovering or focusing any of them lights the other two in citation red.",
+    "keyCharacteristics": [
+      "White page, ink text, journal-blue shell; no cards, no shadows.",
+      "Serif (Source Serif 4) for what the report says; sans (Public Sans) for UI, data and figure labels; mono for identifiers.",
+      "Citation red appears only on citation marks and whatever they currently point at.",
+      "Fig. 1 is drawn at 1:1 as agent lanes by rounds; agents are figure series colours.",
+      "Hairline rules and column dividers do the structural work."
+    ],
+    "rules": [
+      {
+        "name": "The One Job Rule",
+        "body": "Citation red marks citations and the thing a citation points at. Nothing else is red-orange: not errors, not emphasis, not buttons.",
+        "section": "colors"
+      },
+      {
+        "name": "The Outcome Pair Rule",
+        "body": "Every status is a text colour on its own wash. Abstention (hold) and no-fault (calm) are styled as outcomes with the same weight as diagnosed, never as greyed-out or failed.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Voices Rule",
+        "body": "Serif is the report speaking; sans is the instrument. A claim the system makes is set in serif; a control, label, measurement or figure annotation is set in sans.",
+        "section": "typography"
+      },
+      {
+        "name": "The Numeral Rule",
+        "body": "Serif prose uses old-style proportional numerals; everything else is tabular.",
+        "section": "typography"
+      },
+      {
+        "name": "The Hairline Rule",
+        "body": "Separate with a 1px rule or a change of ground, never with a shadow or a bordered card.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** put every claim the report makes in serif and give it a citation that resolves to a numbered Fig. 1 point and a reference row.",
+      "**Do** keep citation red (#c8361b) to citation marks and the currently cited point, edge, lane label and reference row.",
+      "**Do** style abstentions and no-fault results with their own outcome pair, at the same weight as diagnosed.",
+      "**Do** structure with 1px rules, column dividers and changes of ground; heavy 2px Ink rules for table tops and bottoms.",
+      "**Do** cap report prose at 66ch and use the 4px spacing scale.",
+      "**Do** colour agents only by their series token, in the figure and its legend.",
+      "**Do** use the single house ease (cubic-bezier(0.16, 1, 0.3, 1)) at 150-200ms for state changes, and honour reduced motion."
+    ],
+    "donts": [
+      "**Don't** use cards, bordered panels or drop shadows; the system is flat.",
+      "**Don't** use citation red for errors, warnings, buttons or emphasis; failures use Fault Crimson on its wash.",
+      "**Don't** shrink Fig. 1 to fit; wrap busy lanes onto extra rows.",
+      "**Don't** set controls, labels or figure annotations in the serif.",
+      "**Don't** add labels above the headline; the run folder and incident id sit in the metadata under it."
+    ]
+  }
+}

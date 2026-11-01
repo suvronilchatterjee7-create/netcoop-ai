@@ -20,3 +20,8 @@ data/test/
 *.env
 .venv*/
 venv/
+
+# design working files and local launch config
+.impeccable/mocks/
+.impeccable/review/
+.claude/
